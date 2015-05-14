@@ -1,4 +1,22 @@
 Rails.application.routes.draw do
+  get 'b2b/documentation'
+
+  get 'b2b/new_user'
+
+  get 'b2b/get_token'
+
+  get 'b2b/new_order'
+
+  get 'b2b/order_accepted'
+
+  get 'b2b/order_canceled'
+
+  get 'b2b/order_rejected'
+
+  get 'b2b/invoice_paid'
+
+  get 'b2b/invoice_rejected'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
