@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  devise_for :users
+
   get 'b2b/documentation'
 
   get 'b2b/new_user'
