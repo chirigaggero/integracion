@@ -1,5 +1,6 @@
 class B2bController < ApplicationController
   # GET /b2b/documentation
+  respond_to :json
   def documentation
   end
 
@@ -28,6 +29,31 @@ class B2bController < ApplicationController
 
   #POST /b2b/new_order
   def new_order
+    #el programa esta hecho para leer json
+    #verifico que sea json
+    if valid_json(aux)
+      order_id = params[:order_id]
+      orden = HTTParty.GET("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}")
+      sku = orden[0]["Sku"]
+      cantidad = orden[0]["Cantidad"]
+      cliente = orden[0]["Cliente"]
+      precio = orden[0]["Precio unitario"]
+      direccion = Cliente.get_direccion()
+
+
+      pedido=Pedidos.create(order_id,sku,cantidad,direccion)
+      if Bodega.aceptar_pedido?(pedido)
+        return Json(new{succes=true,message="La orden de compra ha sido recibida exitosamente."}),status :ok
+      else
+        #
+        #
+        # CONECTARSE A LA API DEL OTRO GRUPO
+        #
+        #
+
+    rescue Exception => e
+      return Json(new{succes=false,message="This field is required."}),status :bad_request
+    end
   end
 
   #POST /b2b/order_accepted
@@ -49,4 +75,15 @@ class B2bController < ApplicationController
   #POST /b2b/invoice_rejected
   def invoice_rejected
   end
+
+  #validador de json
+  def valid_json?(json)
+  begin
+    JSON.parse(json)
+    return true
+    rescue Exception => e
+      return false
+    end
+  end
+
 end
