@@ -14,12 +14,7 @@ class B2bController < ApplicationController
     if user.nil? or password.nil?
       render json: {success: false, message: "El usuario y password no pueden estar en blanco."}, status: :bad_request
     else
-      newuser = User.new({
-                             username: user,
-                             password: password,
-                             password_confirmation: password
-                         })
-      newuser.save!
+      # crear usuario
       render json: {success: true, message: "Su usuario ha sido creado exitosamente.", token: "dsvs"}, status: :created
     end
   end
