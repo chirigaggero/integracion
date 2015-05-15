@@ -40,129 +40,123 @@ class B2bController < ApplicationController
     end
   end
 
-rescue Exception => e
-  return render json: {success: false, message: "No se peude verificar que el usuario y la contraseña sean correctos"}, status: :bad_request
-end
-
-
 #comprar producto
 #POST /b2b/new_order
 def new_order
-  #el programa esta hecho para leer json
-  #verifico que sea json
-  if valid_json(aux)
-    order_id = params["order_id"]
-    orden = HTTParty.GET("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}")
-    sku = orden[0]["Sku"]
-    cantidad = orden[0]["Cantidad"]
-    cliente = orden[0]["Cliente"]
-    precio=orden[0]["Precio unitario"]
-    direccion = Cliente.get_direccion(cliente)
+#   #el programa esta hecho para leer json
+#   #verifico que sea json
+#   if valid_json(aux)
+#     order_id = params["order_id"]
+#     orden = HTTParty.GET("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}")
+#     sku = orden[0]["Sku"]
+#     cantidad = orden[0]["Cantidad"]
+#     cliente = orden[0]["Cliente"]
+#     precio=orden[0]["Precio unitario"]
+#     direccion = Cliente.get_direccion(cliente)
 
-    pedido = Pedidos.create(order_id, sku, cantidad, direccion)
-    if Bodega.aceptar_pedido?(pedido)
-      return Json(new { succes=true, message="La orden de compra ha sido recibida exitosamente." }), status :ok
-    else
-      Bodega.aceptar_pedido?(pedido)
-    end
+#     pedido = Pedidos.create(order_id, sku, cantidad, direccion)
+#     if Bodega.aceptar_pedido?(pedido)
+#       return Json(new { succes=true, message="La orden de compra ha sido recibida exitosamente." }), status :ok
+#     else
+#       Bodega.aceptar_pedido?(pedido)
+#     end
+# end
 
-  end
+# rescue Exception => e
 
-rescue Exception => e
-
-  return render json: {success: false, message: "se requiere orden de compra"}, status: :bad_request
+#   return render json: {success: false, message: "se requiere orden de compra"}, status: :bad_request
 
 end
 
 
 #POST /b2b/order_accepted
 def order_accepted
-  order_id = params["prder_id"]
-  if order_id.nil?
-    render json: {success: false, message: "La orden de compra es requerida"}, status: :bad_request
-  else
-    #retornar un mensaje de que se aceptó
+#   order_id = params["prder_id"]
+#   if order_id.nil?
+#     render json: {success: false, message: "La orden de compra es requerida"}, status: :bad_request
+#   else
+#     #retornar un mensaje de que se aceptó
 
-  end
+#   end
 
-rescue Exception => e
-  return render json: {success: false, message: "No se peude verificar que la orden este aceptada"}, status: :bad_request
+# rescue Exception => e
+#   return render json: {success: false, message: "No se peude verificar que la orden este aceptada"}, status: :bad_request
 
 end
 
 #POST /b2b/order_canceled
 def order_canceled
-  order_id = params["prder_id"]
-  if order_id.nil?
-    render json: {success: false, message: "La orden de compra es requerida"}, status: :bad_request
-  else
-    #retornar un mensaje de que se canceló
+#   order_id = params["prder_id"]
+#   if order_id.nil?
+#     render json: {success: false, message: "La orden de compra es requerida"}, status: :bad_request
+#   else
+#     #retornar un mensaje de que se canceló
 
-  end
+#   end
 
-rescue Exception => e
-  return render json: {success: false, message: "No se peude verificar que la orden este cancelada"}, status: :bad_request
+# rescue Exception => e
+#   return render json: {success: false, message: "No se peude verificar que la orden este cancelada"}, status: :bad_request
 
 end
 
 #POST /b2b/order_rejected
 def order_rejected
-  order_id = params["prder_id"]
-  if order_id.nil?
-    render json: {success: false, message: "La orden de compra es requerida"}, status: :bad_request
-  else
-    #retornar un mensaje de que se rechazó
+#   order_id = params["prder_id"]
+#   if order_id.nil?
+#     render json: {success: false, message: "La orden de compra es requerida"}, status: :bad_request
+#   else
+#     #retornar un mensaje de que se rechazó
 
-  end
+#   end
 
-rescue Exception => e
-  return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
+# rescue Exception => e
+#   return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
 
 
 end
 
 #POST /b2b/invoice_paid
 def invoice_created
-  invoice_id = params["invoice_id"]
-  if invoice_id.nil?
-    render json: {success: false, message: "ID de factura requerido"}, status: :bad_request
-  else
-    #retornar un mensaje de que se rechazó
+#   invoice_id = params["invoice_id"]
+#   if invoice_id.nil?
+#     render json: {success: false, message: "ID de factura requerido"}, status: :bad_request
+#   else
+#     #retornar un mensaje de que se rechazó
 
-  end
+#   end
 
-rescue Exception => e
-  return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
+# rescue Exception => e
+#   return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
 
 end
 
 #POST /b2b/invoice_paid
 def invoice_paid
-  invoice_id = params["invoice_id"]
-  if invoice_id.nil?
-    render json: {success: false, message: "ID de factura requerido"}, status: :bad_request
-  else
-    #retornar un mensaje de que se pago
+#   invoice_id = params["invoice_id"]
+#   if invoice_id.nil?
+#     render json: {success: false, message: "ID de factura requerido"}, status: :bad_request
+#   else
+#     #retornar un mensaje de que se pago
 
-  end
+#   end
 
-rescue Exception => e
-  return render json: {success: false, message: "No se peude verificar que la orden este pagada"}, status: :bad_request
+# rescue Exception => e
+#   return render json: {success: false, message: "No se peude verificar que la orden este pagada"}, status: :bad_request
 
 end
 
 #POST /b2b/invoice_rejected
 def invoice_rejected
-  invoice_id = params["invoice_id"]
-  if invoice_id.nil?
-    render json: {success: false, message: "ID de factura requerido"}, status: :bad_request
-  else
-    #retornar un mensaje de que se rechazó
+#   invoice_id = params["invoice_id"]
+#   if invoice_id.nil?
+#     render json: {success: false, message: "ID de factura requerido"}, status: :bad_request
+#   else
+#     #retornar un mensaje de que se rechazó
 
-  end
+#   end
 
-rescue Exception => e
-  return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
+# rescue Exception => e
+#   return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
 
 
 end
