@@ -1,6 +1,7 @@
 class B2bController < ApplicationController
   # GET /b2b/documentation
   respond_to :json
+
   def documentation
   end
 
@@ -14,10 +15,10 @@ class B2bController < ApplicationController
       render json: {success: false, message: "El usuario y password no pueden estar en blanco."}, status: :bad_request
     else
       newuser = User.new({
-      username: user,
-      password: password,
-      password_confirmation: password
-      })
+                             username: user,
+                             password: password,
+                             password_confirmation: password
+                         })
       newuser.save!
       render json: {success: true, message: "Su usuario ha sido creado exitosamente.", token: "dsvs"}, status: :created
     end
@@ -25,34 +26,37 @@ class B2bController < ApplicationController
 
   #POST /b2b/get_token
   def get_token
+
+
   end
+end
 
-  #POST /b2b/new_order
-  def new_order
-    #el programa esta hecho para leer json
-    #verifico que sea json
-    if valid_json(aux)
-      order_id = params[:order_id]
-      orden = HTTParty.GET("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}")
-      sku = orden[0]["Sku"]
-      cantidad = orden[0]["Cantidad"]
-      cliente = orden[0]["Cliente"]
-      precio = orden[0]["Precio unitario"]
-      direccion = Cliente.get_direccion()
+#POST /b2b/new_order
+def new_order
+  #el programa esta hecho para leer json
+  #verifico que sea json
+  if valid_json(aux)
+    order_id = params[:order_id]
+    orden = HTTParty.GET("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}")
+    sku = orden[0]["Sku"]
+    cantidad = orden[0]["Cantidad"]
+    cliente = orden[0]["Cliente"]
+    precio=orden[0]["Precio unitario"]
+    direccion = Cliente.get_direccion()
 
 
-      pedido=Pedidos.create(order_id,sku,cantidad,direccion)
-      if Bodega.aceptar_pedido?(pedido)
-        return Json(new{succes=true,message="La orden de compra ha sido recibida exitosamente."}),status :ok
-      else
-        #
-        #
-        # CONECTARSE A LA API DEL OTRO GRUPO
-        #
-        #
+    pedido=Pedidos.create(order_id, sku, cantidad, direccion)
+    if Bodega.aceptar_pedido?(pedido)
+      return Json(new { succes=true, message="La orden de compra ha sido recibida exitosamente." }), status :ok
+    else
+      #
+      #
+      # CONECTARSE A LA API DEL OTRO GRUPO
+      #
+      #
 
-    rescue Exception => e
-      return Json(new{succes=false,message="This field is required."}),status :bad_request
+      rescue Exception => e
+      return Json(new { succes=false, message="This field is required." }), status :bad_request
     end
   end
 
@@ -78,9 +82,9 @@ class B2bController < ApplicationController
 
   #validador de json
   def valid_json?(json)
-  begin
-    JSON.parse(json)
-    return true
+    begin
+      JSON.parse(json)
+      return true
     rescue Exception => e
       return false
     end
