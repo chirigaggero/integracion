@@ -37,6 +37,7 @@ class B2bController < ApplicationController
     return render json: {success: false, message: "No se peude verificar que el usuario y la contraseña sean correctos"}, status: :bad_request
   end
 
+  #comprar producto
   #POST /b2b/new_order
   def new_order
     #el programa esta hecho para leer json
@@ -48,24 +49,19 @@ class B2bController < ApplicationController
       cantidad = orden[0]["Cantidad"]
       cliente = orden[0]["Cliente"]
       precio=orden[0]["Precio unitario"]
-      direccion = Cliente.get_direccion()
+      direccion = Cliente.get_direccion(cliente)
 
-
-      pedido=Pedidos.create(order_id, sku, cantidad, direccion)
+      pedido = Pedidos.create(order_id, sku, cantidad, direccion)
       if Bodega.aceptar_pedido?(pedido)
         return Json(new { succes=true, message="La orden de compra ha sido recibida exitosamente." }), status :ok
       else
-        #
-        #
-        # CONECTARSE A LA API DEL OTRO GRUPO
-        #
-        #
+        Bodega.aceptar_pedido?(pedido)
       end
-      rescue Exception => e
-
-      return render json: {success: false, message: "se requiere orden de compra"}, status: :bad_request
-
     end
+
+  rescue Exception => e
+
+    return render json: {success: false, message: "se requiere orden de compra"}, status: :bad_request
 
   end
 
