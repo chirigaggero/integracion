@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150514213408) do
+ActiveRecord::Schema.define(version: 20150515202520) do
 
   create_table "bodegas", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -34,5 +34,18 @@ ActiveRecord::Schema.define(version: 20150514213408) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
   end
+
+  create_table "users", force: :cascade do |t|
+    t.string   "username"
+    t.string   "password_digest"
+    t.string   "token"
+    t.boolean  "token_active"
+    t.datetime "token_expires_at"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "users", ["token"], name: "index_users_on_access_token", unique: true
+  add_index "users", ["username"], name: "index_users_on_username", unique: true
 
 end

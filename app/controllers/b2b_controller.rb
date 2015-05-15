@@ -7,27 +7,43 @@ class B2bController < ApplicationController
 
   # POST /b2b/new_user
   def new_user
-
-    user = params["username"]
+    username = params["username"]
     password = params["password"]
 
-    if user.nil? or password.nil?
+    if username.nil? or password.nil?
       render json: {success: false, message: "El usuario y password no pueden estar en blanco."}, status: :bad_request
     else
-      # crear usuario
-      render json: {success: true, message: "Su usuario ha sido creado exitosamente.", token: "dsvs"}, status: :created
+      if User.find_by(username:username)
+        render json: {success: false, message: "El usuario ya ha sido creado, elige otro."}, status: :bad_request
+      else
+        user = User.new(username:username, password: password)
+        user.save
+        token = user.generate_token
+        render json: {success: true, message: "Su usuario ha sido creado exitosamente.", token: token}, status: :created
+      end
     end
   end
 
   #POST /b2b/get_token
   def get_token
+    username = params["username"]
+    password = params["password"]
+    if username.nil? or password.nil?
+      render json: {success: false, message: "El usuario y password no pueden estar en blanco."}, status: :bad_request
+    else
+      user = User.find_by(username: username).try(:authenticate, password)
+      if user
+        render json: {success: true, token: user.generate_token}, status: :ok
+      else
+        render json: {success: false, message: "Usuario o password invalidos."}, status: :bad_request
+      end
+    end
 
 
   end
-end
 
-#POST /b2b/new_order
-def new_order
+  #POST /b2b/new_order
+  def new_order
   #el programa esta hecho para leer json
   #verifico que sea json
   if valid_json(aux)
