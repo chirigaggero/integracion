@@ -33,7 +33,8 @@ class B2bController < ApplicationController
     #verifico que sea json
     if valid_json(aux)
       order_id = params[:order_id]
-      orden = HTTParty.GET("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}")
+      header1 = {"Content-Type"=> "application/json","Authorization" }
+      orden = HTTParty.GET("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}",:headers => header1)
       sku = orden[0]["Sku"]
       cantidad = orden[0]["Cantidad"]
       cliente = orden[0]["Cliente"]
