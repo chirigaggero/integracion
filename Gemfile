@@ -52,6 +52,5 @@ group :development, :test do
 
   gem 'httparty'
 
-
 end
 

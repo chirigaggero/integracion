@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   get 'b2b/get_token'
 
-  get 'b2b/new_order'
+  post 'b2b/new_order'
 
   get 'b2b/order_accepted'
 
@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   get 'b2b/invoice_paid'
 
   get 'b2b/invoice_rejected'
+
+  post 'b2b/prueba'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

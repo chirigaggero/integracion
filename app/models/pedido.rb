@@ -6,12 +6,8 @@ class Pedido < ActiveRecord::Base
   def mover_bodega(id_bodega)
     self.productos.each do  |prod|
 
+      a = prod.moverse?(id_bodega)
 
-      if prod.moverse?(id_bodega)
-      else
-        ##devolver error
-      end
-      ##no es necesario, pero veamos como anda asi.
       Producto.delete(prod)
     end
 
