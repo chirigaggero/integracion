@@ -61,6 +61,8 @@ class B2bController < ApplicationController
     end
   end
 
+
+
   #POST /b2b/new_order
   def new_order
     #el programa esta hecho para leer json
@@ -186,13 +188,58 @@ end
 
 
 #validador de json
-  def valid_json?()
-    respuesta = JSON.parse(request.body.read)
-    if respuesta["order_id"]
-      true
-    else
-      false
-    end
+def valid_json?()
+  respuesta = JSON.parse(request.body.read)
+  if respuesta["order_id"]
+     true
+  else
+     false
   end
+end
+
+
+def pval()
+  #Defino el esquema tipo de JSON
+  #Para obtener y crear usuario
+  schema1= {
+    "type" => "object",
+    "required" =>["username","password"],
+    "properties" =>{
+      "username" =>{"type"=>"string"}
+      "password" =>{"type"=>"string"}
+    }
+  }
+
+  #Para notificar ordenes
+    schema2= {
+    "type" => "object",
+    "required" =>["order_id"],
+    "properties" =>{
+      "order_id" =>{"type"=>"string"}
+    }
+  }
+
+    #Para obtener y crear usuario
+  schema3= {
+    "type" => "object",
+    "required" =>["order_id","client","proveedor","sku","date_delivery","quantity","price"],
+    "properties" =>{
+      "order_id" =>{"type"=>"string"}
+      "client" =>{"type"=>"string"}
+      "proveedor" =>{"type"=>"string"}
+      "sku" =>{"type"=>"string"}
+      "date_delivery" =>{"type"=>"string"}
+      "quantity" =>{"type"=>"integer"}
+      "price" =>{"type"=>"integer"}
+    }
+  }
+
+  JSON::Validator.validate(schema, "lo que hay que validar")
+
+  
+end
+
+
+
 
 end

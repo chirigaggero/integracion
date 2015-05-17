@@ -35,6 +35,7 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'httparty'
 gem 'responders'
 gem 'ruby-hmac'
+gem 'json-schema'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

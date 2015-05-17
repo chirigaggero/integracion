@@ -13,9 +13,6 @@ Bodega.create(almacen_id:"554be8d6b6355d0300200c7a",tipo:"pulmon")
 Bodega.create(almacen_id:"554be8d5b6355d03002007db",tipo:"despacho")
 
 
-
-
-
 Cliente.create(id:1,nombre:"Grupo1",direccion:"Mohrenstraße 82, 10117 Berlin, Germany")
 Cliente.create(id:2,nombre:"Grupo2",direccion:"Denezhnyy per., 9 стр. 1, Moscow, Russia")
 Cliente.create(id:3,nombre:"Grupo3",direccion:"Rigillis 15, 10674 Atenas")
