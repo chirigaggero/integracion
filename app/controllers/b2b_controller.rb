@@ -46,6 +46,7 @@ class B2bController < ApplicationController
       else
         render json: {success: false, message: "Usuario o password invalidos."}, status: :bad_request
       end
+    end
   end
 
   def prueba
@@ -94,43 +95,10 @@ class B2bController < ApplicationController
           #
         end
       end
-
-
     else
       render json: {success: false, message: "error en los parametros"},status: :bad_request
     end
-
   end
-
-#comprar producto
-#POST /b2b/new_order
-def new_order
-  render json: {success: true, message: "hola"}, status: :ok
-#   #el programa esta hecho para leer json
-#   #verifico que sea json
-#   if valid_json(aux)
-#     order_id = params["order_id"]
-#     orden = HTTParty.GET("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}")
-#     sku = orden[0]["Sku"]
-#     cantidad = orden[0]["Cantidad"]
-#     cliente = orden[0]["Cliente"]
-#     precio=orden[0]["Precio unitario"]
-#     direccion = Cliente.get_direccion(cliente)
-
-#     pedido = Pedidos.create(order_id, sku, cantidad, direccion)
-#     if Bodega.aceptar_pedido?(pedido)
-#       return Json(new { succes=true, message="La orden de compra ha sido recibida exitosamente." }), status :ok
-#     else
-#       Bodega.aceptar_pedido?(pedido)
-#     end
-# end
-
-# rescue Exception => e
-
-#   return render json: {success: false, message: "se requiere orden de compra"}, status: :bad_request
-
-end
-
 
 #POST /b2b/order_accepted
 def order_accepted
@@ -144,7 +112,6 @@ def order_accepted
 
 # rescue Exception => e
 #   return render json: {success: false, message: "No se peude verificar que la orden este aceptada"}, status: :bad_request
-
 end
 
 #POST /b2b/order_canceled
@@ -159,7 +126,6 @@ def order_canceled
 
 # rescue Exception => e
 #   return render json: {success: false, message: "No se peude verificar que la orden este cancelada"}, status: :bad_request
-
 end
 
 #POST /b2b/order_rejected
@@ -174,8 +140,6 @@ def order_rejected
 
 # rescue Exception => e
 #   return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
-
-
 end
 
 #POST /b2b/invoice_paid
@@ -190,7 +154,6 @@ def invoice_created
 
 # rescue Exception => e
 #   return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
-
 end
 
 #POST /b2b/invoice_paid
@@ -205,7 +168,6 @@ def invoice_paid
 
 # rescue Exception => e
 #   return render json: {success: false, message: "No se peude verificar que la orden este pagada"}, status: :bad_request
-
 end
 
 #POST /b2b/invoice_rejected
@@ -220,8 +182,6 @@ def invoice_rejected
 
 # rescue Exception => e
 #   return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
-
-
 end
 
 
@@ -234,5 +194,5 @@ end
       false
     end
   end
-  
+
 end
