@@ -26,6 +26,7 @@ class B2bController < ApplicationController
 
   #POST /b2b/get_token
   def get_token
+<<<<<<< HEAD
     username = params["username"]
     password = params["password"]
     if username.nil? or password.nil?
@@ -37,7 +38,64 @@ class B2bController < ApplicationController
       else
         render json: {success: false, message: "Usuario o password invalidos."}, status: :bad_request
       end
+=======
+  end
+
+  def prueba
+
+    header1 = {"Content-Type"=> "application/json"}
+    orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/123",:headers => header1)
+    hola="hola"
+
+    if !orden[0]["msg"].nil?
+      render json: {success: false, message: "error. Orden inválida"},status: :bad_request
+    else
+      render json: { success: true, message:  "La orden de compra ha sido recibida exitosamente."},status: :ok
     end
+  end
+
+  #POST /b2b/new_order
+  def new_order
+    #el programa esta hecho para leer json
+    #verifico que sea json
+    respuesta = JSON.parse(request.body.read)
+    order_id = respuesta["order_id"]
+
+    if  !order_id.nil?
+      header1 = {"Content-Type"=> "application/json"}
+      orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}",:headers => header1)
+
+      if !orden[0]["msg"].nil?
+        render json: {success: false, message: "error. Orden inválida"},status: :bad_request
+      else
+        pedido=Pedido.new
+        pedido.sku = orden[0]["sku"]
+        pedido.cantidad = orden[0]["cantidad"]
+        pedido.precio_unitario = orden[0]["precioUnitario"]
+        cliente = orden[0]["cliente"]
+        pedido.direccion = Cliente.get_direccion(cliente)
+
+
+        #cosa = Bodega.validar_pedido?(pedido)
+        #render json: { success: false, message: cosa}, status: :internal_server_error
+
+        if Bodega.validar_pedido?(pedido)
+          render json: { success: true, message:  "La orden de compra ha procesada exitosamente."},status: :ok
+        else
+          render json: { success: false, message: "ups! tuvimos un problema"}, status: :internal_server_error
+          # CONECTARSE A LA API DEL OTRO GRUPO
+          #
+          #
+        end
+      end
+
+
+    else
+      render json: {success: false, message: "error en los parametros"},status: :bad_request
+
+>>>>>>> pauli_juan
+    end
+
   end
 
 #comprar producto
@@ -97,6 +155,7 @@ def order_canceled
 # rescue Exception => e
 #   return render json: {success: false, message: "No se peude verificar que la orden este cancelada"}, status: :bad_request
 
+<<<<<<< HEAD
 end
 
 #POST /b2b/order_rejected
@@ -168,6 +227,16 @@ def valid_json?(json)
     return true
   rescue Exception => e
     return false
+=======
+  #validador de json
+  def valid_json?()
+    respuesta = JSON.parse(request.body.read)
+    if respuesta["order_id"]
+      true
+    else
+      false
+    end
+>>>>>>> pauli_juan
   end
 end
 
