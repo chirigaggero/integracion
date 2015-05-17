@@ -3,11 +3,9 @@ class Bodega < ActiveRecord::Base
 	$id_grupo = 'grupo8'
 	$key_bodega = 'deZ6QPKA1KcBEPr'
 
-  def aceptar_pedido?(pedido)
+	def aceptar_pedido?(pedido)
+	end
 
-<<<<<<< HEAD
-  end
-=======
 	# Con un almacen id y sku se agregan a pedidos productos con sus ids
 	def self.obtener_prods(almacen_id,cantidad,pedido)
 		params=["GET",almacen_id,pedido.sku]
@@ -30,25 +28,22 @@ class Bodega < ActiveRecord::Base
 				end
 			end
 		end
->>>>>>> pauli_juan
+	end
 
-  def buscar_producto?(pedido)
-    almacenes = HTTParty.GET("http://integracion-2015-dev.herokuapp.com/bodega/almacenes")
-    almacenes.each do |almacen|
-      id = almacen[0]["Id"]
-      skuWS = HTTParty.GET("http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock#{id}")
-      skusWS.each do |skws|
-        if pedido.sku == skws[0]["Sku"]
-          if pedido.cantidad == skws[0]["Cantidad"]
-          end
-        end
-      end
+	def buscar_producto?(pedido)
+		almacenes = HTTParty.GET("http://integracion-2015-dev.herokuapp.com/bodega/almacenes")
+		almacenes.each do |almacen|
+			id = almacen[0]["Id"]
+			skuWS = HTTParty.GET("http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock#{id}")
+			skusWS.each do |skws|
+				if pedido.sku == skws[0]["Sku"]
+					if pedido.cantidad == skws[0]["Cantidad"]
+					end
+				end
+			end
+		end
+	end
 
-<<<<<<< HEAD
-    end
-  end
-
-=======
 	# Obtenemos la cantidad dispoble de productos de un sku
 	def get_cantidad(url,header1,sku)
 		cantidad=0
@@ -75,23 +70,19 @@ class Bodega < ActiveRecord::Base
 		aux = OpenSSL::HMAC.digest('sha1',$key_bodega, to_hash)
 		security = Base64.encode64("#{aux}")
 		security[0..-2]
-
 	end
 
 	# Metodo que valida si hay producto - es el encargado de llamar a los otros metodos
 	def self.validar_pedido?(pedido)
-
 		cant = pedido.cantidad
 		sku = pedido.sku
 		hay = false
 		contador = 0
 		elegido=[]
 
-
 		Bodega.first(4)[0..3].each do | almacen |
 			params = ["GET", almacen.almacen_id]
 			security = claveSha1(params)
-
 
 			url = "http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
 			header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
@@ -99,7 +90,6 @@ class Bodega < ActiveRecord::Base
 			resultado = almacen.get_cantidad(url,header1,sku)
 
 			if resultado>0
-
 				if contador+resultado<cant
 					contador+=resultado
 					elegido.append [almacen.almacen_id,resultado]
@@ -115,29 +105,22 @@ class Bodega < ActiveRecord::Base
 			#hay que obtener los id's de los productos que vamos a usar.
 			#necesitamos llamar a metodo getstock con el sku y el almacen id
 			elegido.each do |eleg|
-
 				if eleg[1]<100
 					obtener_prods(eleg[0],eleg[1],pedido)
-
-
 				else
 					# No podemos acceder al servicio con mas de 100 productos
 					return false
 				end
-
 			end
 
 			despacho_id=Bodega.find_by_tipo("despacho").almacen_id
 
 			pedido.mover_bodega(despacho_id)
 			return true
-
 		else
 			false
 		end
-
 	end
 
->>>>>>> pauli_juan
 end
 

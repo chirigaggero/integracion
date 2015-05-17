@@ -35,7 +35,6 @@ class B2bController < ApplicationController
 
   #POST /b2b/get_token
   def get_token
-<<<<<<< HEAD
     username = params["username"]
     password = params["password"]
     if username.nil? or password.nil?
@@ -47,11 +46,9 @@ class B2bController < ApplicationController
       else
         render json: {success: false, message: "Usuario o password invalidos."}, status: :bad_request
       end
-=======
   end
 
   def prueba
-
     header1 = {"Content-Type"=> "application/json"}
     orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/123",:headers => header1)
     hola="hola"
@@ -101,8 +98,6 @@ class B2bController < ApplicationController
 
     else
       render json: {success: false, message: "error en los parametros"},status: :bad_request
-
->>>>>>> pauli_juan
     end
 
   end
@@ -165,7 +160,6 @@ def order_canceled
 # rescue Exception => e
 #   return render json: {success: false, message: "No se peude verificar que la orden este cancelada"}, status: :bad_request
 
-<<<<<<< HEAD
 end
 
 #POST /b2b/order_rejected
@@ -230,15 +224,8 @@ def invoice_rejected
 
 end
 
+
 #validador de json
-def valid_json?(json)
-  begin
-    JSON.parse(json)
-    return true
-  rescue Exception => e
-    return false
-=======
-  #validador de json
   def valid_json?()
     respuesta = JSON.parse(request.body.read)
     if respuesta["order_id"]
@@ -246,8 +233,6 @@ def valid_json?(json)
     else
       false
     end
->>>>>>> pauli_juan
   end
-end
-
+  
 end
