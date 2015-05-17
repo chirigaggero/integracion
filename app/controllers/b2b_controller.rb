@@ -1,7 +1,16 @@
 class B2bController < ApplicationController
-  # GET /b2b/documentation
+  skip_before_action :verify_authenticity_token, only: [:new_user, :get_token]
+  before_action :authenticate, except: [ :new_user, :get_token ]
   respond_to :json
 
+  def authenticate(is_token)
+    user_token = User.find_by(token: is_token).token
+    authenticate_or_request_with_http_token do |token, options|
+      token == user_token
+    end 
+  end
+
+  # GET /b2b/documentation
   def documentation
   end
 
@@ -43,6 +52,7 @@ class B2bController < ApplicationController
 #comprar producto
 #POST /b2b/new_order
 def new_order
+  render json: {success: true, message: "hola"}, status: :ok
 #   #el programa esta hecho para leer json
 #   #verifico que sea json
 #   if valid_json(aux)

@@ -2,9 +2,9 @@ Rails.application.routes.draw do
 
   get 'b2b/documentation'
 
-  get 'b2b/new_user'
+  post 'b2b/new_user'
 
-  get 'b2b/get_token'
+  post 'b2b/get_token'
 
   get 'b2b/new_order'
 
