@@ -1,6 +1,6 @@
 class B2bController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:new_user, :get_token]
-  before_action :authenticate, except: [ :new_user, :get_token ]
+  before_action :authenticate, except: [ :new_user, :get_token, :documentation ]
   respond_to :json
 
   def authenticate

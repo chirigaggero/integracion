@@ -1,2 +1,77 @@
-<h1>B2b#documentation</h1>
-<p>Find me in app/views/b2b/documentation.html.erb</p>
+<h1 align="center">API Grupo 8</h1>
+<h4>Host: integra8.ing.puc.cl</h4>
+
+<h2>Autentificación</h2>
+<div class="aut" style="border: solid 2px">
+<p >La API tendrá protección mediante token. Este token se generará a través de un servicio que requiere un usuario y una contraseña para cada grupo.</p>
+<p>Cada consulta (o request) a nuestros servicios deberá llevar el token correspondiente al grupo en el header, de la siguiente manera:</p>
+
+
+<p align="center"><strong>Authorization Token #token</strong></p>
+<p>Si el header no incluye el token, o el token incluido no es válido, se retornará un error de status 401, explicitando la invalidez del token o de las credenciales respectivamente.</p>
+</div>
+<br>
+<h2>Servicios Expuestos</h2>
+<br>
+<div class="aut1" style="border: solid 2px">
+    
+<h3>Autentificarse</h3>
+<hr>
+<p>A través de un usuario y contraseña el cliente obtiene un token para usar en la compra de productos y en la cancelación de órdenes de compra.</p>
+<ul>
+<li>Método: POST</li>
+<li>URL:  /b2b/get_token</li>
+<li>Parámetros:</li> 
+<ul>
+<li>user: string,</li>
+<li>password: string</li>
+</ul>
+<li>Respuesta: JSON.
+    <br>
+        El token es incluido si el usuario y contraseña son validados por nuestra app. En caso de error, se envía un JSON con status code: 401 bad request. Nota: Los siguientes servicios deben incluir un Authorization Token en el Header
+    
+    </div>
+
+<br>
+    
+<div class="not" style="border: solid 2px">
+<h3>Notificar Cancelacion Orden de compra</h3>
+<hr>
+<p>Debe incluir un Authorization Token en el Header
+Representa una solicitud para cancelar una orden de compra, se debe indicar el ID de la orden. En general</p>
+<ul>
+<li>Método: POST</li>
+<li>URL: /b2b/cancel_order</li>
+<li>Parámetros:</li>
+<ul>
+<li>order_id: string,</li> 
+<li>cliente: string,</li> 
+<li>proveedor: string</li>
+</ul>
+    <li>Respuesta:<br>JSON, con un status que indique el estado de la solicitud (status 200 OK, status 400 error)</li>
+    </div>
+    
+    
+    <br>
+    <div class="comp" style="border: solid 2px">
+<h3>Comprar producto</h3>
+        <hr>
+<p>Debe incluir un Authorization Token en el Header
+Avisar al grupo proveedor, por medio de JSON,  que se desea realizar la compra de un producto determinado.</p>
+    <ul>
+        <li>Método: POST</li>
+
+<li>URL: /b2b/new_order</li>
+<li>Parámetros:</li>  
+<ul>
+<li>order_id: string</li> 
+<li>cliente: string</li>
+<li>proveedor: string</li> 
+<li>sku: string,</li>
+<li>date_delivery: string,</li> 
+<li>quantity: int</li>
+</ul>
+        <li>Respuesta
+<br>JSON, con un status que indique el estado de la solicitud (status 200 OK, status 400 error).</li>
+    </ul>
+    </div>
