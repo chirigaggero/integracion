@@ -13,9 +13,6 @@ Bodega.create(almacen_id:"554be8d6b6355d0300200c7a",tipo:"pulmon")
 Bodega.create(almacen_id:"554be8d5b6355d03002007db",tipo:"despacho")
 
 
-
-
-
 Cliente.create(cliente_id:1,nombre:"Grupo1",direccion:"Mohrenstraße 82, 10117 Berlin, Germany")
 Cliente.create(cliente_id:2,nombre:"Grupo2",direccion:"Denezhnyy per., 9 стр. 1, Moscow, Russia")
 Cliente.create(cliente_id:3,nombre:"Grupo3",direccion:"Rigillis 15, 10674 Atenas")
@@ -23,7 +20,7 @@ Cliente.create(cliente_id:4,nombre:"Grupo4",direccion:"Nº2 Saleh Ayoub Suite 41
 Cliente.create(cliente_id:5,nombre:"Grupo5",direccion:"2290 Yan An West Road. Shanghai")
 Cliente.create(cliente_id:6,nombre:"Grupo6",direccion:"Calle de Lagasca, 89, 29010 Madrid, Spain")
 Cliente.create(cliente_id:7,nombre:"Grupo7",direccion:"10 Culgoa CircuitO'Malley, australia")
-
+Cliente.create(cliente_id:8,nombre:"Grupo8",direccion:"169 Garsfontein Road,  Delmondo Office Park, Sudafrica")
 Cliente.create(cliente_id:9,nombre:"Mayorista Vital",direccion:"Balvanera Buenos Aires, Argentina")
 Cliente.create(cliente_id:10,nombre:"Atomo",direccion:"Alvarez Condarco 740 Las Heras, Mendoza, Argentina")
 Cliente.create(cliente_id:11,nombre:"Comercial S y P",direccion:"Avda Cristobal Colon 3707 Santiago")
