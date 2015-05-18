@@ -3,11 +3,19 @@ class B2bController < ApplicationController
   before_action :authenticate, except: [ :new_user, :get_token ]
   respond_to :json
 
-  def authenticate(is_token)
-    user_token = User.find_by(token: is_token).token
-    authenticate_or_request_with_http_token do |token, options|
-      token == user_token
-    end 
+  def authenticate
+    if request.headers.include?('HTTP_AUTHORIZATION')
+      token = request.headers["HTTP_AUTHORIZATION"].from(13).to(-2)
+      if User.find_by(token: token).nil?
+        render json: {success: false, message: "Token Invalido."}, status: :unauthorized
+      else
+        if User.find_by(token: token).token_expired?
+          render json: {success: false, message: "Token Expirado."}, status: :unauthorized
+        end
+      end
+    else
+      render json: {success: false, message: "No token."}, status: :unauthorized
+    end
   end
 
   # GET /b2b/documentation
@@ -102,6 +110,7 @@ class B2bController < ApplicationController
 
 #POST /b2b/order_accepted
 def order_accepted
+  render json: {success: true, message: "funciono!"},status: :ok
 #   order_id = params["prder_id"]
 #   if order_id.nil?
 #     render json: {success: false, message: "La orden de compra es requerida"}, status: :bad_request
