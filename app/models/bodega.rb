@@ -3,33 +3,51 @@ class Bodega < ActiveRecord::Base
 	$id_grupo = 'grupo8'
 	$key_bodega = 'deZ6QPKA1KcBEPr'
 
-	def aceptar_pedido?(pedido)
-	end
 
 	# Con un almacen id y sku se agregan a pedidos productos con sus ids
-	def self.obtener_prods(almacen_id,cantidad,pedido)
+	def self.obtener_prods?(almacen_id,cantidad,pedido)
 		params=["GET",almacen_id,pedido.sku]
 		security = Bodega.claveSha1(params)
 
-		url="http://integracion-2015-dev.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{pedido.sku}"
+		url="http://integracion-2015-dev.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{pedido.sku}&limit=200"
 		header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
 		result = HTTParty.get(url,:headers => header1 )
 
-		##result tiene que ser LA repueat valida, no se como hacer esta verificacion
-		if result
+		##result tiene que ser LA repueat valida, no se como hacer esta verificacion pero
+		##vamos a asumir que si no es nula entonces está bien.
+
+		if !result.nil?
 			contador=0
+			pedidos=Pedido.first(Pedido.count-1)
 			result.each do |item|
-				prod=Producto.create(prod_id: item["_id"])
-				pedido.productos<<prod
-				contador+=1
-				if contador>=Integer(cantidad)
-					break
+				##antes de crear el producto, hay que verificar que su id no este en los pedidos ya registrados en la base de datos
+				aceptar=true
+
+				#iterar sobre los pedidos, si el prod ya esta asignado, entonces cambia el bool aceptar a false.
+				pedidos.each do |pedido|
+					if !pedido.productos.where(prod_id: item["_id"]).empty?
+						aceptar=false
+					end
+				end
+				#si no está asignado, crea u producto con ese id y hace append sobre pedido.productos, aumenta el contador de productos
+				if aceptar
+					prod=Producto.create(prod_id: item["_id"])
+					pedido.productos<<prod
+					contador+=1
+					##si se llego a la cantidad requerida, retornamos true
+					if contador>=Integer(cantidad)
+						return true
+				end
 				end
 			end
+			##solo se llega aqui si no se alcanza la cantidad requerida, no deberia pasar pq ya hicimos el chequeo cuanto obtuvimos
+			##los productos 'disponibles'
+				return false
 		end
-	end
+		end
 
+	##No estamos usando este metodo, pero no lo voy a borrar x si las moscas
 	def buscar_producto?(pedido)
 		almacenes = HTTParty.GET("http://integracion-2015-dev.herokuapp.com/bodega/almacenes")
 		almacenes.each do |almacen|
@@ -44,8 +62,32 @@ class Bodega < ActiveRecord::Base
 		end
 	end
 
-	# Obtenemos la cantidad dispoble de productos de un sku
-	def get_cantidad(url,header1,sku)
+	##con el almacen_id y un pedido.sku, ve cuantos productos ese almacen estan asignados a otro pedido, retorna un int.
+	def get_cantidad_usada(almacen_id,pedido)
+		#conexion y respuesta
+		params=["GET",almacen_id,pedido.sku]
+		security = Bodega.claveSha1(params)
+
+		url="http://integracion-2015-dev.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{pedido.sku}&limit=200"
+		header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+
+		result = HTTParty.get(url,:headers => header1 )
+		contador=0
+		#ver si cada producto  está en pedidos anteriores.
+		pedidos=Pedido.first(Pedido.count-1)
+		result.each do |item|
+					pedidos.each do |pedido|
+						if !pedido.productos.where(prod_id: item["_id"]).empty?
+							contador+=1
+						end
+					end
+		end
+
+	contador
+	end
+
+	# Obtenemos la cantidad total dispoble de productos de un sku
+	def get_cantidad_total(url,header1,sku)
 		cantidad=0
 		result = HTTParty.get(url,:headers => header1 )
 		#tiene que ser si la respuesta es valida, no se si es la forma. REVISAR
@@ -72,7 +114,7 @@ class Bodega < ActiveRecord::Base
 		security[0..-2]
 	end
 
-	# Metodo que valida si hay producto - es el encargado de llamar a los otros metodos
+	# Metodo que valida si hay productos en bodega para satisfacer el pedido - es el encargado de llamar a los otros metodos
 	def self.validar_pedido?(pedido)
 		cant = pedido.cantidad
 		sku = pedido.sku
@@ -87,16 +129,29 @@ class Bodega < ActiveRecord::Base
 			url = "http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
 			header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
-			resultado = almacen.get_cantidad(url,header1,sku)
+			##obtenemos la cantidad total del almacen
+			resultado = almacen.get_cantidad_total(url,header1,sku)
 
 			if resultado>0
-				if contador+resultado<cant
-					contador+=resultado
-					elegido.append [almacen.almacen_id,resultado]
+				##tenemos que ver cuanto realmente tenemos disponible
+				usado= get_cantidad_usada(almacen.id,pedido)
+				disponible=resultado-usado
+				##ver si necesitamos mas o menos de lo que tenemos disponible
+				##si lo disponible es mayor que 0
+				if disponible>0
+
+				if contador+disponible<cant
+					##si el pedido nos exige mas de lo que tenemos disponible
+					contador+=disponible
+					##hacemos append de el id del almacen y de la cantidad de prod. que usaremos en 'elegido'
+					elegido.append [almacen.almacen_id,disponible]
+					#si es menor, hacemos append de el id y la diferencia entre el contal y lo que llevamos
 				else
 					elegido.append [almacen.almacen_id,cant-contador]
+					##en teoria ya podemos satisfacer el pedido.
 					hay=true
 					break
+				end
 				end
 			end
 		end
@@ -105,22 +160,30 @@ class Bodega < ActiveRecord::Base
 			#hay que obtener los id's de los productos que vamos a usar.
 			#necesitamos llamar a metodo getstock con el sku y el almacen id
 			elegido.each do |eleg|
-				if eleg[1]<100
-					obtener_prods(eleg[0],eleg[1],pedido)
+				#La condicion es pq si es >200, entonces tenemos problemas con el display de productos.
+				# (tenemos limit=200)
+				if eleg[1]<200
+				#obtener prods retorna true si hay suficientes prods en bodega que no esten asignados a pedidos existentes
+					if !obtener_prods?(eleg[0],eleg[1],pedido)
+						## no se deberia llegar aqui nunca.
+						return false
+					end
 				else
-					# No podemos acceder al servicio con mas de 100 productos
+					# No hay forma de manejar pedidos >200 x almacen.
 					return false
 				end
 			end
-
-			despacho_id=Bodega.find_by_tipo("despacho").almacen_id
-
-			pedido.mover_bodega(despacho_id)
-			return true
 		else
-			false
+			##si no hay, retornamos false
+			return false
 		end
 	end
+
+
+
+
+
+
 
 end
 
