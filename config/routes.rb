@@ -10,15 +10,15 @@ Rails.application.routes.draw do
 
   post 'b2b/new_order'
 
-  get 'b2b/order_accepted'
+  post 'b2b/order_accepted'
 
-  get 'b2b/order_canceled'
+  post 'b2b/order_canceled'
 
-  get 'b2b/order_rejected'
+  post 'b2b/order_rejected'
 
-  get 'b2b/invoice_paid'
+  post 'b2b/invoice_paid'
 
-  get 'b2b/invoice_rejected'
+  post 'b2b/invoice_rejected'
 
   post 'b2b/prueba'
 
