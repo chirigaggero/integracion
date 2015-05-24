@@ -5,16 +5,16 @@ class B2bController < ApplicationController
 
   def authenticate
     if request.headers.include?('HTTP_AUTHORIZATION')
-      token = request.headers["HTTP_AUTHORIZATION"].from(13).to(-2)
+      token = request.headers["HTTP_AUTHORIZATION"].from(6) # Authorization Token #token => "Token " => 6 characters
       if User.find_by(token: token).nil?
         render json: {success: false, message: "Token Invalido."}, status: :unauthorized
       else
         if User.find_by(token: token).token_expired?
-          render json: {success: false, message: "Token Expirado."}, status: :unauthorized
+          render json: {success: false, message: "Token Expirado.", token: token}, status: :unauthorized
         end
       end
     else
-      render json: {success: false, message: "No token."}, status: :unauthorized
+      render json: {success: false, message: "No Token."}, status: :unauthorized
     end
   end
 

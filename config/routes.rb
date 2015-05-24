@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   get 'b2b/documentation'
 
-  post 'b2b/new_user'
+  put 'b2b/new_user'
 
   post 'b2b/get_token'
 

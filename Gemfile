@@ -36,7 +36,8 @@ gem 'httparty'
 gem 'responders'
 gem 'ruby-hmac'
 gem 'json-schema'
-gem 'responders'
+gem 'bootstrap-sass', '~> 3.3.4'
+gem "font-awesome-rails"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

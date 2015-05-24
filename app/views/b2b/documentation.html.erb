@@ -1,20 +1,703 @@
-<link rel="stylesheet" href="github-markdown.css">
-<style>
-    .markdown-body {
-        min-width: 200px;
-        max-width: 790px;
-        margin: 0 auto;
-        padding: 30px;
-    }
-</style>
-<article class="markdown-body">
-  <h1>Unicorns</h1>
-  <blockquote>
-    <p>Bacon ipsum dolor sit amet filet mignon ribeye swine jerky porchetta beef ribs.</p>
-  </blockquote>
+<!-- navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#" style="padding-top: 10px;">
+        <%= image_tag("8_ball_fire.png", width: 50, height: 36) %>
+      </a>
+    </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Servicios <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#" data-scroll-goto="0">Crear Usuario</a></li>
+              <li><a href="#" data-scroll-goto="1">Autentificación</a></li>
+              <li><a href="#" data-scroll-goto="2">Obtener Token</a></li>
+              <li><a href="#" data-scroll-goto="3">Comprar Producto</a></li>
+              <li><a href="#" data-scroll-goto="4">Notificar Orden Aceptada</a></li>
+              <li><a href="#" data-scroll-goto="5">Notificar Orden Cancelada</a></li>
+              <li><a href="#" data-scroll-goto="6">Notificar Orden Rechazada</a></li>
+              <li><a href="#" data-scroll-goto="7">Notificar Factura Pagada</a></li>
+            </ul>
+          </li> 
+        </ul>
+      </div>
+  </div>
+</nav>
 
-  <ul>
-    <li>Foo</li>
-    <li>Bar</li>
-  </ul>
-</article>
+<!-- content -->
+<div class="container" style="margin-top:70px;">
+      
+      
+  <div class="page-header">
+    <h1>Documentación API para Sistema B2B <small>Grupo 8</small></h1>
+  </div>
+  <p>Aquí encontrarás la documentación detallada de nuestra API para el sistema B2B.</p>
+  <p><strong>Host:</strong> <code>http://integra8.ing.puc.cl</code></p>
+  
+<!-- Crear Usuario -->
+<section data-scroll-index="0">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Crear Usuario</h3>
+    </div>
+    <div class="panel-body">
+      <p><strong>Descripción:</strong> Permite crear un usuario para poder hacer uso de los servicios.</p>
+      <p><strong>Method:</strong> <code>PUT</code></p>
+      <p><strong>Url:</strong> <code>/b2b/new_user</code></p>
+      <p><strong>Headers:</strong> <code>Content-Type: application/json, Accept: application/json</code></p>
+      <p><strong>Parámetros:</strong>
+      <code>
+          username: (string), 
+          password: (string)
+      </code>
+      </p>
+      
+      <p><strong>Autentificación:</strong> <code>No Requerido</code></p>
+      <p><strong>Respuesta:</strong></p>
+      
+      <p>En caso de éxito:</p>
+      <pre>
+        <code>
+          Status Code: 201 CREATED
+          {
+            "success" : true,
+            "message" : "Su usuario ha sido creado exitosamente.",
+            "token" : "5e6e8dfd1b205c10c99aa842b6baba18"
+          }
+        </code>
+      </pre>
+      
+      <p>Si faltan alguno de los parámetros:</p>
+      <pre>
+        <code>
+          Status Code: 400 BAD REQUEST
+          {
+            "success" : false,
+            "message" : "El usuario y password no pueden estar en blanco."
+          }
+        </code>
+      </pre>
+
+      <p><strong>Ejemplo:</strong></p>
+      <pre>       
+        <code>
+          REQUEST:
+          PUT /b2b/new_user HTTP/1.1
+          Host: http://integra8.ing.puc.cl
+          Content-Type: application/json
+          Accept: application/json
+          {
+            "username": "grupo8",
+            "password": "passwordgrupo8"
+          }
+
+          RESPONSE:
+          Status Code: 201 CREATED
+          Response Body:
+          {
+            "success" : true,
+            "message" : "Su usuario ha sido creado exitosamente.",
+            "token" : "5e6e8dfd1b205c10c99aa842b6baba18"
+          }
+        </code>
+      </pre>
+    </div>
+  </div>
+</section>
+  
+<!-- Authentification -->
+<section data-scroll-index="1">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Autentificación</h3>
+    </div>
+    <div class="panel-body">
+      <p>La Api cuenta con autentificación por Token, por lo que cada request debe llevar el siguiente Header:</p>
+      <pre>        
+        <code>
+          Authorization Token #token
+        </code>
+      </pre>
+
+      <p><strong>Ejemplo:</strong></p>
+      <pre>       
+        <code>
+          Authorization Token 5e6e8dfd1b205c10c99aa842b6baba18
+        </code>
+      </pre>
+
+      <p>Si el Header no esta presente devuelve la siguiente respuesta:</p>
+      <pre>
+        <code>
+        Status Code: 401 UNAUTHORIZED
+        {
+          "success" : false,
+          "message" : "No Token."
+        }
+        </code> 
+      </pre>
+
+      <p>Si el token no es válido devuelve la siguiente respuesta:</p>
+      <pre>
+        <code>
+        Status Code: 401 UNAUTHORIZED
+        {
+          "success" : false,
+          "message" : "Token Invalido."
+        }
+        </code> 
+      </pre>
+
+      <p>La duración del token es de 24 horas por lo que si el token expiró devuelve la siguiente respuesta:</p>
+      <pre>
+        <code>
+        Status Code: 401 UNAUTHORIZED
+        {
+          "success" : false,
+          "message" : "Token Expirado."
+        }
+        </code> 
+      </pre>
+    </div>
+  </div>
+</section>
+
+<!-- Get Token -->
+<section data-scroll-index="2">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Obtener Token</h3>
+    </div>
+    <div class="panel-body">
+      <p><strong>Descripción:</strong> Permite obtener el token de un grupo determinado utilizando su nombre de usuario y contraseña.</p>
+      <p><strong>Method:</strong> <code>POST</code></p>
+      <p><strong>Url:</strong> <code>/b2b/get_token</code></p>
+      <p><strong>Headers:</strong> <code>Content-Type: application/json, Accept: application/json</code></p>
+      <p><strong>Parámetros:</strong>
+      <code>
+          username: (string), 
+          password: (string)
+      </code>
+      </p>
+      
+      <p><strong>Autentificación:</strong> <code>No Requerido</code></p>
+      <p><strong>Respuesta:</strong></p>
+      
+      <p>En caso de éxito:</p>
+      <pre>
+        <code>
+        Status Code: 200 OK
+        {
+          "success" : true,
+          "token" : "5e6e8dfd1b205c10c99aa842b6baba18"
+        }
+        </code>
+      </pre>
+
+      <p>Si faltan alguno de los parámetros:</p>
+      <pre>
+        <code>
+        Status: 400 BAD REQUEST
+        {
+          "success" : false,
+          "message" : "El usuario y password no pueden estar en blanco."
+        }
+        </code>
+      </pre>
+
+      <p>Nombre de usuario o contraseña incorrectos:</p>
+      <pre>
+        <code>
+        Status: 400 BAD REQUEST
+        {
+          "success" : false,
+          "message" : "Usuario o password invalidos."
+        }
+        </code>
+      </pre>
+
+      <p><strong>Ejemplo:</strong></p>
+      <pre>
+        <code>
+          REQUEST:
+          POST /b2b/get_token HTTP/1.1
+          Host: http://integra8.ing.puc.cl
+          Content-Type: application/json
+          Accept: application/json
+          {
+            "username"  : "grupo8",
+            "password"  : "passwordgrupo8",
+            
+          }
+
+          RESPONSE:
+          Status Code: 200 OK
+          Response Body:
+          {
+            "success" : true,
+            "token" : "5e6e8dfd1b205c10c99aa842b6baba18"
+          }
+        </code>
+      </pre>
+    </div>
+  </div>
+</section>
+
+<!-- COMPRA -->
+<section  data-scroll-index="3">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Comprar Producto</h3>
+    </div>
+      <div class="panel-body">
+        <p><strong>Descripción:</strong> Permite enviar una orden de compra de un producto determinado.</p>
+        <p><strong>Method:</strong> <code>POST</code></p>
+        <p><strong>Url:</strong> <code>/b2b/new_order</code></p>
+        <p><strong>Headers:</strong> <code>Content-Type: application/json, Accept: application/json</code></p>
+        <p><strong>Parámetros:</strong>
+        <code>
+            order_id: (string), 
+            client: (string) opcional, 
+            proveedor: (string) opcional,
+            sku: (string) opcional, 
+            date_delivery: (string) opcional, 
+            quantity: (int) opcional, 
+            price: (int) opcional
+        </code>
+        </p>
+        
+        <p><strong>Autentificación:</strong> <code>Authorization Token #token</code></p>
+        <p><strong>Respuesta:</strong></p>
+        <p>En caso de éxito:</p>
+        <pre>
+          <code>
+          Status Code: 200 OK
+          {
+              "success": true,
+              "message": "La orden de compra ha sido recibida exitosamente."
+          }
+          </code>
+        </pre>
+
+        <p>Si hay error:</p>
+        <pre>
+          <code>
+          Status Code: 400 BAD REQUEST
+          {
+              "success": false
+              "order_id":
+              [
+                  "This field is required."
+              ],
+          }
+          </code>
+        </pre>
+
+        <p><strong>Ejemplo:</strong></p>
+        <pre>
+          <code>
+            REQUEST:
+            POST /b2b/new_order/ HTTP/1.1
+            Host: http://integra8.ing.puc.cl
+            Content-Type: application/json
+            Accept: application/json
+            Authorization Token 489e20dfa5274807cd91241b1942308730823c0a
+            Content-Length: 137
+            {
+              "order_id"  : "frts345",
+              "client"  : "5673",
+              "proveedor" : "Grupo4",
+              "sku" : "9016",
+              "date_delivery" : "05-21-2015",
+              "quantity"  : 500,
+              "price" : 155 
+            }
+
+            RESPONSE:
+            Status Code: 200 OK
+            Response Body:
+            {
+                "success": true,
+                "message": "La orden de compra ha sido recibida exitosamente."
+            }
+          </code>
+        </pre>
+      </div>
+    </div>
+</section>
+
+<!-- Orden Aceptada -->
+<section data-scroll-index="4">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Notificar Orden Aceptada</h3>
+    </div>
+      <div class="panel-body">
+        <p><strong>Descripción:</strong> Permite notificar cuando una orden de compra fue aceptada.</p>
+        <p><strong>Method:</strong> <code>POST</code></p>
+        <p><strong>Url:</strong> <code>/b2b/order_accepted/</code></p>
+        <p><strong>Headers:</strong> <code>Content-Type: application/json, Accept: application/json</code></p>
+        <p><strong>Parámetros:</strong>
+        <code>
+            order_id: (string) 
+        </code>
+        </p>
+        
+        <p><strong>Autentificación:</strong> <code>Authorization Token #token</code></p>
+        <p><strong>Respuesta:</strong></p>
+        <pre><code class="hljs bash">
+          Status Code: <span class="hljs-number">200</span> OK
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+          }
+        </code></pre>
+        <p>Si hay error:</p>
+        <pre><code class="hljs bash">
+          Status Code: <span class="hljs-number">400</span> BAD REQUEST
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">false</span>,
+              <span class="hljs-string">"order_id"</span>:
+              [
+                  <span class="hljs-string">"This field is required."</span>
+              ],
+          }
+        </code></pre>
+        <p><strong>Ejemplo:</strong></p>
+        <pre><code class="hljs objectivec">
+          REQUEST:
+          POST /b2b/order_accepted/ HTTP/<span class="hljs-number">1.1</span>
+          Host: http:<span class="hljs-comment">//integra3.ing.puc.cl</span>
+          Content-Type: application/json
+          Accept: application/json
+          Authorization Token <span class="hljs-number">489e20</span>dfa5274807cd91241b1942308730823c0a
+          {
+            <span class="hljs-string">"order_id"</span>: <span class="hljs-string">"frts345"</span> 
+          }
+
+          RESPO<span class="hljs-built_in">NSE</span>:
+          Status Code: <span class="hljs-number">200</span> OK
+          Response Body:
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+          }
+        </code></pre>
+      </div>
+    </div>  
+</section>
+
+<!-- Orden Cancelada -->
+<section data-scroll-index="5">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Notificar Orden Cancelada</h3>
+    </div>
+    <div class="panel-body">
+      <p><strong>Descripción:</strong> Permite notificar cuando una orden de compra fue cancelada.</p>
+      <p><strong>Method:</strong> <code>POST</code></p>
+      <p><strong>Url:</strong> <code>/b2b/order_canceled/</code></p>
+      <p><strong>Headers:</strong> <code>Content-Type: application/json, Accept: application/json</code></p>
+      <p><strong>Parámetros:</strong>
+      <code>
+          order_id: (string), 
+      </code>
+      </p>
+      
+      <p><strong>Autentificación:</strong> <code>Authorization Token #token</code></p>
+      <p><strong>Respuesta:</strong></p>
+      <pre><code class="hljs bash">
+        Status Code: <span class="hljs-number">200</span> OK
+        {
+            <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+            <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+        }
+      </code></pre>
+      <p>Si hay error:</p>
+      <pre><code class="hljs bash">
+        Status Code: <span class="hljs-number">400</span> BAD REQUEST
+        {
+            <span class="hljs-string">"success"</span>: <span class="hljs-literal">false</span>,
+            <span class="hljs-string">"order_id"</span>:
+            [
+                <span class="hljs-string">"This field is required."</span>
+            ],
+        }
+      </code></pre>
+      <p><strong>Ejemplo:</strong></p>
+      <pre><code class="hljs objectivec">
+        REQUEST:
+        POST /b2b/order_canceled/ HTTP/<span class="hljs-number">1.1</span>
+        Host: http:<span class="hljs-comment">//integra3.ing.puc.cl</span>
+        Content-Type: application/json
+        Accept: application/json
+        Authorization Token <span class="hljs-number">489e20</span>dfa5274807cd91241b1942308730823c0a
+        {
+          <span class="hljs-string">"order_id"</span>: <span class="hljs-string">"frts345"</span> 
+        }
+
+        RESPO<span class="hljs-built_in">NSE</span>:
+        Status Code: <span class="hljs-number">200</span> OK
+        Response Body:
+        {
+            <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+            <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+        }
+      </code></pre>
+    </div>
+  </div>
+</section>
+  
+<!-- Orden Rechazada -->
+<section data-scroll-index="6">
+  <div class="panel panel-default" data-scroll-index="5">
+    <div class="panel-heading">
+      <h3 class="panel-title">Notificar Orden Rechazada</h3>
+    </div>
+      <div class="panel-body">
+        <p><strong>Descripción:</strong> Permite notificar cuando una orden de compra fue rechazada.</p>
+        <p><strong>Method:</strong> <code>POST</code></p>
+        <p><strong>Url:</strong> <code>/b2b/order_rejected/</code></p>
+        <p><strong>Headers:</strong> <code>Content-Type: application/json, Accept: application/json</code></p>
+        <p><strong>Parámetros:</strong>
+        <code>
+            order_id: (string), 
+        </code>
+        </p>
+        
+        <p><strong>Autentificación:</strong> <code>Authorization Token #token</code></p>
+        <p><strong>Respuesta:</strong></p>
+        <pre><code class="hljs bash">
+          Status Code: <span class="hljs-number">200</span> OK
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+          }
+        </code></pre>
+        <p>Si hay error:</p>
+        <pre><code class="hljs bash">
+          Status Code: <span class="hljs-number">400</span> BAD REQUEST
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">false</span>,
+              <span class="hljs-string">"order_id"</span>:
+              [
+                  <span class="hljs-string">"This field is required."</span>
+              ],
+          }
+        </code></pre>
+        <p><strong>Ejemplo:</strong></p>
+        <pre><code class="hljs objectivec">
+          REQUEST:
+          POST /b2b/order_rejected/ HTTP/<span class="hljs-number">1.1</span>
+          Host: http:<span class="hljs-comment">//integra3.ing.puc.cl</span>
+          Content-Type: application/json
+          Accept: application/json
+          Authorization Token <span class="hljs-number">489e20</span>dfa5274807cd91241b1942308730823c0a
+          {
+            <span class="hljs-string">"order_id"</span>: <span class="hljs-string">"frts345"</span> 
+          }
+
+          RESPO<span class="hljs-built_in">NSE</span>:
+          Status Code: <span class="hljs-number">200</span> OK
+          Response Body:
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+          }
+        </code></pre>
+      </div>
+    </div>
+</section>
+
+<!-- Invoice Created -->
+<section data-scroll-index="7">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Notificar Factura Emitida</h3>
+    </div>
+      <div class="panel-body">
+        <p><strong>Descripción:</strong> Permite notificar cuando una factura ha sido emitida.</p>
+        <p><strong>Method:</strong> <code>POST</code></p>
+        <p><strong>Url:</strong> <code>/b2b/invoice_created/</code></p>
+        <p><strong>Headers:</strong> <code>Content-Type: application/json, Accept: application/json</code></p>
+        <p><strong>Parámetros:</strong>
+        <code>
+            invoice_id: (string) 
+        </code>
+        </p>
+        
+        <p><strong>Autentificación:</strong> <code>Authorization Token #token</code></p>
+        <p><strong>Respuesta:</strong></p>
+        <pre><code class="hljs bash">
+          Status Code: <span class="hljs-number">200</span> OK
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+          }
+        </code></pre>
+        <p>Si hay error:</p>
+        <pre><code class="hljs bash">
+          Status Code: <span class="hljs-number">400</span> BAD REQUEST
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">false</span>,
+              <span class="hljs-string">"invoice_id"</span>:
+              [
+                  <span class="hljs-string">"This field is required."</span>
+              ],
+          }
+        </code></pre>
+        <p><strong>Ejemplo:</strong></p>
+        <pre><code class="hljs objectivec">
+          REQUEST:
+          POST /b2b/invoice_created/ HTTP/<span class="hljs-number">1.1</span>
+          Host: http:<span class="hljs-comment">//integra3.ing.puc.cl</span>
+          Content-Type: application/json
+          Accept: application/json
+          Authorization Token <span class="hljs-number">489e20</span>dfa5274807cd91241b1942308730823c0a
+          {
+            <span class="hljs-string">"invoice_id"</span>: <span class="hljs-string">"45647df"</span> 
+          }
+
+          RESPO<span class="hljs-built_in">NSE</span>:
+          Status Code: <span class="hljs-number">200</span> OK
+          Response Body:
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+          }
+        </code></pre>
+      </div>
+    </div>
+</section>
+
+<!-- Invoice Paid -->
+<section data-scroll-index="8">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Notificar Factura Pagada</h3>
+    </div>
+      <div class="panel-body">
+        <p><strong>Descripción:</strong> Permite notificar cuando una factura fue pagada.</p>
+        <p><strong>Method:</strong> <code>POST</code></p>
+        <p><strong>Url:</strong> <code>/b2b/invoice_paid/</code></p>
+        <p><strong>Headers:</strong> <code>Content-Type: application/json, Accept: application/json</code></p>
+        <p><strong>Parámetros:</strong>
+        <code>
+            invoice_id: (string) 
+        </code>
+        </p>
+        
+        <p><strong>Autentificación:</strong> <code>Authorization Token #token</code></p>
+        <p><strong>Respuesta:</strong></p>
+        <pre><code class="hljs bash">
+          Status Code: <span class="hljs-number">200</span> OK
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+          }
+        </code></pre>
+        <p>Si hay error:</p>
+        <pre><code class="hljs bash">
+          Status Code: <span class="hljs-number">400</span> BAD REQUEST
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">false</span>,
+              <span class="hljs-string">"invoice_id"</span>:
+              [
+                  <span class="hljs-string">"This field is required."</span>
+              ],
+          }
+        </code></pre>
+        <p><strong>Ejemplo:</strong></p>
+        <pre><code class="hljs objectivec">
+          REQUEST:
+          POST /b2b/invoice_paid/ HTTP/<span class="hljs-number">1.1</span>
+          Host: http:<span class="hljs-comment">//integra3.ing.puc.cl</span>
+          Content-Type: application/json
+          Accept: application/json
+          Authorization Token <span class="hljs-number">489e20</span>dfa5274807cd91241b1942308730823c0a
+          {
+            <span class="hljs-string">"invoice_id"</span>: <span class="hljs-string">"45647df"</span> 
+          }
+
+          RESPO<span class="hljs-built_in">NSE</span>:
+          Status Code: <span class="hljs-number">200</span> OK
+          Response Body:
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+          }
+        </code></pre>
+      </div>
+    </div>
+</section>
+
+<!-- Invoice rejected -->
+<section  data-scroll-index="9">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Notificar Factura Rechazada</h3>
+    </div>
+      <div class="panel-body">
+        <p><strong>Descripción:</strong> Permite notificar cuando una factura fue rechazada.</p>
+        <p><strong>Method:</strong> <code>POST</code></p>
+        <p><strong>Url:</strong> <code>/b2b/invoice_rejected/</code></p>
+        <p><strong>Headers:</strong> <code>Content-Type: application/json, Accept: application/json</code></p>
+        <p><strong>Parámetros:</strong>
+        <code>
+            invoice_id: (string) 
+        </code>
+        </p>
+        
+        <p><strong>Autentificación:</strong> <code>Authorization Token #token</code></p>
+        <p><strong>Respuesta:</strong></p>
+        <pre><code class="hljs bash">
+          Status Code: <span class="hljs-number">200</span> OK
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+          }
+        </code></pre>
+        <p>Si hay error:</p>
+        <pre><code class="hljs bash">
+          Status Code: <span class="hljs-number">400</span> BAD REQUEST
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">false</span>,
+              <span class="hljs-string">"invoice_id"</span>:
+              [
+                  <span class="hljs-string">"This field is required."</span>
+              ],
+          }
+        </code></pre>
+        <p><strong>Ejemplo:</strong></p>
+        <pre><code class="hljs objectivec">
+          REQUEST:
+          POST /b2b/invoice_rejected/ HTTP/<span class="hljs-number">1.1</span>
+          Host: http:<span class="hljs-comment">//integra3.ing.puc.cl</span>
+          Content-Type: application/json
+          Accept: application/json
+          Authorization Token <span class="hljs-number">489e20</span>dfa5274807cd91241b1942308730823c0a
+          {
+            <span class="hljs-string">"invoice_id"</span>: <span class="hljs-string">"45647df"</span> 
+          }
+
+          RESPO<span class="hljs-built_in">NSE</span>:
+          Status Code: <span class="hljs-number">200</span> OK
+          Response Body:
+          {
+              <span class="hljs-string">"success"</span>: <span class="hljs-literal">true</span>,
+              <span class="hljs-string">"message"</span>: <span class="hljs-string">"Muchas gracias por avisar."</span>
+          }
+        </code></pre>
+      </div>
+    </div>
+</section>
+
+  </div>
+    
+    <footer class="footer">
+      <div class="container" style="text-align: center;">
+        <p class="text-muted" style="margin-top:20px;"><i class="fa fa-smile-o"></i> Grupo 8 <i class="fa fa-terminal"></i> Taller de Integración 2015</p>
+      </div>
+    </footer>

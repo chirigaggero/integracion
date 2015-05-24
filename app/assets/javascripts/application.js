@@ -12,5 +12,10 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require bootstrap-sprockets
 //= require turbolinks
 //= require_tree .
+$(function(){
+  $.scrollIt({topOffset: -70});
+  hljs.initHighlightingOnLoad();
+});
