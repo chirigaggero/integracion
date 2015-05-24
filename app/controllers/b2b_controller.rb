@@ -83,7 +83,7 @@ class B2bController < ApplicationController
       orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}",:headers => header1)
 
       if !orden[0]["msg"].nil?
-        render json: {success: false, message: "error. Orden inválida"},status: :bad_request
+        render json: {success: false, message: "Error, Orden invalida."},status: :bad_request
       else
         pedido=Pedido.new
         pedido.sku = orden[0]["sku"]
@@ -97,102 +97,47 @@ class B2bController < ApplicationController
         #render json: { success: false, message: cosa}, status: :internal_server_error
 
         if Bodega.validar_pedido?(pedido)
-          render json: { success: true, message:  "La orden de compra ha procesada exitosamente."},status: :ok
+          render json: { success: true, message:  "La orden de compra ha sido procesada exitosamente."},status: :ok
         else
-          render json: { success: false, message: "ups! tuvimos un problema"}, status: :internal_server_error
+          render json: { success: false, message: "Ups! tuvimos un problema"}, status: :internal_server_error
           # CONECTARSE A LA API DEL OTRO GRUPO
           #
           #
         end
       end
     else
-      render json: {success: false, message: "error en los parametros"},status: :bad_request
+      render json: {success: false, message: "Error en los parametros"},status: :bad_request
     end
   end
 
 #POST /b2b/order_accepted
 def order_accepted
-  render json: {success: true, message: "funciono!"},status: :ok
-#   order_id = params["prder_id"]
-#   if order_id.nil?
-#     render json: {success: false, message: "La orden de compra es requerida"}, status: :bad_request
-#   else
-#     #retornar un mensaje de que se aceptó
-
-#   end
-
-# rescue Exception => e
-#   return render json: {success: false, message: "No se peude verificar que la orden este aceptada"}, status: :bad_request
+  render json: {success: false, message: "No implementado"}, status: :internal_server_error
 end
 
 #POST /b2b/order_canceled
 def order_canceled
-#   order_id = params["prder_id"]
-#   if order_id.nil?
-#     render json: {success: false, message: "La orden de compra es requerida"}, status: :bad_request
-#   else
-#     #retornar un mensaje de que se canceló
-
-#   end
-
-# rescue Exception => e
-#   return render json: {success: false, message: "No se peude verificar que la orden este cancelada"}, status: :bad_request
+  render json: {success: false, message: "No implementado"}, status: :internal_server_error
 end
 
 #POST /b2b/order_rejected
 def order_rejected
-#   order_id = params["prder_id"]
-#   if order_id.nil?
-#     render json: {success: false, message: "La orden de compra es requerida"}, status: :bad_request
-#   else
-#     #retornar un mensaje de que se rechazó
-
-#   end
-
-# rescue Exception => e
-#   return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
+  render json: {success: false, message: "No implementado"}, status: :internal_server_error
 end
 
 #POST /b2b/invoice_paid
 def invoice_created
-#   invoice_id = params["invoice_id"]
-#   if invoice_id.nil?
-#     render json: {success: false, message: "ID de factura requerido"}, status: :bad_request
-#   else
-#     #retornar un mensaje de que se rechazó
-
-#   end
-
-# rescue Exception => e
-#   return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
+  render json: {success: false, message: "No implementado"}, status: :internal_server_error
 end
 
 #POST /b2b/invoice_paid
 def invoice_paid
-#   invoice_id = params["invoice_id"]
-#   if invoice_id.nil?
-#     render json: {success: false, message: "ID de factura requerido"}, status: :bad_request
-#   else
-#     #retornar un mensaje de que se pago
-
-#   end
-
-# rescue Exception => e
-#   return render json: {success: false, message: "No se peude verificar que la orden este pagada"}, status: :bad_request
+  render json: {success: false, message: "No implementado"}, status: :internal_server_error
 end
 
 #POST /b2b/invoice_rejected
 def invoice_rejected
-#   invoice_id = params["invoice_id"]
-#   if invoice_id.nil?
-#     render json: {success: false, message: "ID de factura requerido"}, status: :bad_request
-#   else
-#     #retornar un mensaje de que se rechazó
-
-#   end
-
-# rescue Exception => e
-#   return render json: {success: false, message: "No se peude verificar que la orden este rechazada"}, status: :bad_request
+  render json: {success: false, message: "No implementado"}, status: :internal_server_error
 end
 
 
@@ -205,50 +150,6 @@ def valid_json?()
      false
   end
 end
-
-
-# def pval()
-#   #Defino el esquema tipo de JSON
-#   #Para obtener y crear usuario
-#   schema1= {
-#     "type" => "object",
-#     "required" =>["username","password"],
-#     "properties" =>{
-#       "username" =>{"type"=>"string"}
-#       "password" =>{"type"=>"string"}
-#     }
-#   }
-
-#   #Para notificar ordenes
-#     schema2= {
-#     "type" => "object",
-#     "required" =>["order_id"],
-#     "properties" =>{
-#       "order_id" =>{"type"=>"string"}
-#     }
-#   }
-
-#     #Para obtener y crear usuario
-#   schema3= {
-#     "type" => "object",
-#     "required" =>["order_id","client","proveedor","sku","date_delivery","quantity","price"],
-#     "properties" =>{
-#       "order_id" =>{"type"=>"string"}
-#       "client" =>{"type"=>"string"}
-#       "proveedor" =>{"type"=>"string"}
-#       "sku" =>{"type"=>"string"}
-#       "date_delivery" =>{"type"=>"string"}
-#       "quantity" =>{"type"=>"integer"}
-#       "price" =>{"type"=>"integer"}
-#     }
-#   }
-
-#   JSON::Validator.validate(schema, "lo que hay que validar")
-
-  
-# end
-
-
 
 
 end
