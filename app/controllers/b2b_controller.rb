@@ -97,12 +97,11 @@ class B2bController < ApplicationController
         #render json: { success: false, message: cosa}, status: :internal_server_error
 
         if Bodega.validar_pedido?(pedido)
-          render json: { success: true, message:  "La orden de compra ha sido procesada exitosamente."},status: :ok
+          render json: { success: true, message:  "La orden de compra ha sido aceptada"},status: :ok
         else
-          render json: { success: false, message: "Ups! tuvimos un problema"}, status: :internal_server_error
+          Pedido.delete(pedido)
+          render json: { success: false, message: "No hay stock suficiente en nuestras bodegas"}, status: :internal_server_error
           # CONECTARSE A LA API DEL OTRO GRUPO
-          #
-          #
         end
       end
     else

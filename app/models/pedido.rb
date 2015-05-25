@@ -3,12 +3,12 @@ class Pedido < ActiveRecord::Base
 
 
 
-  def mover_bodega(id_bodega)
+  def mover_a_bodega(id_bodega)
     self.productos.each do  |prod|
 
       a = prod.moverse?(id_bodega)
 
-      Producto.delete(prod)
+     # Producto.delete(prod)
     end
 
   end
