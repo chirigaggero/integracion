@@ -90,16 +90,20 @@ class B2bController < ApplicationController
         pedido.cantidad = orden[0]["cantidad"]
         pedido.precio_unitario = orden[0]["precioUnitario"]
         cliente = orden[0]["cliente"]
-        pedido.direccion = Cliente.get_direccion(cliente)
-
+        #pedido.direccion = Cliente.get_direccion(cliente)
+        pedido.fechaEntrega = orden[0]["fechaEntrega"][0..9]
+        pedido.cantidadDespachada = 0
+        pedido.estado = 'creado'
 
         #cosa = Bodega.validar_pedido?(pedido)
         #render json: { success: false, message: cosa}, status: :internal_server_error
 
         if Bodega.validar_pedido?(pedido)
+          pedido.save
           render json: { success: true, message:  "La orden de compra ha sido aceptada"},status: :ok
         else
-          Pedido.delete(pedido)
+          pedido.save
+          #Pedido.delete(pedido)
           render json: { success: false, message: "No hay stock suficiente en nuestras bodegas"}, status: :internal_server_error
           # CONECTARSE A LA API DEL OTRO GRUPO
         end

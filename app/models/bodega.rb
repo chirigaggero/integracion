@@ -16,7 +16,7 @@ class Bodega < ActiveRecord::Base
 		result = HTTParty.get(url,:headers => header1 )
 
 		##result tiene que ser LA repueat valida, no se como hacer esta verificacion pero
-		##vamos a asumir que si no es nula entonces está bien.
+		##vamos a asumir que si no es nula entonces estï¿½ bien.
 
 		if !result.nil?
 			contador=0
@@ -31,7 +31,7 @@ class Bodega < ActiveRecord::Base
 				#		aceptar=false
 			#		end
 		#		end
-				#si no está asignado, crea u producto con ese id y hace append sobre pedido.productos, aumenta el contador de productos
+				#si no estï¿½ asignado, crea u producto con ese id y hace append sobre pedido.productos, aumenta el contador de productos
 			#	if aceptar
 					prod=Producto.create(prod_id: item["_id"])
 					pedido.productos<<prod
@@ -75,7 +75,7 @@ class Bodega < ActiveRecord::Base
 
 		result = HTTParty.get(url,:headers => header1 )
 		contador=0
-		#ver si cada producto  está en pedidos anteriores.
+		#ver si cada producto  estï¿½ en pedidos anteriores.
 		pedidos=Pedido.first(Pedido.count-1)
 		result.each do |item|
 					pedidos.each do |pedido|
@@ -148,6 +148,7 @@ class Bodega < ActiveRecord::Base
 			params = ["GET", almacen.almacen_id]
 			security = claveSha1(params)
 
+			
 			url = "http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
 			header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
@@ -220,6 +221,20 @@ class Bodega < ActiveRecord::Base
 	#end
 
 
+	#metodo que verifica que pedidos deben ser despachados "hoy" y los manda a despachar
+	def despachar_pedidos_de_hoy
+
+		pedidos = Pedido.where(fechaEntrega: DateTime.now.strftime("%Y-%m-%d")).or(estado: 'pendiente')
+
+		pedidos.each do |pedido|
+
+			pedido.despachar
+
+		end
+
+
+
+	end
 
 
 

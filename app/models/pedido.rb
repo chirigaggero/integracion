@@ -14,4 +14,16 @@ class Pedido < ActiveRecord::Base
   end
 
 
+  def despachar
+
+    cantidad=self.cantidad-self.cantidadDespachada
+
+    # mover al almacen de despacho, un producto a la vez
+
+
+
+
+  end
+
+
 end
