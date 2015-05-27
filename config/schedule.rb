@@ -20,11 +20,7 @@
 # Learn more: http://github.com/javan/whenever
 
 
-# Despachar productos
-# Cada 12 horas se revisa si hay pedidos para despachar
-# De ser así, se mueven al almacen de despacho y se envian
-
-every 12.hours do
-
-
+# Vaciar el almacen de recepcion
+every 4.hours do
+  runner "Bodega.vaciar_recepcion"
 end
