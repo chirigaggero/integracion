@@ -23,7 +23,8 @@
 # Despachar productos
 # Cada 12 horas se revisa si hay pedidos para despachar
 # De ser así, se mueven al almacen de despacho y se envian
+
 every 12.hours do
-  runner ""
+
 
 end

@@ -1,16 +1,21 @@
 class Bodega < ActiveRecord::Base
 
 	$id_grupo = 'grupo8'
-	$key_bodega = 'deZ6QPKA1KcBEPr'
+	$key_bodega = 'DYzY6bQ3XxcyyPm'
 
 
-	# Con un almacen id y sku se agregan a pedidos productos con sus ids
-	def self.crear_prods(almacen_id,pedido,prods_necesitados)
 
-		params=["GET",almacen_id,pedido.sku]
+  def self.id_bodegaDespacho
+    return Bodega.where(tipo: 'despacho').almacen_id
+  end
+
+	# Con un almacen id y sku obtenemos el primer producto disponible.
+	def self.obtener_producto(almacen_id,pedido)
+
+		params = ["GET",almacen_id,pedido.sku]
 		security = Bodega.claveSha1(params)
 
-		url="http://integracion-2015-dev.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{pedido.sku}&limit=200"
+		url = "http://integracion-2015-dev.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{pedido.sku}&limit=1"
 		header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
 		result = HTTParty.get(url,:headers => header1 )
@@ -22,47 +27,20 @@ class Bodega < ActiveRecord::Base
 			contador=0
 			##pedidos=Pedido.first(Pedido.count-1)
 			result.each do |item|
-				##antes de crear el producto, hay que verificar que su id no este en los pedidos ya registrados en la base de datos
-		##		aceptar=true
 
-				#iterar sobre los pedidos, si el prod ya esta asignado, entonces cambia el bool aceptar a false.
-				##pedidos.each do |pedido|
-				##	if !pedido.productos.where(prod_id: item["_id"]).empty?
-				#		aceptar=false
-			#		end
-		#		end
-				#si no est� asignado, crea u producto con ese id y hace append sobre pedido.productos, aumenta el contador de productos
-			#	if aceptar
-					prod=Producto.create(prod_id: item["_id"])
-					pedido.productos<<prod
-					contador+=1
-					##si se llego a la cantidad requerida, retornamos true
-					if contador>=Integer(prods_necesitados)
-						break
-				end
-			end
-				return contador
-			end
-			##solo se llega aqui si no se alcanza la cantidad requerida, no deberia pasar pq ya hicimos el chequeo cuanto obtuvimos
-			##los productos 'disponibles'
-				return false
-		#end
-		end
+				#no es necesario, pero lo voy a dejar.
 
-	##No estamos usando este metodo, pero no lo voy a borrar x si las moscas
-	def buscar_producto?(pedido)
-		almacenes = HTTParty.GET("http://integracion-2015-dev.herokuapp.com/bodega/almacenes")
-		almacenes.each do |almacen|
-			id = almacen[0]["Id"]
-			skuWS = HTTParty.GET("http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock#{id}")
-			skusWS.each do |skws|
-				if pedido.sku == skws[0]["Sku"]
-					if pedido.cantidad == skws[0]["Cantidad"]
-					end
-				end
-			end
-		end
-	end
+        prod = Producto.create(prod_id: item["_id"])
+        pedido.productos<<prod
+
+				return prod
+
+      end
+    end
+
+  end
+
+
 
 	##con el almacen_id y un pedido.sku, ve cuantos productos ese almacen estan asignados a otro pedido, retorna un int.
 	def get_cantidad_usada(almacen_id,pedido)
@@ -148,7 +126,7 @@ class Bodega < ActiveRecord::Base
 			params = ["GET", almacen.almacen_id]
 			security = claveSha1(params)
 
-			
+
 			url = "http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
 			header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
@@ -158,7 +136,7 @@ class Bodega < ActiveRecord::Base
 		end
 
 			##obtenemos lo usado por pedidos anteriores
-			pedidos=Pedido.first(Pedido.count-1)[0..Pedido.count-2]
+			pedidos = Pedido.first(Pedido.count-1)[0..Pedido.count-2]
 			pedidos.each do |pedidox|
 			if pedidox.sku.equal? pedido.sku
 				usado+=pedidox.cantidad
@@ -232,11 +210,140 @@ class Bodega < ActiveRecord::Base
 
 		end
 
+  end
 
+
+  def self.vaciar_recepcion
+
+		#datos a utilizar
+		id_normal1 = Bodega.first.almacen_id
+		id_normal2 = Bodega.second.almacen_id
+		id_recepcion = Bodega.third.almacen_id
+
+		capacidad_normal1 = capacidad_disponible(id_normal1)
+		capacidad_normal2 = capacidad_disponible(id_normal2)
+
+		#ver si el almacen de recepcion tiene productos
+		skus = skus_de_almacen(id_recepcion)
+
+
+		#para cada sku con stock tomar un id y moverlo
+		skus.each do |item|
+
+			if capacidad_normal1 > 0
+				id_producto = obtener_id_producto(id_recepcion, item)
+				mover_producto(id_producto, id_normal1)
+				capacidad_normal1 -=1
+
+			else capacidad_normal2 > 0
+				id_producto = obtener_id_producto(id_recepcion, item)
+				mover_producto(id_producto, id_normal2)
+				capacidad_normal2 -=1
+
+			end
+
+		end
 
 	end
 
 
+
+	#retorna un arreglo con los sku y cantidad de cada almacen
+	def self.skus_de_almacen(almacen_id)
+
+		#conexion y respuesta
+		params = ["GET", almacen_id]
+		security = Bodega.claveSha1(params)
+
+		url="http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=#{almacen_id}"
+		header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+
+		result = HTTParty.get(url,:headers => header1 )
+
+		skus = []
+
+		result.each do |listaSku|
+			skus.append listaSku["_id"]
+		end
+
+		return skus
+
+	end
+
+	#retorna la capacidad disponible del almacen
+	def self.capacidad_disponible(almacen_id)
+
+		#conexion y respuesta
+		params = ["GET"]
+		security = Bodega.claveSha1(params)
+
+		url = "http://integracion-2015-dev.herokuapp.com/bodega/almacenes"
+		header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+
+		result = HTTParty.get(url,:headers => header1 )
+
+		#Buscar el almacen dentro de la respuesta y retornar la capacidad disponible
+		capacidad = 0
+
+		result.each do |almacenes|
+
+			if almacenes["_id"] == almacen_id
+				capacidad = almacenes["totalSpace"]-almacenes["usedSpace"]
+			end
+
+		end
+
+		return capacidad
+
+	end
+
+	#devuelve UN id de un producto en almacen
+	def self.obtener_id_producto(almacen_id, sku)
+
+		params = ["GET",almacen_id, sku]
+		security = Bodega.claveSha1(params)
+
+		url = "http://integracion-2015-dev.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{sku}&limit=1"
+		header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+
+		result = HTTParty.get(url,:headers => header1 )
+
+		if !result.nil?
+
+			result.each do |item|
+				 return item["_id"]
+
+			end
+		end
+	end
+
+	#mueve un producto de un almacen a otro
+	def self.mover_producto(producto_id, almacen_id)
+
+		params = ["POST",producto_id, almacen_id]
+		security = Bodega.claveSha1(params)
+
+		url = "http://integracion-2015-dev.herokuapp.com/bodega/moveStock"
+		header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+		body = 	{
+							"productoId" => producto_id,
+							"almacenId" => almacen_id
+						}
+
+		result = HTTParty.post(url,:headers => header1,:body=>body.to_json)
+
+		case result.code
+			when 200
+				true
+			else
+				false
+		end
+	end
+
+
+  def self.cambiar_clave(nueva_clave)
+    $key_bodega = nueva_clave
+  end
 
 
 
