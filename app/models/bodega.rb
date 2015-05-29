@@ -230,16 +230,21 @@ class Bodega < ActiveRecord::Base
 		#para cada sku con stock tomar un id y moverlo
 		skus.each do |item|
 
-			if capacidad_normal1 > 0
-				id_producto = obtener_id_producto(id_recepcion, item)
-				mover_producto(id_producto, id_normal1)
-				capacidad_normal1 -=1
+			id_producto = obtener_id_producto(id_recepcion, item)
 
-			else capacidad_normal2 > 0
-				id_producto = obtener_id_producto(id_recepcion, item)
-				mover_producto(id_producto, id_normal2)
-				capacidad_normal2 -=1
+			while !id_producto.nil?
 
+				if capacidad_normal1 > 0
+					mover_producto(id_producto, id_normal1)
+					capacidad_normal1 -=1
+
+				else capacidad_normal2 > 0
+					mover_producto(id_producto, id_normal2)
+					capacidad_normal2 -=1
+
+				end
+
+				id_producto = obtener_id_producto(id_recepcion, item)
 			end
 
 		end
@@ -308,12 +313,12 @@ class Bodega < ActiveRecord::Base
 
 		result = HTTParty.get(url,:headers => header1 )
 
-		if !result.nil?
-
+		if !result.empty?
 			result.each do |item|
-				 return item["_id"]
-
+				return item["_id"]
 			end
+		else
+			return nil
 		end
 	end
 
