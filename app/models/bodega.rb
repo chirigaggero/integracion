@@ -10,28 +10,55 @@ class Bodega < ActiveRecord::Base
   end
 
 
+  def self.enviar_a_fabrica sku, transaccion, cantidad
+
+    params = ["PUT",sku,cantidad,transaccion]
+    security = Bodega.claveSha1(params)
+return security
+    url = "http://integracion-2015-dev.herokuapp.com/bodega/fabrica/fabricar"
+    header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+    body= {
+        "sku" => sku,
+        "trxId" => transaccion,
+        "cantidad" =>cantidad
+
+    }
+
+    result = HTTParty.put(url,:headers => header1,:body => body.to_json )
+    return result.to_s
+
+
+  end
+
 
 	def self.revisar_stock
 		# revisar si tenemos los productos que distribuimos.
+		#25,43,45
 		skus_materiaprima=[25,43,45]
     skus_complejos = [46,48]
 
 		#revisar en las bodegas, y devolver cantidad. [primero las materias primas]
     skus_materiaprima.each do |sku|
      disponible =  cantidad_disponible_sku_reposicion sku
-
      #si es menor a 1000, tenemos que pedir a fabrica.
       if disponible < 1000
         #cantidad requerida
         requerido=1000-disponible +10
         #precio de sku?
-        precio =10
+        precio =1
         #costo de la compra
         costo=precio*requerido
-        #plata disponible?
+        #plata disponible en mi cuenta
+				saldo= Banco.obtener_mi_saldo
+				if saldo>=costo
+					#hacer transferencia a fabrica, guardamos el id de la transferencia
+          transferencia = Banco.pagar_a_fabrica costo
+          #enviar a producir a la fabrica
 
-        #cuanto comprar y a que precio.
-
+				else
+					Rails.logger.info("No hay money para producir prod: #{sku}")
+					break
+				end
 
 
 
@@ -81,30 +108,6 @@ class Bodega < ActiveRecord::Base
 
 
 
-	##con el almacen_id y un pedido.sku, ve cuantos productos ese almacen estan asignados a otro pedido, retorna un int.
-	def get_cantidad_usada(almacen_id,pedido)
-		#conexion y respuesta
-		params=["GET",almacen_id,pedido.sku]
-		security = Bodega.claveSha1(params)
-
-		url="http://integracion-2015-dev.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{pedido.sku}&limit=200"
-		header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
-
-		result = HTTParty.get(url,:headers => header1 )
-		contador=0
-		#ver si cada producto  est� en pedidos anteriores.
-		pedidos=Pedido.first(Pedido.count-1)
-		result.each do |item|
-					pedidos.each do |pedido|
-						if !pedido.productos.where(prod_id: item["_id"]).empty?
-							contador+=1
-						end
-					end
-		end
-
-	contador
-	end
-
 
 	##asigna id de productos a un pedido.
 	def armar_pedido?(pedido)
@@ -123,19 +126,25 @@ class Bodega < ActiveRecord::Base
 	end
 
 
-	# Obtenemos la cantidad total dispoble de productos de un sku
+	# Obtenemos la cantidad total disponible de productos de un sku
 	def get_cantidad_total(url,header1,sku)
 		cantidad=0
 		result = HTTParty.get(url,:headers => header1 )
 		#tiene que ser si la respuesta es valida, no se si es la forma. REVISAR
-		if result
+		case result.code
+
+			when 200
 			result.each do |item|
-				if item["_id"]==sku
-					cantidad+=item["total"]
+				if Integer(item["_id"])==sku
+					cantidad+=Integer(item["total"])
 				end
 			end
+
+			else
+				Rails.logger.info("error en la conexion")
+				return 0
 		end
-		cantidad
+		return cantidad
 	end
 
 	# Encripta en sha1 base 64
@@ -155,7 +164,7 @@ class Bodega < ActiveRecord::Base
 	def self.validar_pedido?(pedido)
 
 
-	disponible = cantidad_disponible_pedido pedido
+	disponible = cantidad_disponible_sku_pedido pedido
 
 		##si la cantidad es menor a la diferencia entre el total y lo usado, se acepta.
 		if pedido.cantidad<=disponible
@@ -173,6 +182,8 @@ class Bodega < ActiveRecord::Base
 
 		#se itera sobre las primeras 4 bodegas
 		Bodega.first(4)[0..3].each do | almacen |
+
+
 			params = ["GET", almacen.almacen_id]
 			security = claveSha1(params)
 
@@ -200,7 +211,7 @@ class Bodega < ActiveRecord::Base
 	end
 
 	##obtener la cantidad disponible para efectos de validar pedido
-	def self.cantidad_disponible_pedido pedido
+	def self.cantidad_disponible_sku_pedido pedido
 		sku=pedido.sku
 		#se itera sobre las primeras 4 bodegas
 		Bodega.first(4)[0..3].each do | almacen |

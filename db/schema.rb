@@ -11,14 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
 ActiveRecord::Schema.define(version: 20150530205227) do
 
   create_table "bancos", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-
 
   create_table "bodegas", force: :cascade do |t|
     t.datetime "created_at", null: false
