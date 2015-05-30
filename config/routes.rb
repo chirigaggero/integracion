@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'internacional/ftp'
+
   get 'home/index'
 
   get 'b2b/documentation'

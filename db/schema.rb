@@ -11,12 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 20150530205227) do
 
   create_table "bancos", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
 
   create_table "bodegas", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -34,7 +36,6 @@ ActiveRecord::Schema.define(version: 20150530205227) do
   end
 
   create_table "pedidos", force: :cascade do |t|
-    t.integer  "order_id"
     t.string   "sku"
     t.integer  "cantidad"
     t.decimal  "precio_unitario"
@@ -44,6 +45,7 @@ ActiveRecord::Schema.define(version: 20150530205227) do
     t.integer  "cantidadDespachada"
     t.string   "estado"
     t.string   "fechaEntrega"
+    t.string   "order_id"
   end
 
   create_table "productos", force: :cascade do |t|
