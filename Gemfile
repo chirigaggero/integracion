@@ -37,7 +37,9 @@ gem 'responders'
 gem 'ruby-hmac'
 gem 'json-schema'
 gem 'bootstrap-sass', '~> 3.3.4'
-gem "font-awesome-rails"
+gem 'font-awesome-rails'
+gem 'nokogiri'
+gem 'net-sftp'
 
 gem 'whenever', :require => false
 

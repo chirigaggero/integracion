@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150526180655) do
+ActiveRecord::Schema.define(version: 20150530203635) do
 
   create_table "bodegas", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20150526180655) do
   end
 
   create_table "clientes", force: :cascade do |t|
+    t.integer  "cliente_id"
     t.string   "nombre"
     t.string   "direccion"
     t.datetime "created_at", null: false
@@ -28,7 +29,6 @@ ActiveRecord::Schema.define(version: 20150526180655) do
   end
 
   create_table "pedidos", force: :cascade do |t|
-    t.integer  "order_id"
     t.string   "sku"
     t.integer  "cantidad"
     t.decimal  "precio_unitario"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20150526180655) do
     t.integer  "cantidadDespachada"
     t.string   "estado"
     t.string   "fechaEntrega"
+    t.string   "order_id"
   end
 
   create_table "productos", force: :cascade do |t|
@@ -50,7 +51,6 @@ ActiveRecord::Schema.define(version: 20150526180655) do
     t.string   "username"
     t.string   "password_digest"
     t.string   "token"
-    t.boolean  "token_active"
     t.datetime "token_expires_at"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
