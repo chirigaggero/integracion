@@ -42,9 +42,9 @@ class InternacionalController < ApplicationController
 								    pedido.precio_unitario = precioUnitario
 								    pedido.cantidad = cantidad
 
-								    pedido.save
+								    #pedido.save
 									if Bodega.validar_pedido?(pedido)
-										#pedido.save
+										pedido.save
 									end
 							    end
 							end
