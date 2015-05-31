@@ -1,5 +1,5 @@
 class CompraB2B < ActiveRecord::Base
-	def registro
+	def self.registro
 		# Grupo 3: http://integra3.ing.puc.cl/b2b/documentation/
 		url = "http://integra3.ing.puc.cl/b2b/new_user/"
 		headers = {"Content-Type"=> "application/json", "Accept" => "application/json"}
