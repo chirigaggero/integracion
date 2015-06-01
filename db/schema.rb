@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150530205227) do
+ActiveRecord::Schema.define(version: 20150531213715) do
 
   create_table "bancos", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -33,6 +33,11 @@ ActiveRecord::Schema.define(version: 20150530205227) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "oc_managers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "pedidos", force: :cascade do |t|
     t.string   "sku"
     t.integer  "cantidad"
@@ -50,6 +55,21 @@ ActiveRecord::Schema.define(version: 20150530205227) do
     t.string   "prod_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "transitos", force: :cascade do |t|
+    t.boolean  "azucar"
+    t.boolean  "madera"
+    t.boolean  "celulosa"
+    t.boolean  "chocolate"
+    t.boolean  "pasta_semola"
+    t.boolean  "semola"
+    t.boolean  "sal"
+    t.boolean  "huevo"
+    t.boolean  "cacao"
+    t.boolean  "leche"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "users", force: :cascade do |t|

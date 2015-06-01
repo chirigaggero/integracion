@@ -28,8 +28,11 @@ class Banco < ActiveRecord::Base
   #metodo para pagar a fabrica
   def self.pagar_a_fabrica total
 
+
     header1 = {"Content-Type"=> "application/json"}
-    body= { "monto" => total,
+    body= {
+
+            "monto" => total,
             "origen" =>$micuenta,
             "destino" =>cuenta_fabrica,
     }
@@ -59,6 +62,7 @@ def self.cuenta_fabrica
 
   url = "http://integracion-2015-dev.herokuapp.com/bodega/fabrica/getCuenta"
   header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+
 
   result = HTTParty.get(url,:headers => header1 )
 

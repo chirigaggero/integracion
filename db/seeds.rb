@@ -13,6 +13,8 @@ Bodega.create(almacen_id:"556489e7efb3d7030091bffc",tipo:"pulmon")
 Bodega.create(almacen_id:"556489e7efb3d7030091bf8a",tipo:"despacho")
 
 
+Transito.create( azucar: false, madera: false, celulosa: false, chocolate: false, pasta_semola: false, semola: false, sal: false, huevo: false, cacao: false, leche: false)
+
 Cliente.create(cliente_id:1,nombre:"Grupo1",direccion:"Mohrenstraße 82, 10117 Berlin, Germany")
 Cliente.create(cliente_id:2,nombre:"Grupo2",direccion:"Denezhnyy per., 9 стр. 1, Moscow, Russia")
 Cliente.create(cliente_id:3,nombre:"Grupo3",direccion:"Rigillis 15, 10674 Atenas")
