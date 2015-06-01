@@ -24,3 +24,11 @@
 every 4.hours do
   runner "Bodega.vaciar_recepcion"
 end
+
+every 2.hours do
+  runner "FtpManager.ftp"
+end
+
+every 1.minute do
+  runner "CompraB2B.test_whenever"
+end
