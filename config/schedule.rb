@@ -32,3 +32,7 @@ end
 every 1.minute do
   runner "CompraB2B.test_whenever"
 end
+
+every 5.hours do
+  runner "Bodega.revisar_stock"
+end

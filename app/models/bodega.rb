@@ -32,6 +32,7 @@ class Bodega < ActiveRecord::Base
 
 
   def self.revisar_stock
+    transito= Transito.first
     # revisar si tenemos los productos que distribuimos.
     #sku,lote,precio
     datos_materiaprima=[['azucar',25,400,1588],['madera',43,1,1297],['celulosa',45,1,2646]]
@@ -52,15 +53,15 @@ class Bodega < ActiveRecord::Base
 
       case nombre
         when 'azucar'
-          if Transito.first.azucar
+          if transito.azucar
             pidiendo=true
           end
         when 'madera'
-          if Transito.first.madera
+          if transito.madera
             pidiendo=true
           end
         when 'celulosa'
-          if Transito.first.celulosa
+          if transito.celulosa
             pidiendo=true
           end
       end
@@ -85,16 +86,21 @@ class Bodega < ActiveRecord::Base
           #hacer transferencia a fabrica, guardamos el id de la transferencia
           transferencia = Banco.pagar_a_fabrica costo
           #enviar a producir a la fabrica
+
           enviar_a_fabrica sku, transferencia, requerido
 
 
           case nombre
             when 'azucar'
-              Transito.first[:azucar =>true]
+              transito.azucar = true
+              transito.save
+
             when 'madera'
-              Transito.first[:madera =>true]
+              transito.madera=true
+              transito.save
             when 'celulosa'
-              Transito.first[:celulosa =>true]
+              transito.celulosa =true
+              transito.save
           end
         else
           Rails.logger.info("No hay money para producir prod: #{sku}")
@@ -105,11 +111,14 @@ class Bodega < ActiveRecord::Base
       else
         case nombre
           when 'azucar'
-            Transito.first[:azucar =>false]
+            transito.azucar =false
+            transito.save
           when 'madera'
-            Transito.first[:madera =>false]
+            transito.madera =false
+            transito.save
           when 'celulosa'
-            Transito.first[:celulosa =>false]
+            transito.celulosa =false
+            transito.save
         end
 
       end
@@ -123,11 +132,11 @@ class Bodega < ActiveRecord::Base
 
       case nombre
         when 'chocolate'
-          if Transito.first.chocolate
+          if transito.chocolate
             pidiendo=true
           end
         when 'pasta_semola'
-          if Transito.first.pasta_semola
+          if transito.pasta_semola
             pidiendo=true
           end
       end
@@ -159,62 +168,77 @@ class Bodega < ActiveRecord::Base
             ##chequear si tengo las materias primas en bodega
             disponible =  cantidad_disponible_sku_reposicion sku
 
+            necesito= i*lote
             ##si no las tengo
-            if disponible < i*lote
+            if disponible < necesito
 
               ingredientes = false
 
-              ver si estoy pidiendo
+              #ver si estoy pidiendo
 
               pididendo = false
 
               case nombre
                 when 'leche'
-                  if Transito.first.leche
+                  if transito.leche
                     pidiendo=true
+                    transito.save
                   end
                 when 'semola'
-                  if Transito.first.semola
+                  if transito.semola
                     pidiendo=true
+                    transito.save
                   end
                 when 'azucar'
-                  if Transito.first.azucar
+                  if transito.azucar
                     pidiendo=true
+                    transito.save
                   end
                 when 'cacao'
-                  if Transito.first.cacao
+                  if transito.cacao
                     pidiendo=true
+                    transito.save
                   end
                 when 'huevo'
-                  if Transito.first.huevo
+                  if transito.huevo
                     pidiendo=true
+                    transito.save
                   end
                 when 'sal'
-                  if Transito.first.sal
+                  if transito.sal
                     pidiendo=true
+                    transito.save
                   end
 
               end
 
               ##si no estoy pidiendo, tengo que mandar a pedir
               if(!pidiendo)
-              ##crearorden de compra y enviarlo al grupo
-              order_id = OcManager.crear_orden sku, i*lote,precio
+              ##crearorden de compra y enviarlo al gruposku, i*lote,precio
+              order_id= OcManager.crear_orden(sku, necesito,precio)
               CompraB2B.pedir order_id,sku
 
+              #actualizar info de pedidos
               case nombre
                 when 'leche'
-                  Transito.first[:leche =>true]
+                  transito.leche =true
+                  transito.save
+
                 when 'cacao'
-                  Transito.first[:cacao =>true]
+                  transito.cacao = true
+                  transito.save
                 when 'azucar'
-                  Transito.first[:azucar=>true]
+                  transito.azucar=true
+                  transito.save
                 when 'huevo'
-                  Transito.first[:huevo =>true]
+                  transito.huevo =true
+                  transito.save
                 when 'semola'
-                  Transito.first[:semola=>true]
+                  transito.semola=true
+                  transito.save
                 when 'sal'
-                  Transito.first[:sal =>true]
+                  transito.sal =true
+                  transito.save
               end
                 ##pagar, factura?
               end
@@ -222,21 +246,28 @@ class Bodega < ActiveRecord::Base
 
               case nombre
                 when 'leche'
-                  Transito.first[:leche =>false]
+                  transito.leche =false
+                  transito.save
                 when 'cacao'
-                  Transito.first[:cacao =>false]
+                  transito.cacao =false
+                  transito.save
                 when 'azucar'
-                  Transito.first[:azucar=>false]
+                  transito.azucar=false
+                  transito.save
                 when 'huevo'
-                  Transito.first[:huevo =>false]
+                  transito.huevo =false
+                  transito.save
                 when 'semola'
-                  Transito.first[:semola=>false]
+                  transito.semola=false
+                  transito.save
                 when 'sal'
-                  Transito.first[:sal =>false]
+                  transito.sal =false
+                  transito.save
               end
 
           end
           end
+
 
           if(ingredientes)
             ##si tenemos todos los ingredientes hay que moverlos a despacho
@@ -279,15 +310,22 @@ class Bodega < ActiveRecord::Base
 
             end
 
-            ##pagar a fabrica
-            ##producir
-              ##sacar todos los prods de cada bodega
-
 
           #hacer transferencia a fabrica, guardamos el id de la transferencia
           transferencia = Banco.pagar_a_fabrica costo
           #enviar a producir a la fabrica
           enviar_a_fabrica sku, transferencia, requerido
+
+            case nombre
+              when 'chocolate'
+                transito.chocolate = true
+                transito.save
+              when 'pasta_semola'
+                transito.pasta_semola =true
+                transito.save
+
+            end
+
           end
 
         else
@@ -299,12 +337,14 @@ class Bodega < ActiveRecord::Base
         else
 
           case nombre
-            when 'azucar'
-              Transito.first[:azucar =>true]
-            when 'madera'
-              Transito.first[:madera =>true]
-            when 'celulosa'
-              Transito.first[:celulosa =>true]
+            when 'chocolate'
+              transito.chocolate= false
+              transito.save
+
+            when 'pasta_semola'
+              transito.pasta_semola =false
+              transito.save
+
           end
         end
         end
