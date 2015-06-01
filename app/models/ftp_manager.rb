@@ -1,5 +1,5 @@
-class InternacionalController < ApplicationController
-	def ftp
+class FtpManager < ActiveRecord::Base
+	def self.ftp
 
 		require 'net/sftp'
 

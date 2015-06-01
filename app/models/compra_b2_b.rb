@@ -72,6 +72,9 @@ class CompraB2B < ActiveRecord::Base
 			body = {"order_id" => order_id}
 			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		end
+	end
 
+	def self.test_whenever
+		#Rails.logger.info("estoy funcionando whenever")	
 	end
 end
