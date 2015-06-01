@@ -384,7 +384,7 @@ class Bodega < ActiveRecord::Base
 
       else
         Rails.logger.info("error en la conexion")
-        return 0
+        return -10
     end
     return cantidad
   end
@@ -455,8 +455,10 @@ class Bodega < ActiveRecord::Base
   ##obtener la cantidad disponible para efectos de validar pedido
   def self.cantidad_disponible_sku_pedido pedido
     sku=pedido.sku
-    #se itera sobre las primeras 4 bodegas
-    Bodega.first(4)[0..3].each do | almacen |
+    total=0
+    usado=0
+    #se itera sobre las bodegas normales
+    Bodega.first(2)[0..1].each do | almacen |
       params = ["GET", almacen.almacen_id]
       security = claveSha1(params)
 
@@ -466,7 +468,7 @@ class Bodega < ActiveRecord::Base
 
       ##obtenemos la cantidad total del almacen
       resultado = almacen.get_cantidad_total(url,header1,sku)
-      total+=resultado
+      total += resultado
     end
 
     ##obtenemos lo usado por pedidos anteriores

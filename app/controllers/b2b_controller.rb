@@ -98,7 +98,10 @@ class B2bController < ApplicationController
 
         if Bodega.validar_pedido?(pedido)
           pedido.save
-          render json: { success: true, message:  "La orden de compra ha sido aceptada"},status: :ok
+          #conectarnos a api del otro grupo,especificamente a order_accepted
+          #crear factura
+          #conectaarse a api del otro grupo y entregarle factura
+          render json: { success: true, message:  "La orden de compra ha sido recibida"},status: :ok
         else
           pedido.save
           #Pedido.delete(pedido)
