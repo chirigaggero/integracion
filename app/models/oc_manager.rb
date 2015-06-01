@@ -13,7 +13,7 @@ class OcManager < ActiveRecord::Base
       when 2
         cliente= "grupo7"
       when 19
-        cliente "grupo4"
+        cliente= "grupo4"
       when 26
         cliente="grupo5"
       else
