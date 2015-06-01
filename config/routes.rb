@@ -22,6 +22,8 @@ Rails.application.routes.draw do
 
   post 'b2b/invoice_rejected'
 
+  get 'b2b/bank_account'
+
   post 'b2b/prueba'
 
   # The priority is based upon order of creation: first created -> highest priority.

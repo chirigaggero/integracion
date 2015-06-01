@@ -69,8 +69,6 @@ class B2bController < ApplicationController
     end
   end
 
-
-
   #POST /b2b/new_order
   def new_order
     #el programa esta hecho para leer json
@@ -141,6 +139,11 @@ end
 #POST /b2b/invoice_rejected
 def invoice_rejected
   render json: {success: false, message: "No implementado"}, status: :internal_server_error
+end
+
+#GET /b2b/bank_account
+def bank_account
+  render json: {success: true, account: Banco.get_account}, status: :ok
 end
 
 

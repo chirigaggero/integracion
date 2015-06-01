@@ -2,6 +2,9 @@ class Banco < ActiveRecord::Base
 
   $micuenta= "556489daefb3d7030091bab8"
 
+  def self.get_account
+    return $micuenta
+  end
 
 #metodo para obtener mi saldo
 

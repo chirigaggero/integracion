@@ -21,6 +21,7 @@
               <li><a href="#" data-scroll-goto="7">Notificar Factura Emitida</a></li>
               <li><a href="#" data-scroll-goto="8">Notificar Factura Pagada</a></li>
               <li><a href="#" data-scroll-goto="9">Notificar Factura Rechazada</a></li>
+              <li><a href="#" data-scroll-goto="10">Obtener Cuenta Banco</a></li>
             </ul>
           </li> 
         </ul>
@@ -726,6 +727,57 @@
       </div>
     </div>
 </section>
+
+<!-- My Account -->
+<section  data-scroll-index="10">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Obtener Cuenta Banco</h3>
+    </div>
+      <div class="panel-body">
+        <p><strong>Descripción:</strong> Permite obtener el id de la cuenta de nuestro grupo.</p>
+        <p><strong>Method:</strong> <code>GET</code></p>
+        <p><strong>Url:</strong> <code>/b2b/bank_account</code></p>
+        <p><strong>Headers:</strong> <code>Content-Type: application/json, Accept: application/json</code></p>
+        <p><strong>Parámetros:</strong>
+        <code>
+            No Requerido
+        </code>
+        </p>
+        
+        <p><strong>Autentificación:</strong> <code>Authorization Token #token</code></p>
+        <p><strong>Respuesta:</strong></p>
+        <pre>
+            <code>
+              Status Code: 200 OK
+              {
+                  "success" : true,
+                  "account" : "556489daefb3d7030091bab8"
+              }
+            </code>
+          </pre>
+          <p><strong>Ejemplo:</strong></p>
+          <pre>
+            <code>
+              REQUEST:
+              GET /b2b/bank_account HTTP/1.1
+              Host: http://integra8.ing.puc.cl
+              Content-Type: application/json
+              Accept: application/json
+              Authorization Token 5e6e8dfd1b205c10c99aa842b6baba18
+
+              RESPONSE:
+              Status Code: 200 OK
+              Response Body:
+              {
+                  "success": true,
+                  "account": "556489daefb3d7030091bab8"
+              }
+            </code>
+      </div>
+    </div>
+</section>
+
 
   </div>
     
