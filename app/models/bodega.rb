@@ -52,7 +52,6 @@ class Bodega < ActiveRecord::Base
 
   end
 
-
   def self.revisar_stock
 
     transito= Transito.first
@@ -566,7 +565,6 @@ class Bodega < ActiveRecord::Base
 
     capacidad_recepcion = capacidad_disponible(id_recepcion)
 
-
     #ver si el almacen de recepcion tiene productos
     skus = skus_de_almacen(id_pulmon)
 
@@ -577,17 +575,27 @@ class Bodega < ActiveRecord::Base
 
       while !id_producto.nil? and capacidad_recepcion > 0
 
-        mover_producto(id_producto, id_recepcion)
-        capacidad_recepcion -=1
+        if capacidad_recepcion > 0
+
+          mover_producto(id_producto, id_recepcion)
+          capacidad_recepcion -=1
+
+        end
 
         id_producto = obtener_id_producto(id_pulmon, item)
       end
-
 
     end
 
     #al terminar de vaciar lo mas que pueda el almacen pulmon vacia recepcion
     vaciar_recepcion
+
+    uso_pulmon = espacio_usado (id_pulmon)
+    capacidad_recepcion = capacidad_disponible(id_recepcion)
+
+    if uso_pulmon > 0 and capacidad_recepcion > 0
+      vaciar_pulmon
+    end
 
   end
 
@@ -720,8 +728,34 @@ class Bodega < ActiveRecord::Base
       else
         false
     end
+
   end
 
+  #Retorna el espacio en uso del almacen
+  def self.espacio_usado (almacen_id)
+    #conexion y respuesta
+    params = ["GET"]
+    security = Bodega.claveSha1(params)
+
+    url = "http://integracion-2015-dev.herokuapp.com/bodega/almacenes"
+    header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+
+    result = HTTParty.get(url,:headers => header1 )
+
+    #Buscar el almacen dentro de la respuesta y retornar la capacidad disponible
+    en_uso = 0
+
+    result.each do |almacenes|
+
+      if almacenes["_id"] == almacen_id
+        en_uso = almacenes["usedSpace"]
+      end
+
+    end
+
+    return en_uso
+
+  end
 
   def self.cambiar_clave(nueva_clave)
     $key_bodega = nueva_clave
