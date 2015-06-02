@@ -17,7 +17,8 @@ class Pedido < ActiveRecord::Base
   def despachar
 
     id_despacho= Bodega.id_bodegaDespacho
-    cantidad_pedido=self.cantidad-self.cantidadDespachada
+
+    cantidad_pedido=self.cantidad
 
     # mover al almacen de despacho, un producto a la vez
     Bodega.first(2)[0..1].each do | almacen |
@@ -33,19 +34,18 @@ class Pedido < ActiveRecord::Base
 
       while(prod_almacen>0 and cantidad_pedido>0)
 
-        producto = Bodega.obtener_producto(almacen_pedido,self)
+        producto = Bodega.obtener_id_producto(almacen.almacen_id,self.sku)
 
         #mover a almacen de despacho
-        if producto.mover_a_almacen?(id_despacho)
+
+        Bodega.mover_producto(producto, id_despacho)
 
           #mover a la bodega del cliente
-          if producto.mover_b2b?(pedido.direccion)
+          if Bodega.mover_b2b?(producto,pedido.direccion)
             prod_almacen-= 1
             cantidad_pedido-= 1
 
           end
-
-        end
 
       end
 
@@ -54,10 +54,6 @@ class Pedido < ActiveRecord::Base
       end
 
     end
-
-    #Supooniendo que se envio el pedido completo, se manda la factura de la compra
-
-
 
   end
 
