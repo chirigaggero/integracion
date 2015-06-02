@@ -90,7 +90,10 @@ end
   #metodo para pagar a otro grupo
 
   def pagar_b2b cuenta_id, monto
-
+      url = "http://chiri.ing.puc.cl/apolo/trx"
+      headers = {"Content-Type"=> "application/json"}
+      body = {"Monto" => monto, "Origen" => $micuenta, "Destino" => cuenta_id}
+      result = HTTParty.put(url, :headers => headers, :body => body.to_json)
   end
 
 
