@@ -566,6 +566,7 @@ class Bodega < ActiveRecord::Base
 
     capacidad_recepcion = capacidad_disponible(id_recepcion)
 
+
     #ver si el almacen de recepcion tiene productos
     skus = skus_de_almacen(id_pulmon)
 
@@ -581,6 +582,7 @@ class Bodega < ActiveRecord::Base
 
         id_producto = obtener_id_producto(id_pulmon, item)
       end
+
 
     end
 
