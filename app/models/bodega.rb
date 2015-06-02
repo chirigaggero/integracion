@@ -377,9 +377,6 @@ class Bodega < ActiveRecord::Base
   end
 
 
-
-
-
   # Con un almacen id y sku obtenemos el primer producto disponible.
   def self.obtener_producto(almacen_id,pedido)
 
@@ -410,8 +407,6 @@ class Bodega < ActiveRecord::Base
     end
 
   end
-
-
 
 
   ##asigna id de productos a un pedido.
@@ -549,9 +544,6 @@ class Bodega < ActiveRecord::Base
 
   end
 
-
-
-
   #metodo que verifica que pedidos deben ser despachados "hoy" y los manda a despachar
   def despachar_pedidos_de_hoy
 
@@ -565,7 +557,38 @@ class Bodega < ActiveRecord::Base
 
   end
 
+  #Si hay espacio en el almacen de recepcion, mueve la mayor cantidad de productos a esta, y luego vacia recepcion
+  def self.vaciar_pulmon
 
+    id_recepcion = Bodega.third.almacen_id
+    id_pulmon = Bodega.fourth.almacen_id
+
+    capacidad_recepcion = capacidad_disponible(id_recepcion)
+
+    #ver si el almacen de recepcion tiene productos
+    skus = skus_de_almacen(id_pulmon)
+
+    #para cada sku con stock tomar un id y moverlo
+    skus.each do |item|
+
+      id_producto = obtener_id_producto(id_pulmon, item)
+
+      while !id_producto.nil? and capacidad_recepcion > 0
+
+        mover_producto(id_producto, id_recepcion)
+        capacidad_recepcion -=1
+
+        id_producto = obtener_id_producto(id_pulmon, item)
+      end
+
+    end
+
+    #al terminar de vaciar lo mas que pueda el almacen pulmon vacia recepcion
+    vaciar_recepcion
+
+  end
+
+  #Si hay espacio en los almacenes normales, mueve la mayor cantidad de productos a ellos
   def self.vaciar_recepcion
 
     #datos a utilizar
@@ -603,8 +626,6 @@ class Bodega < ActiveRecord::Base
     end
 
   end
-
-
 
   #retorna un arreglo con los sku y cantidad de cada almacen
   def self.skus_de_almacen(almacen_id)
