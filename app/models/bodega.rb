@@ -519,7 +519,7 @@ class Bodega < ActiveRecord::Base
 
   ##obtener la cantidad disponible para efectos de validar pedido
   def self.cantidad_disponible_sku_pedido pedido
-    sku=pedido.sku
+    sku=Integer(pedido.sku)
     total=0
     usado=0
     #se itera sobre las bodegas normales
@@ -536,6 +536,7 @@ class Bodega < ActiveRecord::Base
       total += resultado
     end
 
+    Rails.logger.info("total: #{total}")
     ##obtenemos lo usado por pedidos anteriores
     pedidos = Pedido.first(Pedido.count-1)[0..Pedido.count-2]
     pedidos.each do |pedidox|
@@ -543,7 +544,7 @@ class Bodega < ActiveRecord::Base
         usado+=pedidox.cantidad
       end
     end
-
+    Rails.logger.info("usado: #{usado}")
     return total-usado
 
   end

@@ -103,7 +103,6 @@ class B2bController < ApplicationController
           #conectaarse a api del otro grupo y entregarle factura
           render json: { success: true, message:  "La orden de compra ha sido recibida"},status: :ok
         else
-          pedido.save
           #Pedido.delete(pedido)
           render json: { success: false, message: "No hay stock suficiente en nuestras bodegas"}, status: :internal_server_error
           # CONECTARSE A LA API DEL OTRO GRUPO

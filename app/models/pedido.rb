@@ -24,14 +24,15 @@ class Pedido < ActiveRecord::Base
     Bodega.first(2)[0..1].each do | almacen |
 
       params = ["GET", almacen.almacen_id]
-      security = claveSha1(params)
+      security = Bodega.claveSha1(params)
 
 
       url = "http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
       header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
-      prod_almacen = almacen.get_cantidad_total(url,header1,self.sku)
+      prod_almacen = almacen.get_cantidad_total(url,header1,Integer(self.sku))
 
+      Rails.logger.info("cantidad inicial:#{prod_almacen}")
       while(prod_almacen>0 and cantidad_pedido>0)
 
         producto = Bodega.obtener_id_producto(almacen.almacen_id,self.sku)
@@ -41,7 +42,7 @@ class Pedido < ActiveRecord::Base
         Bodega.mover_producto(producto, id_despacho)
 
           #mover a la bodega del cliente
-          if Bodega.mover_b2b?(producto,pedido.direccion)
+          if Bodega.mover_b2b?(producto,self.direccion)
             prod_almacen-= 1
             cantidad_pedido-= 1
 
@@ -49,11 +50,13 @@ class Pedido < ActiveRecord::Base
 
       end
 
-      if cantidada_pedido == 0
+      if cantidad_pedido == 0
+        Rails.logger.info("cantidad final:#{prod_almacen}")
         break
       end
 
     end
+
 
   end
 
