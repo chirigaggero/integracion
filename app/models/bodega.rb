@@ -4,9 +4,31 @@ class Bodega < ActiveRecord::Base
   $key_bodega = 'DYzY6bQ3XxcyyPm'
 
 
+  def self.mover_b2b?(producto_id, bodega_id)
+
+    params=["POST",producto_id ,bodega_id]
+    security = Bodega.claveSha1(params)
+
+    url="http://integracion-2015-dev.herokuapp.com/bodega/moveStockBodega"
+    header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+    body= { "productoId" => producto_id,
+            "almacenId" =>bodega_id
+    }
+
+    result = HTTParty.post(url,:headers => header1,:body=>body.to_json)
+
+    case result.code
+      when 200
+        true
+      else
+        false
+    end
+
+  end
+
 
   def self.id_bodegaDespacho
-    return Bodega.where(tipo: 'despacho').almacen_id
+    return Bodega.fifth.almacen_id
   end
 
 
@@ -32,6 +54,7 @@ class Bodega < ActiveRecord::Base
 
 
   def self.revisar_stock
+
     transito= Transito.first
     # revisar si tenemos los productos que distribuimos.
     #sku,lote,precio
@@ -44,6 +67,7 @@ class Bodega < ActiveRecord::Base
     skus_complejos = [['chocolate',46,800,1031,datos_chocolate],['pasta_semola',48,500,3256,datos_semola]]
 
     #revisar en las bodegas, y devolver cantidad. [primero las materias primas]
+
     datos_materiaprima.each do |nombre,sku,lote,precio|
 
       disponible =  cantidad_disponible_sku_reposicion sku
@@ -66,12 +90,12 @@ class Bodega < ActiveRecord::Base
           end
       end
 
-      if disponible < 500
+      if disponible < 100
 
         if !pidiendo
         #cantidad requerida
         i=0
-        while disponible+i*lote<500
+        while disponible+i*lote<100
           i+=1
         end
 
@@ -85,10 +109,11 @@ class Bodega < ActiveRecord::Base
         if saldo>=costo
           #hacer transferencia a fabrica, guardamos el id de la transferencia
           transferencia = Banco.pagar_a_fabrica costo
+
           #enviar a producir a la fabrica
 
-          enviar_a_fabrica sku, transferencia, requerido
-
+          e=enviar_a_fabrica sku, transferencia, requerido
+          Rails.logger.info(e)
 
           case nombre
             when 'azucar'
@@ -103,8 +128,7 @@ class Bodega < ActiveRecord::Base
               transito.save
           end
         else
-          Rails.logger.info("No hay money para producir prod: #{sku}")
-          break
+          Rails.logger.info("No hay money para producir prod: #{sku},disponible: #{disponible},requerido: #{requerido},costo: #{costo},saldo: #{saldo}")
         end
 
           end
@@ -143,12 +167,12 @@ class Bodega < ActiveRecord::Base
 
       disponible =  cantidad_disponible_sku_reposicion sku
 
-      if disponible < 500
+      if disponible < 100
 
         if !pidiendo
 
         i=0
-        while disponible+i*lote<500
+        while disponible+i*lote<100
           i+=1
         end
 
@@ -265,7 +289,7 @@ class Bodega < ActiveRecord::Base
                   transito.save
               end
 
-          end
+            end
           end
 
 
@@ -273,7 +297,7 @@ class Bodega < ActiveRecord::Base
             ##si tenemos todos los ingredientes hay que moverlos a despacho
             id_normal1 = Bodega.first.almacen_id
             id_normal2 = Bodega.second.almacen_id
-            id_recepcion = Bodega.third.almacen_id
+            id_despacho = Bodega.fifth.almacen_id
 
 
             #mandar cada ingrediente a despacho
@@ -290,7 +314,8 @@ class Bodega < ActiveRecord::Base
                 prod_almacen = almacen.get_cantidad_total(url,header1,sku)
 
 
-                i*lote=a_mover
+
+                a_mover=i*lote
 
                 while(prod_almacen>0 and a_mover>0)
 
@@ -329,8 +354,8 @@ class Bodega < ActiveRecord::Base
           end
 
         else
-          Rails.logger.info("No hay money para producir prod: #{sku}")
-          break
+          Rails.logger.info("No hay money para producir prod: #{sku},disponible: #{disponible},requerido: #{requerido},costo: #{costo},saldo: #{saldo}")
+
         end
         end
 
@@ -494,7 +519,7 @@ class Bodega < ActiveRecord::Base
 
   ##obtener la cantidad disponible para efectos de validar pedido
   def self.cantidad_disponible_sku_pedido pedido
-    sku=pedido.sku
+    sku=Integer(pedido.sku)
     total=0
     usado=0
     #se itera sobre las bodegas normales
@@ -511,6 +536,7 @@ class Bodega < ActiveRecord::Base
       total += resultado
     end
 
+    Rails.logger.info("total: #{total}")
     ##obtenemos lo usado por pedidos anteriores
     pedidos = Pedido.first(Pedido.count-1)[0..Pedido.count-2]
     pedidos.each do |pedidox|
@@ -518,7 +544,7 @@ class Bodega < ActiveRecord::Base
         usado+=pedidox.cantidad
       end
     end
-
+    Rails.logger.info("usado: #{usado}")
     return total-usado
 
   end
@@ -529,7 +555,7 @@ class Bodega < ActiveRecord::Base
   #metodo que verifica que pedidos deben ser despachados "hoy" y los manda a despachar
   def despachar_pedidos_de_hoy
 
-    pedidos = Pedido.where(fechaEntrega: DateTime.now.strftime("%Y-%m-%d")).or(estado: 'pendiente')
+    pedidos = Pedido.where(fechaEntrega: DateTime.now.strftime("%Y-%m-%d"))
 
     pedidos.each do |pedido|
 

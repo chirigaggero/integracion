@@ -17,46 +17,45 @@ class Pedido < ActiveRecord::Base
   def despachar
 
     id_despacho= Bodega.id_bodegaDespacho
-    cantidad_pedido=self.cantidad-self.cantidadDespachada
+
+    cantidad_pedido=self.cantidad
 
     # mover al almacen de despacho, un producto a la vez
     Bodega.first(2)[0..1].each do | almacen |
 
       params = ["GET", almacen.almacen_id]
-      security = claveSha1(params)
+      security = Bodega.claveSha1(params)
 
 
       url = "http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
       header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
-      prod_almacen = almacen.get_cantidad_total(url,header1,self.sku)
+      prod_almacen = almacen.get_cantidad_total(url,header1,Integer(self.sku))
 
+      Rails.logger.info("cantidad inicial:#{prod_almacen}")
       while(prod_almacen>0 and cantidad_pedido>0)
 
-        producto = Bodega.obtener_producto(almacen_pedido,self)
+        producto = Bodega.obtener_id_producto(almacen.almacen_id,self.sku)
 
         #mover a almacen de despacho
-        if producto.mover_a_almacen?(id_despacho)
+
+        Bodega.mover_producto(producto, id_despacho)
 
           #mover a la bodega del cliente
-          if producto.mover_b2b?(pedido.direccion)
+          if Bodega.mover_b2b?(producto,self.direccion)
             prod_almacen-= 1
             cantidad_pedido-= 1
 
           end
 
-        end
-
       end
 
-      if cantidada_pedido == 0
+      if cantidad_pedido == 0
+        Rails.logger.info("cantidad final:#{prod_almacen}")
         break
       end
 
     end
-
-    #Supooniendo que se envio el pedido completo, se manda la factura de la compra
-
 
 
   end

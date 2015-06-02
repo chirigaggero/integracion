@@ -68,18 +68,18 @@ ActiveRecord::Schema.define(version: 20150531232718) do
   end
 
   create_table "transitos", force: :cascade do |t|
-    t.boolean  "azucar",       default: false
-    t.boolean  "madera",       default: false
-    t.boolean  "celulosa",     default: false
-    t.boolean  "chocolate",    default: false
-    t.boolean  "pasta_semola", default: false
-    t.boolean  "semola",       default: false
-    t.boolean  "sal",          default: false
-    t.boolean  "huevo",        default: false
-    t.boolean  "cacao",        default: false
-    t.boolean  "leche",        default: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.boolean  "azucar"
+    t.boolean  "madera"
+    t.boolean  "celulosa"
+    t.boolean  "chocolate"
+    t.boolean  "pasta_semola"
+    t.boolean  "semola"
+    t.boolean  "sal"
+    t.boolean  "huevo"
+    t.boolean  "cacao"
+    t.boolean  "leche"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "users", force: :cascade do |t|
