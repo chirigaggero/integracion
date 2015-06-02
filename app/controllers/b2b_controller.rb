@@ -24,8 +24,9 @@ class B2bController < ApplicationController
 
   # POST /b2b/new_user
   def new_user
-    username = params["username"]
-    password = params["password"]
+    respuesta = JSON.parse(request.body.read)
+    username = respuesta["username"]
+    password = respuesta["password"]
 
     if username.nil? or password.nil?
       render json: {success: false, message: "El usuario y password no pueden estar en blanco."}, status: :bad_request
@@ -39,12 +40,17 @@ class B2bController < ApplicationController
         render json: {success: true, message: "Su usuario ha sido creado exitosamente.", token: token}, status: :created
       end
     end
+
+    rescue
+      render json: {success: false, message: "JSON Malformado."}, status: :bad_request
   end
 
   #POST /b2b/get_token
   def get_token
-    username = params["username"]
-    password = params["password"]
+    respuesta = JSON.parse(request.body.read)
+    username = respuesta["username"]
+    password = respuesta["password"]
+
     if username.nil? or password.nil?
       render json: {success: false, message: "El usuario y password no pueden estar en blanco."}, status: :bad_request
     else
@@ -55,110 +61,90 @@ class B2bController < ApplicationController
         render json: {success: false, message: "Usuario o password invalidos."}, status: :bad_request
       end
     end
+
+    rescue
+      render json: {success: false, message: "JSON Malformado."}, status: :bad_request
   end
 
-  def prueba
-    header1 = {"Content-Type"=> "application/json"}
-    orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/123",:headers => header1)
-    hola="hola"
-
-    if !orden[0]["msg"].nil?
-      render json: {success: false, message: "error. Orden inválida"},status: :bad_request
-    else
-      render json: { success: true, message:  "La orden de compra ha sido recibida exitosamente."},status: :ok
-    end
-  end
-
-  #POST /b2b/new_order
+  #PUT /b2b/new_order
   def new_order
-    #el programa esta hecho para leer json
-    #verifico que sea json
     respuesta = JSON.parse(request.body.read)
     order_id = respuesta["order_id"]
+    bodega_id = respuesta["bodega_id"]
 
-    if  !order_id.nil?
-      header1 = {"Content-Type"=> "application/json"}
-      orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}",:headers => header1)
-
-      if !orden[0]["msg"].nil?
-        render json: {success: false, message: "Error, Orden invalida."},status: :bad_request
-      else
-        pedido=Pedido.new
-        pedido.sku = orden[0]["sku"]
-        pedido.cantidad = orden[0]["cantidad"]
-        pedido.precio_unitario = orden[0]["precioUnitario"]
-        cliente = orden[0]["cliente"]
-        #pedido.direccion = Cliente.get_direccion(cliente)
-        pedido.fechaEntrega = orden[0]["fechaEntrega"][0..9]
-        pedido.cantidadDespachada = 0
-        pedido.estado = 'creado'
-
-        #cosa = Bodega.validar_pedido?(pedido)
-        #render json: { success: false, message: cosa}, status: :internal_server_error
-
-        if Bodega.validar_pedido?(pedido)
-          pedido.save
-          #conectarnos a api del otro grupo,especificamente a order_accepted
-          #crear factura
-          #conectaarse a api del otro grupo y entregarle factura
-          render json: { success: true, message:  "La orden de compra ha sido recibida"},status: :ok
-        else
-          pedido.save
-          #Pedido.delete(pedido)
-          render json: { success: false, message: "No hay stock suficiente en nuestras bodegas"}, status: :internal_server_error
-          # CONECTARSE A LA API DEL OTRO GRUPO
-        end
-      end
+    if order_id.nil? or bodega_id.nil?
+      render json: {success: false, message: "Los parametros order_id y bodega_id no pueden estar en blanco."}, status: :bad_request
     else
-      render json: {success: false, message: "Error en los parametros"},status: :bad_request
+      # consultamos al sistema de ordenes de compra
+      headers = {"Content-Type"=> "application/json"}
+      orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}",:headers => headers)
+      # guardamos pedido
+      pedido=Pedido.new
+      pedido.sku = orden[0]["sku"]
+      pedido.cantidad = orden[0]["cantidad"]
+      pedido.precio_unitario = orden[0]["precioUnitario"]
+      pedido.fechaEntrega = orden[0]["fechaEntrega"][0..9]
+      pedido.cantidadDespachada = 0
+      pedido.direccion = bodega_id
+      pedido.estado = "creado"
+      # identificamos al cliente
+      cliente = orden[0]["cliente"].to_i
+      
+      #validamos el pedido para ver si lo podemos satisfacer
+      if Bodega.validar_pedido?(pedido)
+        pedido.save
+        # informamos al grupo que la orden fue aceptada
+        CompraB2B.aceptar_orden order_id, cliente
+        # generamos factura y notificamos al grupo
+        CompraB2B.generar_factura cliente
+        CompraB2B.notificar_factura cliente
+        # enviamos el mensaje
+        render json: { success: true, message:  "La orden de compra ha sido aceptada."}, status: :ok
+      else
+        # informamos al grupo que la orden fue rechazada
+        CompraB2B.rechazar_orden order_id, cliente
+        # enviamos el mensaje
+        render json: { success: false, message: "La orden de compra ha sido rechazada."}, status: :internal_server_error
+      end
     end
+
+    rescue
+      render json: {success: false, message: "JSON Malformado."}, status: :bad_request
   end
 
-#POST /b2b/order_accepted
-def order_accepted
-  render json: {success: false, message: "No implementado"}, status: :internal_server_error
-end
-
-#POST /b2b/order_canceled
-def order_canceled
-  render json: {success: false, message: "No implementado"}, status: :internal_server_error
-end
-
-#POST /b2b/order_rejected
-def order_rejected
-  render json: {success: false, message: "No implementado"}, status: :internal_server_error
-end
-
-#POST /b2b/invoice_paid
-def invoice_created
-  render json: {success: false, message: "No implementado"}, status: :internal_server_error
-end
-
-#POST /b2b/invoice_paid
-def invoice_paid
-  render json: {success: false, message: "No implementado"}, status: :internal_server_error
-end
-
-#POST /b2b/invoice_rejected
-def invoice_rejected
-  render json: {success: false, message: "No implementado"}, status: :internal_server_error
-end
-
-#GET /b2b/bank_account
-def bank_account
-  render json: {success: true, account: Banco.get_account}, status: :ok
-end
-
-
-#validador de json
-def valid_json?()
-  respuesta = JSON.parse(request.body.read)
-  if respuesta["order_id"]
-     true
-  else
-     false
+  #POST /b2b/order_accepted
+  def order_accepted
+    render json: {success: false, message: "Gracias por avisar."}, status: :ok
   end
-end
 
+  #POST /b2b/order_canceled
+  def order_canceled
+    render json: {success: false, message: "Gracias por avisar."}, status: :ok
+  end
+
+  #POST /b2b/order_rejected
+  def order_rejected
+    render json: {success: false, message: "No implementado"}, status: :internal_server_error
+  end
+
+  #POST /b2b/invoice_paid
+  def invoice_created
+    render json: {success: false, message: "Gracias por avisar."}, status: :ok
+  end
+
+  #POST /b2b/invoice_paid
+  def invoice_paid
+    render json: {success: false, message: "Gracias por avisar."}, status: :ok
+  end
+
+  #POST /b2b/invoice_rejected
+  def invoice_rejected
+    render json: {success: false, message: "Gracias por avisar."}, status: :ok
+  end
+
+  #GET /b2b/bank_account
+  def bank_account
+    render json: {success: true, account: Banco.get_account}, status: :ok
+  end
 
 end

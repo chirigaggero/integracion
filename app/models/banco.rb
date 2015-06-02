@@ -89,7 +89,7 @@ end
 
   #metodo para pagar a otro grupo
 
-  def pagar_b2b cuenta_id
+  def pagar_b2b cuenta_id, monto
 
   end
 
