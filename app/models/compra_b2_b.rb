@@ -153,13 +153,13 @@ class CompraB2B < ActiveRecord::Base
 			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo4"
 			token = obtener_token 4
-			url = "http://integra4.ing.puc.cl/b2b/order_accepted.json"
+			url = "http://integra4.ing.puc.cl/b2b/order_rejected.json"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
 			body = {"token" => token, "order_id" => order_id}
 			result = HTTParty.get(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo5"
 			token = obtener_token 5
-			url = "http://integra5.ing.puc.cl/b2b/order_accepted/"
+			url = "http://integra5.ing.puc.cl/b2b/order_rejected/"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
 			body = {"order_id" => order_id}
 			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
@@ -167,7 +167,7 @@ class CompraB2B < ActiveRecord::Base
 			# API MALA
 		elsif cliente=="grupo7"
 			token = obtener_token 7
-			url = "http://integra7.ing.puc.cl/api/accepted_order"
+			url = "http://integra7.ing.puc.cl/api/rejected_order"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "authorization" => "#{token}"}
 			body = {"order_id" => order_id}
 			result = HTTParty.put(url, :headers => headers, :body => body.to_json)
