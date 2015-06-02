@@ -25,6 +25,10 @@ every 4.hours do
   runner "Bodega.vaciar_recepcion"
 end
 
+every 10.hours do
+  runner "Bodega.vaciar_pulmon"
+end
+
 every 2.hours do
   runner "FtpManager.ftp"
 end
