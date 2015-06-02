@@ -537,8 +537,9 @@ class Bodega < ActiveRecord::Base
     end
 
     Rails.logger.info("total: #{total}")
+
     ##obtenemos lo usado por pedidos anteriores
-    pedidos = Pedido.first(Pedido.count-1)[0..Pedido.count-2]
+    pedidos = Pedido.where.not("id=#{pedido.id}")
     pedidos.each do |pedidox|
       if pedidox.sku.equal? pedido.sku
         usado+=pedidox.cantidad

@@ -114,17 +114,27 @@ class B2bController < ApplicationController
 
   #POST /b2b/order_accepted
   def order_accepted
-    render json: {success: false, message: "Gracias por avisar."}, status: :ok
+    render json: {success: true, message: "Gracias por avisar."}, status: :ok
   end
 
   #POST /b2b/order_canceled
   def order_canceled
-    render json: {success: false, message: "Gracias por avisar."}, status: :ok
+    render json: {success: true, message: "Gracias por avisar."}, status: :ok
   end
 
   #POST /b2b/order_rejected
   def order_rejected
-    render json: {success: false, message: "No implementado"}, status: :internal_server_error
+    #hay obtener el order id del json
+    respuesta = JSON.parse(request.body.read)
+    order_id = respuesta["order_id"]
+    #chequear el sku de la orden de compra
+    orden = OcManager.obtener_orden order_id
+    sku= orden[0]["sku"]
+    #cancelamos internamente el pedido que contabamos como "aceptado"
+    Transito.cancelar_pedido sku
+
+    #retornamos un json
+    render json: {success: true, message: "Gracias por avisar"}, status: :ok
   end
 
   #POST /b2b/invoice_paid

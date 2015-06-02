@@ -54,8 +54,9 @@ class OcManager < ActiveRecord::Base
 
   end
 
-  def obtener_orden order_id
-
+  def self.obtener_orden order_id
+    headers = {"Content-Type"=> "application/json"}
+    orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}",:headers => headers)
   end
 
 end

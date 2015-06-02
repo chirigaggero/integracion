@@ -174,17 +174,16 @@ class CompraB2B < ActiveRecord::Base
 		end
 	end
 
-	def self.generar_factura cliente
-		if cliente=="grupo1"
-			# NO INTERACTUAMOS CON ELLOS
-		elsif cliente=="grupo2"
-			# NO INTERACTUAMOS CON ELLOS
-		elsif cliente=="grupo3"
-		elsif cliente=="grupo4"
-		elsif cliente=="grupo5"
-		elsif cliente=="grupo6"
-		elsif cliente=="grupo7"
-		end
+	# conectarse a servicio de factura  y entregar el id de la factura creada a partir de una orden de compra
+	def self.generar_factura order_id
+
+
+		url="http://chiri.ing.puc.cl/zeus"
+		headers = {"Content-Type"=> "application/json"}
+		body = {"order_id" => order_id}
+		result = HTTParty.put(url, :headers => headers, :body => body.to_json)
+		#esta malo, pero no se como me devuelve el id de la transaccion.. [cerraron las URLS]
+		result.to_s
 	end
 
 	def self.notificar_factura cliente
