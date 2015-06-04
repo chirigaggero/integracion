@@ -6,11 +6,11 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-Bodega.create(almacen_id:"556489e7efb3d7030091bf8b",tipo:"normal")
-Bodega.create(almacen_id:"556489e7efb3d7030091bffb",tipo:"normal")
-Bodega.create(almacen_id:"556489e7efb3d7030091bf89",tipo:"recepcion")
-Bodega.create(almacen_id:"556489e7efb3d7030091bffc",tipo:"pulmon")
-Bodega.create(almacen_id:"556489e7efb3d7030091bf8a",tipo:"despacho")
+Bodega.create(almacen_id:"55648ae7f89fed0300525422",tipo:"normal")
+Bodega.create(almacen_id:"55648ae7f89fed030052545c",tipo:"normal")
+Bodega.create(almacen_id:"55648ae7f89fed0300525420",tipo:"recepcion")
+Bodega.create(almacen_id:"55648ae7f89fed030052545d",tipo:"pulmon")
+Bodega.create(almacen_id:"55648ae7f89fed0300525421",tipo:"despacho")
 
 
 Transito.create( azucar: false, madera: false, celulosa: false, chocolate: false, pasta_semola: false, semola: false, sal: false, huevo: false, cacao: false, leche: false)

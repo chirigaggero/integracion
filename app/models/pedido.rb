@@ -27,7 +27,7 @@ class Pedido < ActiveRecord::Base
       security = Bodega.claveSha1(params)
 
 
-      url = "http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
+      url = "http://integracion-2015-prod.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
       header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
       prod_almacen = almacen.get_cantidad_total(url,header1,Integer(self.sku))
@@ -42,11 +42,17 @@ class Pedido < ActiveRecord::Base
         Bodega.mover_producto(producto, id_despacho)
 
           #mover a la bodega del cliente
-          if Bodega.mover_b2b?(producto,self.direccion)
+          if self.ftp
+            Bodega.mover_ftp(producto,self.direccion)
+          else
+            Bodega.mover_b2b?(producto,self.direccion)
+          end
+
+
             prod_almacen-= 1
             cantidad_pedido-= 1
 
-          end
+
 
       end
 

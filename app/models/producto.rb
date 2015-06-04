@@ -6,7 +6,7 @@ class Producto < ActiveRecord::Base
     params=["POST",self.prod_id, bodega_id]
     security = Bodega.claveSha1(params)
 
-    url="http://integracion-2015-dev.herokuapp.com/bodega/moveStock"
+    url="http://integracion-2015-prod.herokuapp.com/bodega/moveStock"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
     body= { "productoId" => self.prod_id,
            "almacenId" =>bodega_id
@@ -30,7 +30,7 @@ class Producto < ActiveRecord::Base
     params=["POST",self.prod_id ,bodega_id]
     security = Bodega.claveSha1(params)
 
-    url="http://integracion-2015-dev.herokuapp.com/bodega/moveStockBodega"
+    url="http://integracion-2015-prod.herokuapp.com/bodega/moveStockBodega"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
     body= { "productoId" => self.prod_id,
             "almacenId" =>bodega_id

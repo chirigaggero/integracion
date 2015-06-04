@@ -77,7 +77,7 @@ class B2bController < ApplicationController
     else
       # consultamos al sistema de ordenes de compra
       headers = {"Content-Type"=> "application/json"}
-      orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}",:headers => headers)
+      orden = HTTParty.get("http://moyas.ing.puc.cl:8080/Jboss/integra8/OrdenCompra/obtener/#{order_id}",:headers => headers)
       # guardamos pedido
       pedido=Pedido.new
       pedido.sku = orden[0]["sku"]
@@ -87,8 +87,9 @@ class B2bController < ApplicationController
       pedido.cantidadDespachada = 0
       pedido.direccion = bodega_id
       pedido.estado = "creado"
+      pedido.ftp=false
       # identificamos al cliente
-      cliente = orden[0]["cliente"].to_i
+      cliente = orden[0]["cliente"]
       
       #validamos el pedido para ver si lo podemos satisfacer
       if Bodega.validar_pedido?(pedido)

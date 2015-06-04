@@ -192,14 +192,49 @@ class CompraB2B < ActiveRecord::Base
 
 	# conectarse a servicio de factura  y entregar el id de la factura creada a partir de una orden de compra
 	def self.generar_factura order_id
-
-
-		url="http://chiri.ing.puc.cl/zeus"
+		url="http://moyas.ing.puc.cl:8080/Jboss/integra8/Factura"
 		headers = {"Content-Type"=> "application/json"}
-		body = {"order_id" => order_id}
+		body = {"oc" => order_id}
 		result = HTTParty.put(url, :headers => headers, :body => body.to_json)
-		#esta malo, pero no se como me devuelve el id de la transaccion.. [cerraron las URLS]
-		result.to_s
+
+		#retornar id de la factura
+		case result.code
+
+			when 200
+				id= result["_id"]
+				return id
+			when 202
+				id= result["_id"]
+				return id
+
+			else
+				Rails.logger.info "error en la conexion #{result.code}"
+				return -1000
+		end
+
+	end
+
+
+	def self.obtener_factura factura_id
+		url="http://moyas.ing.puc.cl:8080/Jboss/integra8/Factura"
+		headers = {"Content-Type"=> "application/json"}
+		body = {"oc" => order_id}
+		result = HTTParty.put(url, :headers => headers, :body => body.to_json)
+
+		#retornar id de la factura
+		case result.code
+
+			when 200
+				id= result["_id"]
+				return id
+			when 202
+				id= result["_id"]
+				return id
+
+			else
+				Rails.logger.info "error en la conexion #{result.code}"
+				return -1000
+		end
 	end
 
 	def self.notificar_factura invoice_id, cliente
@@ -228,11 +263,17 @@ class CompraB2B < ActiveRecord::Base
 			body = {"invoice_id" => invoice_id}
 			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo7"
+			token = obtener_token 7
+			url = "http://integra7.ing.puc.cl/api/issued_invoice"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "authorization" => "#{token}"}
+			body = {"invoice_id" => order_id}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		end
+
 	end
 
 	def self.test_whenever
-		#Rails.logger.info("estoy funcionando whenever")	
+		Rails.logger.info("estoy funcionando whenever")
 	end
 
 
