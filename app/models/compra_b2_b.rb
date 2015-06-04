@@ -17,7 +17,10 @@ class CompraB2B < ActiveRecord::Base
 			# API MALA
 		# Grupo 6: http://integra6.ing.puc.cl/api/documentation
 		elsif grupo==6
-			# API MALA
+			url = "http://integra6.ing.puc.cl/b2b/new_user/"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json"}
+			body = {"username" => "grupo8", "password" => "grupo8ti2015"}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		# Grupo 7: http://integra7.ing.puc.cl/api/documentation
 		elsif grupo==7
 			url = "http://integra7.ing.puc.cl/api/register_group"
@@ -53,7 +56,12 @@ class CompraB2B < ActiveRecord::Base
 		# Grupo 6: http://integra6.ing.puc.cl/api/documentation
 		elsif grupo==6
 			registro 6
-			# API MALA
+			url = "http://integra6.ing.puc.cl/b2b/get_token/"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json"}
+			body = {"username" => "grupo8", "password" => "grupo8ti2015"}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
+			token = result["token"]
+			return token
 		# Grupo 7: http://integra7.ing.puc.cl/api/documentation
 		elsif grupo==7
 			registro 7
@@ -70,7 +78,6 @@ class CompraB2B < ActiveRecord::Base
 		# Grupo 3: http://integra3.ing.puc.cl/b2b/documentation/
 		if sku==20 #cacao
 			token = obtener_token 3
-
 			url = "http://integra3.ing.puc.cl/b2b/new_order/"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
 			body = {"order_id" => order_id}
@@ -79,7 +86,6 @@ class CompraB2B < ActiveRecord::Base
 		# Grupo 4: http://integra4.ing.puc.cl/public/documentation
 		if sku==19 #semola
 			token = obtener_token 4
-
 			url = "http://integra4.ing.puc.cl/b2b/new_order.json"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json"}
 			body = {"token" => token, "order_id" => order_id}
@@ -88,17 +94,19 @@ class CompraB2B < ActiveRecord::Base
 		# Grupo 5: http://integra5.ing.puc.cl/b2b/documentation
 		if sku==26 #sal
 			token = obtener_token 5
-			# api mala
+			# API MALA
 		end
 		# Grupo 6: http://integra6.ing.puc.cl/api/documentation
 		if sku==7 #leche
 			token = obtener_token 6
-			# api mala
+			url = "http://integra6.ing.puc.cl/b2b/new_order/"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token token=\"#{token}\""}
+			body = {"order_id" => order_id}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		end
 		# Grupo 7: http://integra7.ing.puc.cl/api/documentation
 		if sku==2 #huevo
 			token = obtener_token 7
-
 			url = "http://integra7.ing.puc.cl/api/create_order"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "authorization" => "#{token}"}
 			body = {"order_id" => order_id}
@@ -130,7 +138,11 @@ class CompraB2B < ActiveRecord::Base
 			body = {"order_id" => order_id}
 			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo6"
-			# API MALA
+			token = obtener_token 6
+			url = "http://integra6.ing.puc.cl/b2b/order_accepted/"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token token=\"#{token}\""}
+			body = {"order_id" => order_id}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo7"
 			token = obtener_token 7
 			url = "http://integra7.ing.puc.cl/api/accepted_order"
@@ -164,7 +176,11 @@ class CompraB2B < ActiveRecord::Base
 			body = {"order_id" => order_id}
 			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo6"
-			# API MALA
+			token = obtener_token 6
+			url = "http://integra6.ing.puc.cl/b2b/order_rejected/"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token token=\"#{token}\""}
+			body = {"order_id" => order_id}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo7"
 			token = obtener_token 7
 			url = "http://integra7.ing.puc.cl/api/rejected_order"
@@ -186,13 +202,31 @@ class CompraB2B < ActiveRecord::Base
 		result.to_s
 	end
 
-	def self.notificar_factura cliente
+	def self.notificar_factura invoice_id, cliente
 		if cliente=="grupo1"
+			# NO INTERACTUAMOS CON ELLOS
 		elsif cliente=="grupo2"
+			# NO INTERACTUAMOS CON ELLOS
 		elsif cliente=="grupo3"
+			token = obtener_token 3
+			url = "http://integra3.ing.puc.cl/b2b/invoice_created/"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
+			body = {"invoice_id" => invoice_id}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo4"
+			token = obtener_token 4
+			url = "http://integra4.ing.puc.cl/b2b/invoice_created.json"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
+			body = {"token" => token, "invoice_id" => invoice_id}
+			result = HTTParty.get(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo5"
+			# API MALA
 		elsif cliente=="grupo6"
+			token = obtener_token 6
+			url = "http://integra6.ing.puc.cl/b2b/invoice_created/"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token token=\"#{token}\""}
+			body = {"invoice_id" => invoice_id}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo7"
 		end
 	end
