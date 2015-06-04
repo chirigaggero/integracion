@@ -22,7 +22,14 @@
   <div class="page-header">
     <h1>Estado Orden de Compra</h1>
   </div>
-  <p>Formulario</p>
+  <%= form_tag("/orden_compra/estado", method: "get") do %>
+  <%= label_tag(:q, "ID orden de compra:") %>
+  <%= text_field_tag(:q) %>
+  <%= submit_tag("Buscar") %>
+  <% end %>
+   
+  <%= $order_id %>
+
 
 
 </div>
