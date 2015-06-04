@@ -1,7 +1,7 @@
 class Bodega < ActiveRecord::Base
 
   $id_grupo = 'grupo8'
-  $key_bodega = 'DYzY6bQ3XxcyyPm'
+  $key_bodega = '9XhaU8xKJTncaQ'
 
 
   def self.mover_b2b?(producto_id, bodega_id)
@@ -9,7 +9,7 @@ class Bodega < ActiveRecord::Base
     params=["POST",producto_id ,bodega_id]
     security = Bodega.claveSha1(params)
 
-    url="http://integracion-2015-dev.herokuapp.com/bodega/moveStockBodega"
+    url="http://integracion-2015-prod.herokuapp.com/bodega/moveStockBodega"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
     body= { "productoId" => producto_id,
             "almacenId" =>bodega_id
@@ -36,7 +36,7 @@ class Bodega < ActiveRecord::Base
 
     params = ["PUT",sku,cantidad,transaccion]
     security = Bodega.claveSha1(params)
-    url = "http://integracion-2015-dev.herokuapp.com/bodega/fabrica/fabricar"
+    url = "http://integracion-2015-prod.herokuapp.com/bodega/fabrica/fabricar"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
     body= {
 
@@ -307,7 +307,7 @@ class Bodega < ActiveRecord::Base
                 params = ["GET", almacen.almacen_id]
                 security = claveSha1(params)
 
-                url = "http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
+                url = "http://integracion-2015-prod.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
                 header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
                 prod_almacen = almacen.get_cantidad_total(url,header1,sku)
@@ -382,7 +382,7 @@ class Bodega < ActiveRecord::Base
     params = ["GET",almacen_id,pedido.sku]
     security = Bodega.claveSha1(params)
 
-    url = "http://integracion-2015-dev.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{pedido.sku}&limit=1"
+    url = "http://integracion-2015-prod.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{pedido.sku}&limit=1"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
     result = HTTParty.get(url,:headers => header1 )
@@ -489,7 +489,7 @@ class Bodega < ActiveRecord::Base
       security = claveSha1(params)
 
 
-      url = "http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
+      url = "http://integracion-2015-prod.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
       header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
       ##obtenemos la cantidad total de productos con sku='sku' del almacen
@@ -522,7 +522,7 @@ class Bodega < ActiveRecord::Base
       security = claveSha1(params)
 
 
-      url = "http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
+      url = "http://integracion-2015-prod.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
       header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
       ##obtenemos la cantidad total del almacen
@@ -645,7 +645,7 @@ class Bodega < ActiveRecord::Base
     params = ["GET", almacen_id]
     security = Bodega.claveSha1(params)
 
-    url="http://integracion-2015-dev.herokuapp.com/bodega/skusWithStock?almacenId=#{almacen_id}"
+    url="http://integracion-2015-prod.herokuapp.com/bodega/skusWithStock?almacenId=#{almacen_id}"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
     result = HTTParty.get(url,:headers => header1 )
@@ -667,7 +667,7 @@ class Bodega < ActiveRecord::Base
     params = ["GET"]
     security = Bodega.claveSha1(params)
 
-    url = "http://integracion-2015-dev.herokuapp.com/bodega/almacenes"
+    url = "http://integracion-2015-prod.herokuapp.com/bodega/almacenes"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
     result = HTTParty.get(url,:headers => header1 )
@@ -693,7 +693,7 @@ class Bodega < ActiveRecord::Base
     params = ["GET",almacen_id, sku]
     security = Bodega.claveSha1(params)
 
-    url = "http://integracion-2015-dev.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{sku}&limit=1"
+    url = "http://integracion-2015-prod.herokuapp.com/bodega/stock?almacenId=#{almacen_id}&sku=#{sku}&limit=1"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
     result = HTTParty.get(url,:headers => header1 )
@@ -713,7 +713,7 @@ class Bodega < ActiveRecord::Base
     params = ["POST",producto_id, almacen_id]
     security = Bodega.claveSha1(params)
 
-    url = "http://integracion-2015-dev.herokuapp.com/bodega/moveStock"
+    url = "http://integracion-2015-prod.herokuapp.com/bodega/moveStock"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
     body = 	{
         "productoId" => producto_id,
@@ -737,7 +737,7 @@ class Bodega < ActiveRecord::Base
     params = ["GET"]
     security = Bodega.claveSha1(params)
 
-    url = "http://integracion-2015-dev.herokuapp.com/bodega/almacenes"
+    url = "http://integracion-2015-prod.herokuapp.com/bodega/almacenes"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
 
     result = HTTParty.get(url,:headers => header1 )

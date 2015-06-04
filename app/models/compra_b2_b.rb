@@ -178,27 +178,49 @@ class CompraB2B < ActiveRecord::Base
 	def self.generar_factura order_id
 
 
-		url="http://chiri.ing.puc.cl/zeus"
+		url="http://moyas.ing.puc.cl:8080/Jboss/integra8/Factura"
 		headers = {"Content-Type"=> "application/json"}
-		body = {"order_id" => order_id}
+		body = {"oc" => order_id}
 		result = HTTParty.put(url, :headers => headers, :body => body.to_json)
-		#esta malo, pero no se como me devuelve el id de la transaccion.. [cerraron las URLS]
-		result.to_s
+
+		#retornar id de la factura
+		case result.code
+
+			when 200
+				id= result["_id"]
+				return id
+			when 202
+				id= result["_id"]
+				return id
+
+			else
+				Rails.logger.info "error en la conexion #{result.code}"
+				return -1000
+		end
+
 	end
 
 	def self.notificar_factura cliente
+
 		if cliente=="grupo1"
+
 		elsif cliente=="grupo2"
+
 		elsif cliente=="grupo3"
+
 		elsif cliente=="grupo4"
+
 		elsif cliente=="grupo5"
+
 		elsif cliente=="grupo6"
+
 		elsif cliente=="grupo7"
 		end
+
 	end
 
 	def self.test_whenever
-		#Rails.logger.info("estoy funcionando whenever")	
+		Rails.logger.info("estoy funcionando whenever")
 	end
 
 

@@ -87,8 +87,9 @@ class B2bController < ApplicationController
       pedido.cantidadDespachada = 0
       pedido.direccion = bodega_id
       pedido.estado = "creado"
+      pedido.ftp=false
       # identificamos al cliente
-      cliente = orden[0]["cliente"].to_i
+      cliente = orden[0]["cliente"]
       
       #validamos el pedido para ver si lo podemos satisfacer
       if Bodega.validar_pedido?(pedido)

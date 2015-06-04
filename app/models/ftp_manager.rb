@@ -41,6 +41,7 @@ class FtpManager < ActiveRecord::Base
 								    pedido.direccion = Cliente.find_by(cliente_id: cliente).direccion
 								    pedido.precio_unitario = precioUnitario
 								    pedido.cantidad = cantidad
+										pedido.ftp=true
 
 								    #pedido.save
 									if Bodega.validar_pedido?(pedido)

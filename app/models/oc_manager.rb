@@ -21,20 +21,21 @@ class OcManager < ActiveRecord::Base
 
     end
 
-    url = "http://chiri.ing.puc.cl/atenea/crear"
+    url = "http://moyas.ing.puc.cl:8080/Jboss/integra8/OrdenCompra/crear"
     header1 = {"Content-Type"=> "application/json"}
     body= {
 
         "canal" => "b2b",
         "cantidad" =>cantidad ,
         "sku" =>sku,
-        "proveedor" => 'grupo8',
+        "proveedor" => cliente,
         "precioUnitario" => precio,
         #"notas" =>'nada que decir',
-        "cliente"=> cliente,
+        "cliente"=> 'grupo8',
         "fechaEntrega" =>DateTime.tomorrow.to_time.to_i*1000
 
     }
+
 
     result = HTTParty.put(url,:headers => header1,:body => body.to_json )
 
@@ -42,6 +43,10 @@ class OcManager < ActiveRecord::Base
     case result.code
 
       when 200
+        id= result["_id"]
+        return id
+
+      when 202
         id= result["_id"]
         return id
 
@@ -56,7 +61,7 @@ class OcManager < ActiveRecord::Base
 
   def self.obtener_orden order_id
     headers = {"Content-Type"=> "application/json"}
-    orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}",:headers => headers)
+    orden = HTTParty.get("http://moyas.ing.puc.cl:8080/Jboss/integra8/OrdenCompra/obtener#{order_id}",:headers => headers)
   end
 
 end
