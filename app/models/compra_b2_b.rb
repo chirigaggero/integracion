@@ -192,6 +192,7 @@ class CompraB2B < ActiveRecord::Base
 
 	# conectarse a servicio de factura  y entregar el id de la factura creada a partir de una orden de compra
 	def self.generar_factura order_id
+
 		url="http://moyas.ing.puc.cl:8080/Jboss/integra8/Factura"
 		headers = {"Content-Type"=> "application/json"}
 		body = {"oc" => order_id}
@@ -215,25 +216,26 @@ class CompraB2B < ActiveRecord::Base
 	end
 
 
-	def self.obtener_factura factura_id
-		url="http://moyas.ing.puc.cl:8080/Jboss/integra8/Factura"
+	def self.obtener_datos_factura factura_id
+		url="http://moyas.ing.puc.cl:8080/JBoss/integra8/Factura/#{factura_id}"
 		headers = {"Content-Type"=> "application/json"}
-		body = {"oc" => order_id}
-		result = HTTParty.put(url, :headers => headers, :body => body.to_json)
+		result = HTTParty.get(url, :headers => headers)
 
 		#retornar id de la factura
 		case result.code
 
 			when 200
-				id= result["_id"]
-				return id
+				cliente= result["cliente"]
+				total=result["total"]
+				return [cliente,total]
 			when 202
-				id= result["_id"]
-				return id
+				cliente= result["cliente"]
+				total=result["total"]
+				return [cliente,total]
 
 			else
 				Rails.logger.info "error en la conexion #{result.code}"
-				return -1000
+				return [-1000,-1000]
 		end
 	end
 

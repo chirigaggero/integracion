@@ -145,10 +145,12 @@ class B2bController < ApplicationController
 
     #tenemos que trabajar sobre la respuesta json
     respuesta = JSON.parse(request.body.read)
+    invoice = respuesta["invoice_id"]
     #rescatar el cliente
-    cliente = respuesta["cliente"]
+    cliente_factura=CompraB2B.obtener_datos_factura invoice
+    cliente = cliente_factura[0]
     #rescatamos el total de la factura
-    total= respuesta["total"]
+    cliente = cliente_factura[1]
     #determinar su nro de cuenta
     cuenta_cliente= Banco.obtener_cuenta_b2b cliente
     Banco.pagar_b2b cliente, total
