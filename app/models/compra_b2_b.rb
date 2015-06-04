@@ -14,7 +14,10 @@ class CompraB2B < ActiveRecord::Base
 			result = HTTParty.get(url, :headers => headers, :body => body.to_json)
 		# Grupo 5: http://integra5.ing.puc.cl/b2b/documentation
 		elsif grupo==5
-			# API MALA
+			url = "http://integra5.ing.puc.cl/b2b/new_user/"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json"}
+			body = {"username" => "grupo8", "password" => "grupo8ti2015"}
+			result = HTTParty.put(url, :headers => headers, :body => body.to_json)
 		# Grupo 6: http://integra6.ing.puc.cl/api/documentation
 		elsif grupo==6
 			url = "http://integra6.ing.puc.cl/b2b/new_user/"
@@ -52,7 +55,12 @@ class CompraB2B < ActiveRecord::Base
 		# Grupo 5: http://integra5.ing.puc.cl/b2b/documentation
 		elsif grupo==5
 			registro 5
-			# API MALA
+			url = "http://integra5.ing.puc.cl/b2b/get_token/"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json"}
+			body = {"username" => "grupo8", "password" => "grupo8ti2015"}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
+			token = result["token"]
+			return token
 		# Grupo 6: http://integra6.ing.puc.cl/api/documentation
 		elsif grupo==6
 			registro 6
@@ -257,7 +265,11 @@ class CompraB2B < ActiveRecord::Base
 			body = {"token" => token, "invoice_id" => invoice_id}
 			result = HTTParty.get(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo5"
-			# API MALA
+			token = obtener_token 5
+			url = "http://integra5.ing.puc.cl/b2b/invoice_created/"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
+			body = {"invoice_id" => invoice_id}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo6"
 			token = obtener_token 6
 			url = "http://integra6.ing.puc.cl/b2b/invoice_created/"
