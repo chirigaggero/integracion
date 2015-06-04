@@ -117,6 +117,7 @@ class B2bController < ApplicationController
 
   #POST /b2b/order_accepted
   def order_accepted
+    #asumimos que es aceptada desde un principio, entonces no tenemos que cambiar comportamiento.
     render json: {success: true, message: "Gracias por avisar."}, status: :ok
   end
 
