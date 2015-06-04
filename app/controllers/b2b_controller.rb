@@ -97,7 +97,6 @@ class B2bController < ApplicationController
         # informamos al grupo que la orden fue aceptada
         CompraB2B.aceptar_orden order_id, cliente
         # generamos factura y notificamos al grupo
-
         invoice_id = CompraB2B.generar_factura cliente
         CompraB2B.notificar_factura invoice_id, cliente
 

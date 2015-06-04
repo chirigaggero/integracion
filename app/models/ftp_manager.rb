@@ -4,7 +4,7 @@ class FtpManager < ActiveRecord::Base
 		require 'net/sftp'
 
 		# iniciamos la conexion al ftp
-		Net::SFTP.start('chiri.ing.puc.cl', 'integra8', :password => 'M1yA.3$Zf') do |sftp|
+		Net::SFTP.start('moyas.ing.puc.cl', 'integra8', :password => 'M1yA.3$Zf') do |sftp|
 			# Revisar pedidos que no tenemos
 			sftp.dir.foreach("/Pedidos") do |entry|
 				# obtenemos el id del pedido

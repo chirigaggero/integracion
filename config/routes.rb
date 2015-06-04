@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'orden_compra/estado'
+
   get 'internacional/ftp'
 
   get 'home/index'
