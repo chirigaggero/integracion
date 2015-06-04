@@ -142,7 +142,16 @@ class B2bController < ApplicationController
 
   #POST /b2b/invoice_paid
   def invoice_created
-    #tenemos que pagar la factura
+
+    #tenemos que trabajar sobre la respuesta json
+    respuesta = JSON.parse(request.body.read)
+    #rescatar el cliente
+    cliente = respuesta["cliente"]
+    #rescatamos el total de la factura
+    total= respuesta["total"]
+    #determinar su nro de cuenta
+    cuenta_cliente= Banco.obtener_cuenta_b2b cliente
+    Banco.pagar_b2b cliente, total
     render json: {success: false, message: "Gracias por avisar."}, status: :ok
   end
 
