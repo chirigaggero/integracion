@@ -26,11 +26,33 @@ class Bodega < ActiveRecord::Base
 
   end
 
+  def self.mover_ftp?(producto_id, direccion, precio, oc_id)
+
+    params=["DELETE",producto_id ,direccion, precio, oc_id]
+    security = Bodega.claveSha1(params)
+
+    url="http://integracion-2015-prod.herokuapp.com/bodega/stock"
+    header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+    body= { "productoId" => producto_id,
+            "direccion" =>direccion,
+            "precio" =>precio,
+            "ordenDeCompraId" =>oc_id
+    }
+
+    result = HTTParty.post(url,:headers => header1,:body=>body.to_json)
+
+    case result.code
+      when 200
+        true
+      else
+        false
+    end
+
+  end
 
   def self.id_bodegaDespacho
     return Bodega.fifth.almacen_id
   end
-
 
   def self.enviar_a_fabrica sku, transaccion, cantidad
 
@@ -424,9 +446,6 @@ class Bodega < ActiveRecord::Base
     return false
   end
 
-
-
-
   # Obtenemos la cantidad total disponible de productos de un sku
   def get_cantidad_total(url,header1,sku)
     cantidad=0
@@ -545,7 +564,7 @@ class Bodega < ActiveRecord::Base
   end
 
   #metodo que verifica que pedidos deben ser despachados "hoy" y los manda a despachar
-  def despachar_pedidos_de_hoy
+  def self.despachar_pedidos_de_hoy
 
     pedidos = Pedido.where(fechaEntrega: DateTime.now.strftime("%Y-%m-%d"))
 

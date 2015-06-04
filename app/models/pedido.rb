@@ -18,7 +18,7 @@ class Pedido < ActiveRecord::Base
 
     id_despacho= Bodega.id_bodegaDespacho
 
-    cantidad_pedido=self.cantidad
+    cantidad_pedido = self.cantidad
 
     # mover al almacen de despacho, un producto a la vez
     Bodega.first(2)[0..1].each do | almacen |
@@ -33,7 +33,7 @@ class Pedido < ActiveRecord::Base
       prod_almacen = almacen.get_cantidad_total(url,header1,Integer(self.sku))
 
       Rails.logger.info("cantidad inicial:#{prod_almacen}")
-      while(prod_almacen>0 and cantidad_pedido>0)
+      while(prod_almacen > 0 and cantidad_pedido > 0)
 
         producto = Bodega.obtener_id_producto(almacen.almacen_id,self.sku)
 
@@ -43,16 +43,12 @@ class Pedido < ActiveRecord::Base
 
           #mover a la bodega del cliente
           if self.ftp
-            Bodega.mover_ftp(producto,self.direccion)
+            Bodega.mover_ftp?(producto,self.direccion, self.precio_unitario, self.order_id)
           else
             Bodega.mover_b2b?(producto,self.direccion)
           end
-
-
             prod_almacen-= 1
             cantidad_pedido-= 1
-
-
 
       end
 
@@ -62,7 +58,6 @@ class Pedido < ActiveRecord::Base
       end
 
     end
-
 
   end
 

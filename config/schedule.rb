@@ -40,3 +40,8 @@ end
 every 5.hours do
   runner "Bodega.revisar_stock"
 end
+
+# cada 12 horas deben despacharse todos los pedidos ingresados
+every 12.hours do
+  runner "Bodega.despachar_pedidos_de_hoy"
+end
