@@ -7,9 +7,9 @@ class Banco < ActiveRecord::Base
   end
 
 
-  def self.obtener_cuenta_b2b grupo
+  def self.obtener_cuenta_b2b cliente
 
-    case grupo
+    case cliente
       when "grupo3"
      return   "55648ad3f89fed0300525002"
 
@@ -124,7 +124,7 @@ end
 
   #metodo para pagar a otro grupo
 
-  def pagar_b2b cuenta_id, monto
+  def self.pagar_b2b cuenta_id, monto
       url = "http://moyas.ing.puc.cl:8080/Banco/integra8/Banco/trx"
       headers = {"Content-Type"=> "application/json"}
       body = {"monto" => monto, "origen" => $micuenta, "destino" => cuenta_id}
