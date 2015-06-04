@@ -6,6 +6,29 @@ class Banco < ActiveRecord::Base
     return $micuenta
   end
 
+
+  def self.obtener_cuenta_b2b grupo
+
+    case grupo
+      when "grupo3"
+     return   "55648ad3f89fed0300525002"
+
+      when "grupo4"
+        return "55648ad3f89fed0300525004"
+
+      when "grupo5"
+        "55648ad3f89fed0300524ffd2"
+
+      when "grupo6"
+     return "55648ad3f89fed0300524fff"
+
+      when "grupo7"
+    return    "55648ad3f89fed0300525001"
+    end
+
+  end
+
+
 #metodo para obtener mi saldo
 
   def self.obtener_mi_saldo
