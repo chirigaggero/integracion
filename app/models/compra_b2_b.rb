@@ -200,21 +200,67 @@ class CompraB2B < ActiveRecord::Base
 
 	end
 
-	def self.notificar_factura cliente
+	def self.obtener_factura factura_id
+
+
+		url="http://moyas.ing.puc.cl:8080/Jboss/integra8/Factura"
+		headers = {"Content-Type"=> "application/json"}
+		body = {"oc" => order_id}
+		result = HTTParty.put(url, :headers => headers, :body => body.to_json)
+
+		#retornar id de la factura
+		case result.code
+
+			when 200
+				id= result["_id"]
+				return id
+			when 202
+				id= result["_id"]
+				return id
+
+			else
+				Rails.logger.info "error en la conexion #{result.code}"
+				return -1000
+		end
+
+	end
+
+
+
+
+
+	def self.notificar_factura cliente,order_id
 
 		if cliente=="grupo1"
-
+			# NO INTERACTUAMOS CON ELLOS
 		elsif cliente=="grupo2"
-
+			# NO INTERACTUAMOS CON ELLOS
 		elsif cliente=="grupo3"
-
+			token = obtener_token 3
+			url = "http://integra3.ing.puc.cl/b2b/invoice_paid"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
+			body = {"invoice_id" => order_id}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo4"
-
+			token = obtener_token 4
+			url = "http://integra4.ing.puc.cl/b2b/invoice_paid.json"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
+			body = {"token" => token, "invoice_id" => order_id}
+			result = HTTParty.get(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo5"
-
+			token = obtener_token 5
+			url = "http://integra5.ing.puc.cl/b2b/invoice_paid"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
+			body = {"invoice_id" => order_id}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		elsif cliente=="grupo6"
-
+			# API MALA
 		elsif cliente=="grupo7"
+			token = obtener_token 7
+			url = "http://integra7.ing.puc.cl/api/issued_invoice"
+			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "authorization" => "#{token}"}
+			body = {"invoice_id" => order_id}
+			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
 		end
 
 	end
