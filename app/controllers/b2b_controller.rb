@@ -77,7 +77,7 @@ class B2bController < ApplicationController
     else
       # consultamos al sistema de ordenes de compra
       headers = {"Content-Type"=> "application/json"}
-      orden = HTTParty.get("http://chiri.ing.puc.cl/atenea/obtener/#{order_id}",:headers => headers)
+      orden = HTTParty.get("http://moyas.ing.puc.cl:8080/Jboss/integra8/OrdenCompra/obtener/#{order_id}",:headers => headers)
       # guardamos pedido
       pedido=Pedido.new
       pedido.sku = orden[0]["sku"]
