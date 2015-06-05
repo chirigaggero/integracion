@@ -29,8 +29,9 @@
   <% end %>
   
   <br>
-  
-  <% if $query==$order_id %>
+
+  <% if $query.nil? %>
+  <% elsif $query==$order_id %>
     <p><strong>ID: </strong><%= $order_id %></p>
     <p><strong>Cliente: </strong><%= $cliente %></p>
     <p><strong>Proveedor: </strong><%= $proveedor %></p>
