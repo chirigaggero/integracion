@@ -536,9 +536,10 @@ class Bodega < ActiveRecord::Base
     total=0
     usado=0
     #se itera sobre las bodegas normales
+    byebug
     Bodega.first(2)[0..1].each do | almacen |
       params = ["GET", almacen.almacen_id]
-      security = claveSha1(params)
+      security = Bodega.claveSha1(params)
 
 
       url = "http://integracion-2015-prod.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id

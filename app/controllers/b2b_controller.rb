@@ -66,11 +66,12 @@ class B2bController < ApplicationController
       render json: {success: false, message: "JSON Malformado."}, status: :bad_request
   end
 
-  #PUT /b2b/new_order
+  #POST /b2b/new_order
   def new_order
     respuesta = JSON.parse(request.body.read)
     order_id = respuesta["order_id"]
     bodega_id = respuesta["bodega_id"]
+    byebug
 
     if order_id.nil? or bodega_id.nil?
       render json: {success: false, message: "Los parametros order_id y bodega_id no pueden estar en blanco."}, status: :bad_request
@@ -111,7 +112,7 @@ class B2bController < ApplicationController
     end
 
     rescue
-      render json: {success: false, message: "JSON Malformado."}, status: :bad_request
+      render json: {success: false, message: "Hay un error interno."}, status: :internal_server_error
   end
 
   #POST /b2b/order_accepted
