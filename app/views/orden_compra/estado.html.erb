@@ -21,6 +21,11 @@
 
   <div class="page-header">
     <h1>Estado Orden de Compra</h1>
+<br>
+    <p style="font-style: italic;"> Nuestro sistema de bodegas funciona haciendo reposición automática de los productos que despachamos,
+      es decir, cada vez que hay menos de X unidades del producto, este es mandado a producir. Realizar un pedido no va a gatillar un evento de envío a Fábrica.
+     </p><p> Además, los movimientos entre bodegas internas y el despacho externo
+    del pedido son realizados el mismo día en que se acordó la fecha de entrega.</p>
   </div>
   <%= form_tag("/orden_compra/estado", method: "get") do %>
   <%= label_tag(:q, "ID orden de compra:") %>
@@ -40,13 +45,42 @@
     <p><strong>Fecha de Entrega: </strong><%= $fechaEntrega %></p>
     <p><strong>Precio Unitario: </strong><%= $precioUnitario %></p>
     <p><strong>Cantidad: </strong><%= $cantidad %></p>
-    <p><strong>Cantidad Despachada: </strong><%= $cantidadDespachada %></p>
     <p><strong>Canal: </strong><%= $canal %></p>
+      <hr>
+
+      <p> En este momento, contamos con <%=@cantidad_disponible%> unidades del producto con sku: <%=$sku%>, de estas
+       <%=$cantidad %> estan asignadas a la orden nro. <%=$order_id %></p>
   <% else %>
     <p><strong>No hay información para el ID: <%= $query %></strong></p>
   <% end %>
 
+
+
 </div>
+
+
+<div class="container" style="margin-top:70px;">
+<h2>Pedidos siendo procesados por nuestra bodega</h2>
+<hr>
+<table>
+  <% if !@pedidos.empty?%>
+  <%@pedidos.each do |pedido|%>
+      <tr>
+        <td>pedido.order_id</td>
+        <td>pedido.sku</td>
+        <td>pedido.cantidad</td>
+        <td>pedido.fechaEntrega</td>
+      </tr>
+
+
+  <%end%>
+      <%else%>
+  <p>No hay pedidos pendientes</p>
+      <%end%>
+</table>
+
+  </div>
+
     
 <footer class="footer">
   <div class="container" style="text-align: center;">

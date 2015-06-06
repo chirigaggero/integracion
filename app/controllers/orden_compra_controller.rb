@@ -15,5 +15,14 @@ class OrdenCompraController < ApplicationController
 		$cantidadDespachada = result[0]["cantidadDespachada"]
 		$cantidad = result[0]["cantidad"]
 		$canal = result[0]["canal"]
+
+	@cantidad_disponible= Bodega.cantidad_disponible_sku_reposicion $sku
+
+
+
+
+		@pedidos=Pedido.all
+
+
 	end
 end

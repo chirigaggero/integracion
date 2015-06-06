@@ -572,7 +572,7 @@ class Bodega < ActiveRecord::Base
     pedidos.each do |pedido|
 
       pedido.despachar
-
+      Pedido.delete(pedido)
     end
 
   end
