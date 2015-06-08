@@ -61,7 +61,7 @@ class OcManager < ActiveRecord::Base
 
   def self.obtener_orden order_id
     headers = {"Content-Type"=> "application/json"}
-    orden = HTTParty.get("http://moyas.ing.puc.cl:8080/Jboss/integra8/OrdenCompra/obtener#{order_id}",:headers => headers)
+    orden = HTTParty.get("http://moyas.ing.puc.cl:8080/Jboss/integra8/OrdenCompra/obtener/#{order_id}",:headers => headers)
   end
 
 end

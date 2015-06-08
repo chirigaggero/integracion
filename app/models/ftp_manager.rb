@@ -42,10 +42,11 @@ class FtpManager < ActiveRecord::Base
 								    pedido.precio_unitario = precioUnitario
 								    pedido.cantidad = cantidad
 										pedido.ftp=true
+										pedido.save
 
 								    #pedido.save
-									if Bodega.validar_pedido?(pedido)
-										pedido.save
+									if !Bodega.validar_pedido?(pedido)
+										Pedido.delete(pedido)
 									end
 							    end
 							end

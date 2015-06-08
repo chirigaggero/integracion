@@ -123,35 +123,35 @@ class CompraB2B < ActiveRecord::Base
 	end
 
 	def self.aceptar_orden order_id, cliente
-		if cliente=="grupo1"
+		if cliente.eql? "grupo1"
 			# NO INTERACTUAMOS CON ELLOS
-		elsif cliente=="grupo2"
+		elsif cliente.eql? "grupo2"
 			# NO INTERACTUAMOS CON ELLOS
-		elsif cliente=="grupo3"
+		elsif cliente.eql? "grupo3"
 			token = obtener_token 3
 			url = "http://integra3.ing.puc.cl/b2b/order_accepted/"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
 			body = {"order_id" => order_id}
 			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
-		elsif cliente=="grupo4"
+		elsif cliente.eql? "grupo4"
 			token = obtener_token 4
 			url = "http://integra4.ing.puc.cl/b2b/order_accepted.json"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
 			body = {"token" => token, "order_id" => order_id}
 			result = HTTParty.get(url, :headers => headers, :body => body.to_json)
-		elsif cliente=="grupo5"
+		elsif cliente.eql? "grupo5"
 			token = obtener_token 5
 			url = "http://integra5.ing.puc.cl/b2b/order_accepted/"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token #{token}"}
 			body = {"order_id" => order_id}
 			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
-		elsif cliente=="grupo6"
+		elsif cliente.eql? "grupo6"
 			token = obtener_token 6
 			url = "http://integra6.ing.puc.cl/b2b/order_accepted/"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "Authorization" => "Token token=\"#{token}\""}
 			body = {"order_id" => order_id}
 			result = HTTParty.post(url, :headers => headers, :body => body.to_json)
-		elsif cliente=="grupo7"
+		elsif cliente.eql? "grupo7"
 			token = obtener_token 7
 			url = "http://integra7.ing.puc.cl/api/accepted_order"
 			headers = {"Content-Type"=> "application/json", "Accept" => "application/json", "authorization" => "#{token}"}
@@ -215,7 +215,6 @@ class CompraB2B < ActiveRecord::Base
 			when 202
 				id= result["_id"]
 				return id
-
 			else
 				Rails.logger.info "error en la conexion #{result.code}"
 				return -1000

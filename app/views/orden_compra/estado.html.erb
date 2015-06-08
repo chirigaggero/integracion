@@ -48,8 +48,9 @@
     <p><strong>Canal: </strong><%= $canal %></p>
       <hr>
 
-      <p> En este momento, contamos con <%=@cantidad_disponible%> unidades del producto con sku: <%=$sku%>, de estas
-       <%=$cantidad %> estan asignadas a la orden nro. <%=$order_id %></p>
+      <p> En este momento, contamos con <%=@cantidad_total%> unidades del producto con sku: <%=$sku%>. De este total,
+       <%=$cantidad %> unidades estan asignadas a la orden nro. <%=$order_id %> y hay <%=@cantidad_disponible%> para responder
+      a nuevos pedidos</p>
   <% else %>
     <p><strong>No hay información para el ID: <%= $query %></strong></p>
   <% end %>
@@ -62,14 +63,22 @@
 <div class="container" style="margin-top:70px;">
 <h2>Pedidos siendo procesados por nuestra bodega</h2>
 <hr>
-<table>
+<table border="1">
+  <tr>
+    <th> Orden de compra     </th>
+    <th> Sku del producto    </th>
+    <th> Cantidad pedida     </th>
+    <th> Fecha de entrega    </th>
+  </tr>
+  <% if !@pedidos.nil?%>
   <% if !@pedidos.empty?%>
   <%@pedidos.each do |pedido|%>
+
       <tr>
-        <td>pedido.order_id</td>
-        <td>pedido.sku</td>
-        <td>pedido.cantidad</td>
-        <td>pedido.fechaEntrega</td>
+        <td style="text-align: center"><%=pedido.order_id%></td>
+        <td style="text-align: center"><%=pedido.sku%></td>
+        <td style="text-align: center"><%=pedido.cantidad%></td>
+        <td style="text-align: center"><%=pedido.fechaEntrega%></td>
       </tr>
 
 
@@ -77,6 +86,8 @@
       <%else%>
   <p>No hay pedidos pendientes</p>
       <%end%>
+
+  <%end%>
 </table>
 
   </div>

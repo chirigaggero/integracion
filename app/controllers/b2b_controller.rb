@@ -71,7 +71,6 @@ class B2bController < ApplicationController
     respuesta = JSON.parse(request.body.read)
     order_id = respuesta["order_id"]
     bodega_id = respuesta["bodega_id"]
-    byebug
 
     if order_id.nil? or bodega_id.nil?
       render json: {success: false, message: "Los parametros order_id y bodega_id no pueden estar en blanco."}, status: :bad_request
@@ -81,6 +80,7 @@ class B2bController < ApplicationController
       orden = HTTParty.get("http://moyas.ing.puc.cl:8080/Jboss/integra8/OrdenCompra/obtener/#{order_id}",:headers => headers)
       # guardamos pedido
       pedido=Pedido.new
+      pedido.order_id=order_id
       pedido.sku = orden[0]["sku"]
       pedido.cantidad = orden[0]["cantidad"]
       pedido.precio_unitario = orden[0]["precioUnitario"]
@@ -89,21 +89,23 @@ class B2bController < ApplicationController
       pedido.direccion = bodega_id
       pedido.estado = "creado"
       pedido.ftp=false
+      pedido.save
       # identificamos al cliente
       cliente = orden[0]["cliente"]
       
       #validamos el pedido para ver si lo podemos satisfacer
       if Bodega.validar_pedido?(pedido)
-        pedido.save
+
         # informamos al grupo que la orden fue aceptada
         CompraB2B.aceptar_orden order_id, cliente
         # generamos factura y notificamos al grupo
-        invoice_id = CompraB2B.generar_factura cliente
+        invoice_id = CompraB2B.generar_factura order_id
         CompraB2B.notificar_factura invoice_id, cliente
 
         # enviamos el mensaje
         render json: { success: true, message:  "La orden de compra ha sido aceptada."}, status: :ok
       else
+        Pedido.delete(pedido)
         # informamos al grupo que la orden fue rechazada
         CompraB2B.rechazar_orden order_id, cliente
         # enviamos el mensaje

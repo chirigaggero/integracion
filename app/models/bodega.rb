@@ -20,6 +20,8 @@ class Bodega < ActiveRecord::Base
     case result.code
       when 200
         true
+      when 202
+        true
       else
         false
     end
@@ -43,6 +45,8 @@ class Bodega < ActiveRecord::Base
 
     case result.code
       when 200
+        true
+      when 202
         true
       else
         false
@@ -460,6 +464,13 @@ class Bodega < ActiveRecord::Base
           end
         end
 
+      when 202
+        result.each do |item|
+          if Integer(item["_id"])==sku
+            cantidad+=Integer(item["total"])
+          end
+        end
+
       else
         Rails.logger.info("error en la conexion")
         return -10
@@ -495,8 +506,9 @@ class Bodega < ActiveRecord::Base
   end
 
   ##obtener la cantidad disponible para efectos de reposicion
-  def self.cantidad_disponible_sku_reposicion sku
+  def self.cantidad_disponible_sku_reposicion sku_parametro
 
+    sku=Integer(sku_parametro)
     total = 0
     usado = 0
 
@@ -517,18 +529,50 @@ class Bodega < ActiveRecord::Base
       total+=resultado
     end
 
+    Rails.logger.info("resultado: #{total}")
+
     ##obtenemos lo usado por todos los pedidos
     pedidos = Pedido.all
     pedidos.each do |pedidox|
-      if pedidox.sku.equal? sku
+      if pedidox.sku.eql? sku_parametro
         #se suma la cantidad del pedido
         usado+=pedidox.cantidad
       end
     end
+    Rails.logger.info("usado: #{usado}")
 
     return total-usado
 
   end
+
+  def self.cantidad_total_sku sku_param
+
+    sku=Integer(sku_param)
+    total = 0
+    usado = 0
+
+    #se itera sobre las primeras 4 bodegas
+    Bodega.first(4)[0..3].each do | almacen |
+
+
+      params = ["GET", almacen.almacen_id]
+      security = claveSha1(params)
+
+
+      url = "http://integracion-2015-prod.herokuapp.com/bodega/skusWithStock?almacenId=" + almacen.almacen_id
+      header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+
+      ##obtenemos la cantidad total de productos con sku='sku' del almacen
+      resultado = almacen.get_cantidad_total(url,header1,sku)
+      #se suma lo obtenido al total
+      total+=resultado
+    end
+
+
+    return total
+
+  end
+
 
   ##obtener la cantidad disponible para efectos de validar pedido
   def self.cantidad_disponible_sku_pedido pedido
@@ -536,7 +580,6 @@ class Bodega < ActiveRecord::Base
     total=0
     usado=0
     #se itera sobre las bodegas normales
-    byebug
     Bodega.first(2)[0..1].each do | almacen |
       params = ["GET", almacen.almacen_id]
       security = Bodega.claveSha1(params)
@@ -547,6 +590,7 @@ class Bodega < ActiveRecord::Base
 
       ##obtenemos la cantidad total del almacen
       resultado = almacen.get_cantidad_total(url,header1,sku)
+      Rails.logger.info("resultado: #{resultado}")
       total += resultado
     end
 
@@ -555,7 +599,8 @@ class Bodega < ActiveRecord::Base
     ##obtenemos lo usado por pedidos anteriores
     pedidos = Pedido.where.not("id=#{pedido.id}")
     pedidos.each do |pedidox|
-      if pedidox.sku.equal? pedido.sku
+      if pedidox.sku.eql? pedido.sku
+
         usado+=pedidox.cantidad
       end
     end
@@ -744,6 +789,8 @@ class Bodega < ActiveRecord::Base
 
     case result.code
       when 200
+        true
+      when 202
         true
       else
         false
