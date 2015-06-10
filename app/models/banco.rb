@@ -34,24 +34,32 @@ class Banco < ActiveRecord::Base
   def self.obtener_mi_saldo
 
     header1 = {"Content-Type"=> "application/json"}
-    result = HTTParty.get("http://moyas.ing.puc.cl/Bancos/integra8/banco/banco/cuenta/{#{$micuenta}",:headers => header1)
+
+    response =   RestClient.get "http://moyas.ing.puc.cl:8080/Bancos/integra8/banco/banco/cuenta/#{$micuenta}"
+    #response= HTTParty.get("http://moyas.ing.puc.cl:8080/Bancos/integra8/banco/banco/cuenta/#{$micuenta}")
+
+#    begin
+      parsed_response = JSON.parse(response)
+ #   rescue JSON::ParserError, TypeError => e
 
 
-    case result.code
+  #  end
 
-      when 200
-        saldo= result[0]["saldo"]
-       return saldo
+    #case result.code
 
-      when 202
-        saldo= result[0]["saldo"]
-        return saldo
+   #   when 200
+#        saldo= result[0]["saldo"]
+ #      return saldo
 
-      else
+  #    when 202
+   #     saldo= result[0]["saldo"]
+    #    return saldo
+
+     # else
         
-        Rails.logger.info("error en la conexion")
-        return -1000
-    end
+        #Rails.logger.info("error en la conexion")
+        #return result
+#    end
 
   end
 
@@ -64,23 +72,23 @@ class Banco < ActiveRecord::Base
 
             "monto" => total,
             "origen" =>$micuenta,
-            "destino" =>cuenta_fabrica,
+            "destino" =>cuenta_fabrica
     }
     result = HTTParty.put("http://moyas.ing.puc.cl:8080/Bancos/integra8/banco/trx",:headers => header1,:body=>body.to_json)
 
     case result.code
 
       when 200
-        transaccion= result["_id"]
+        transaccion= result["id"]
         return transaccion
       when 202
-        transaccion= result["_id"]
+        transaccion= result["id"]
         return transaccion
 
       else
 
         Rails.logger.info("error en la conexion")
-        return nil
+        return result.to_s
     end
 
 
@@ -114,7 +122,7 @@ def self.cuenta_fabrica
     else
 
       Rails.logger.info "error en la conexion"
-      return -1000
+      return 10000000
   end
 
 

@@ -32,6 +32,8 @@ gem 'tzinfo-data'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'rest-client'
+
 gem 'httparty'
 gem 'responders'
 gem 'ruby-hmac'
