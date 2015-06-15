@@ -42,6 +42,7 @@ gem 'bootstrap-sass', '~> 3.3.4'
 gem 'font-awesome-rails'
 gem 'nokogiri'
 gem 'net-sftp'
+gem 'jquery-turbolinks'
 
 gem 'whenever', :require => false
 
