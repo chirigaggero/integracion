@@ -1,5 +1,17 @@
 Rails.application.routes.draw do
 
+  get '/ecommerce' => 'ecommerce#products'
+
+  get 'ecommerce/shoppingcart/:product/:quantity' => 'ecommerce#products'
+
+  get 'ecommerce/shoppingcart/:destroy' => 'ecommerce#shoppingcart'
+
+  get 'ecommerce/products'
+
+  get 'ecommerce/shoppingcart'
+
+  get 'ecommerce/checkout'
+
   get 'orden_compra/estado'
 
   get 'internacional/ftp'
