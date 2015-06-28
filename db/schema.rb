@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150619184923) do
+ActiveRecord::Schema.define(version: 20150627201956) do
 
   create_table "bancos", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -92,6 +92,8 @@ ActiveRecord::Schema.define(version: 20150619184923) do
     t.string   "codigo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date     "inicio"
+    t.date     "fin"
   end
 
   create_table "promos", force: :cascade do |t|

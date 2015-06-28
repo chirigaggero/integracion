@@ -57,5 +57,11 @@ group :development, :test do
   gem 'spring'
 
   gem 'instagram'
+
+  gem 'jquery-validation-rails'
+
+  gem 'bunny'
+  gem 'twitter'
+
 end
 
