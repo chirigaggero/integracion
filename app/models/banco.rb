@@ -35,31 +35,28 @@ class Banco < ActiveRecord::Base
 
     header1 = {"Content-Type"=> "application/json"}
 
-    response =   RestClient.get "http://moyas.ing.puc.cl:8080/Bancos/integra8/banco/banco/cuenta/#{$micuenta}"
-    #response= HTTParty.get("http://moyas.ing.puc.cl:8080/Bancos/integra8/banco/banco/cuenta/#{$micuenta}")
+    #response =   RestClient.get "http://moyas.ing.puc.cl:8080/Bancos/integra8/banco/banco/cuenta/#{$micuenta}"
+    result= HTTParty.get("http://moyas.ing.puc.cl:8080/Bancos/integra8/banco/banco/cuenta/#{$micuenta}")
 
-#    begin
-      parsed_response = JSON.parse(response)
- #   rescue JSON::ParserError, TypeError => e
 
 
   #  end
 
-    #case result.code
+    case result.code
 
-   #   when 200
-#        saldo= result[0]["saldo"]
- #      return saldo
+      when 200
+        saldo= result["Saldo"]
+       return saldo
 
-  #    when 202
-   #     saldo= result[0]["saldo"]
-    #    return saldo
+      when 202
+        saldo= result["Saldo"]
+        return saldo
 
-     # else
+      else
         
-        #Rails.logger.info("error en la conexion")
-        #return result
-#    end
+        Rails.logger.info("error en la conexion")
+        return result
+    end
 
   end
 

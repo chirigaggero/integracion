@@ -4,6 +4,7 @@ class Bodega < ActiveRecord::Base
   $key_bodega = '9XhaU8xKJTncaQ'
 
 
+
   def self.mover_b2b?(producto_id, bodega_id)
 
     params=["POST",producto_id ,bodega_id]
@@ -98,6 +99,7 @@ class Bodega < ActiveRecord::Base
       disponible =  cantidad_disponible_sku_reposicion sku
       #si es menor a 1000 Y no estamos pidiendo, tenemos que pedir a fabrica.
 
+      puts "DISPONIBLE DE #{sku} ES #{disponible}"
       pidiendo=false
 
       case nombre
@@ -131,7 +133,7 @@ class Bodega < ActiveRecord::Base
         saldo= Banco.obtener_mi_saldo
 
 
-        if saldo>=costo
+        if saldo
           #hacer transferencia a fabrica, guardamos el id de la transferencia
           transferencia = Banco.pagar_a_fabrica costo
 
@@ -209,7 +211,7 @@ class Bodega < ActiveRecord::Base
 
 
 
-        if saldo>=costo
+        if saldo
 
           ingredientes = true
 

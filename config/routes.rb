@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'dashboards/ventas'
+
   get '/ecommerce' => 'ecommerce#products'
 
   get 'ecommerce/shoppingcart/:product/:quantity' => 'ecommerce#products'
