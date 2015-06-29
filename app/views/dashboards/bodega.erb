@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard Starter UI, by Keen IO</title>
+  <link rel="stylesheet" type="text/css" href="../../assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../../assets/css/keen-dashboards.css" />
+
+</head>
+<body class="application">
+
+<script type="text/javascript" charset="utf-8">
+
+    $(function(){
+        new Highcharts.Chart({
+            chart:{
+                renderTo: "ejemplo",
+
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+
+            },
+            title: {
+                text: "Capacidad en bodegas de almacenamiento"},
+            series: [{
+                name: "Brands",
+                colorByPoint: true,
+                data: [{
+                    name: "Capacidad usada",
+                    y: 56.33
+                }, {
+                    name: "Capacidad libre",
+                    y: 24.030000000000005,
+                    sliced: true,
+                    selected: true
+                }]
+            }]
+
+
+        });
+        new Highcharts.Chart({
+            chart:{
+                renderTo: "ejemplo2",
+
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+
+            },
+            title: {
+                text: "Productos en bodega"},
+            series: [{
+                name: "Brands",
+                colorByPoint: true,
+                data: [{
+                    name: "Chocolate",
+                    y: 56.33
+                }, {
+                    name: "Azucar",
+                    y: 24.030000000000005,
+                    sliced: true,
+                    selected: true
+                }, {
+                    name: "Pasta de semola",
+                    y: 10.38
+                },
+                    {
+                        name: "madera",
+                        y: 10.38
+                    },
+                    {
+                        name: "celulosa",
+                        y: 10.38
+                    },
+                ]
+            }]
+
+
+        });
+
+        new Highcharts.Chart({
+            chart:{
+                renderTo: "ejemplo3",
+
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+
+            },
+            title: {
+                text: "Capacidad de bodega recepción"},
+            series: [{
+                name: "Brands",
+                colorByPoint: true,
+                data: [{
+                    name: "Usado",
+                    y: 56.33
+                }, {
+                    name: "No usado",
+                    y: 24.030000000000005,
+                    sliced: true,
+                    selected: true
+                }]
+            }]
+
+
+        });
+
+    });
+
+</script>
+
+<h1 style="margin-top: -30px"> Reporte de inventario</h1>
+<hr>
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-sm-6">
+      <div class="chart-wrapper">
+
+        <div class="chart-stage">
+          <div id="ejemplo"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="chart-wrapper">
+        <div class="chart-stage">
+          <div id="ejemplo2"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="row">
+
+    <div class="col-sm-12">
+      <div class="chart-wrapper">
+
+        <div class="chart-stage">
+          <div id="ejemplo3"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <hr>
+
+  <p class="small text-muted">Built with &#9829; by <a href="https://keen.io">Keen IO</a></p>
+
+</div>
+
+<script type="text/javascript" src="../../assets/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../../assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="../../assets/lib/holderjs/holder.js"></script>
+<script>
+    Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
+</script>
+
+<script type="text/javascript" src="../../assets/lib/keen-js/dist/keen.min.js"></script>
+<script type="text/javascript" src="../../assets/js/meta.js"></script>
+
+</body>
+</html>
