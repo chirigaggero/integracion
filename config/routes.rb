@@ -2,6 +2,13 @@ Rails.application.routes.draw do
 
   get 'dashboards/ventas'
 
+  get 'dashboards/nivel_servicio'
+
+  get 'dashboards/contable'
+
+  get 'dashboards/bodega'
+
+
   get '/ecommerce' => 'ecommerce#products'
 
   get 'ecommerce/shoppingcart/:product/:quantity' => 'ecommerce#products'
