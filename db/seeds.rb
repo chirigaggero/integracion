@@ -37,9 +37,9 @@ Cliente.create(cliente_id:19,nombre:"DCM",direccion:"Laguna de Mayrán 300 Anáh
 Cliente.create(cliente_id:20,nombre:"Greenfield USA",direccion:"5641 Dewey St Hollywood, FL, United States")
 Cliente.create(cliente_id:21,nombre:"TopTen",direccion:"448 S Hill St #712 Los Angeles, CA, United States")
 
-ProductInfo.create(product_id:"azucar", nombre:"Azúcar", descripcion:"Dulce Azúcar de la más fina selección.", img:"azucar.png", precio:1.1)
-ProductInfo.create(product_id:"madera", nombre:"Madera", descripcion:"Madera de los árboles más resistentes.", img:"madera.png", precio:2.2)
-ProductInfo.create(product_id:"celulosa", nombre:"Celulosa", descripcion:"Celulosa de gran calidad lista para ser usada.", img:"celulosa.png", precio:3.3)
-ProductInfo.create(product_id:"chocolate", nombre:"Chocolate", descripcion:"Exquisito Chocolate que hará explotar tu paladar.", img:"chocolate.png", precio:4.4)
-ProductInfo.create(product_id:"pastadesemola", nombre:"Pasta de Sémola", descripcion:"Ricas Pasta de Semola para elaborar tu plato favorito.", img:"pastadesemola.png", precio:5.5)
+ProductInfo.create(product_id:"azucar", nombre:"Azúcar", descripcion:"Dulce Azúcar de la más fina selección.", img:"azucar.png", precio:1.1, sku: 25)
+ProductInfo.create(product_id:"madera", nombre:"Madera", descripcion:"Madera de los árboles más resistentes.", img:"madera.png", precio:2.2, sku: 43)
+ProductInfo.create(product_id:"celulosa", nombre:"Celulosa", descripcion:"Celulosa de gran calidad lista para ser usada.", img:"celulosa.png", precio:3.3, sku: 45)
+ProductInfo.create(product_id:"chocolate", nombre:"Chocolate", descripcion:"Exquisito Chocolate que hará explotar tu paladar.", img:"chocolate.png", precio:4.4, sku: 46)
+ProductInfo.create(product_id:"pastadesemola", nombre:"Pasta de Sémola", descripcion:"Ricas Pasta de Semola para elaborar tu plato favorito.", img:"pastadesemola.png", precio:5.5, sku: 48)
 
