@@ -41,31 +41,36 @@
 	<ul class="list-group">
   <% if session[:azucar]%>
       <li class="list-group-item">
-      <span class="badge"><%= session[:azucar] %></span>
+      <span class="badge">Precio: <%= @precio_azucar*session[:azucar].to_i %></span>
+      <span class="badge">Cantidad: <%= session[:azucar] %></span>
       Ázucar
     </li>
   <% end %>
   <% if session[:madera]%>
       <li class="list-group-item">
-      <span class="badge"><%= session[:madera] %></span>
+      <span class="badge">Precio: <%= @precio_madera*session[:madera].to_i %></span>
+      <span class="badge">Cantidad: <%= session[:madera] %></span>
       Madera
     </li>
   <% end %>
   <% if session[:celulosa]%>
       <li class="list-group-item">
-      <span class="badge"><%= session[:celulosa] %></span>
+      <span class="badge">Precio: <%= @precio_celulosa*session[:celulosa].to_i %></span>
+      <span class="badge">Cantidad: <%= session[:celulosa] %></span>
       Celulosa
     </li>
   <% end %>
   <% if session[:chocolate]%>
       <li class="list-group-item">
-      <span class="badge"><%= session[:chocolate] %></span>
+      <span class="badge">Precio: <%= @precio_chocolate*session[:chocolate].to_i %></span>
+      <span class="badge">Cantidad: <%= session[:chocolate] %></span>
       Chocolate
     </li>
   <% end %>
   <% if session[:pastadesemola]%>
       <li class="list-group-item">
-      <span class="badge"><%= session[:pastadesemola] %></span>
+      <span class="badge">Precio: <%= @precio_pastadesemola*session[:pastadesemola].to_i %></span>
+      <span class="badge">Cantidad: <%= session[:pastadesemola] %></span>
       Pasta de Sémola
     </li>
   <% end %>
@@ -75,8 +80,9 @@
     </li>
   <% end %>
 	</ul>
+  <code><strong>TOTAL:</strong> <%= $total_compra %></code>
 	<hr>
-	<button type="button" class="btn btn-success"><i class="fa fa-credit-card"></i> Pagar</button>
+	<a href="/ecommerce/checkout"class="btn btn-success"><i class="fa fa-credit-card"></i> Pagar</a>
   <a href="/ecommerce/shoppingcart/destroy" class="btn btn-danger" role="button" id="shoppingcart_destroy" data-no-turbolink>Vaciar Carrito</a>
 
     </div>

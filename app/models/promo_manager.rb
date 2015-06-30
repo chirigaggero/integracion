@@ -184,7 +184,7 @@ class PromoManager < ActiveRecord::Base
    x= promos.first.precio
 
   rescue
-    return 0
+    return 1000000
   end
 
   return x
