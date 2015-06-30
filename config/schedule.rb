@@ -25,6 +25,14 @@ every 4.hours do
   runner "Bodega.vaciar_recepcion"
 end
 
+every 1.hours do
+  runner "PromoManager.leer_cola"
+end
+
+every 1.hours do
+  runner "PromoManager.obtener_instagram"
+end
+
 every 10.hours do
   runner "Bodega.vaciar_pulmon"
 end
