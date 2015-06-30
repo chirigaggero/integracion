@@ -199,7 +199,7 @@ end
     begin
 
    sku=   promos.sku.to_i
-      precio=promos.precio.to_f
+   precio=promos.precio.to_f
 
     rescue
       return [10000000,1000000]
