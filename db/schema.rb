@@ -97,6 +97,11 @@ ActiveRecord::Schema.define(version: 20150628204313) do
     t.date     "fin"
   end
 
+  create_table "promos", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "transitos", force: :cascade do |t|
     t.boolean  "azucar",       default: false
     t.boolean  "madera",       default: false
