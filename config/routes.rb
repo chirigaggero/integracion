@@ -28,6 +28,10 @@ Rails.application.routes.draw do
 
   get 'ecommerce/checkout'
 
+  get 'ecommerce/ok'
+  
+  get 'ecommerce/fail'
+
   get 'orden_compra/estado'
 
   get 'internacional/ftp'
