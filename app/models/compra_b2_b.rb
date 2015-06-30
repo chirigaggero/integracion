@@ -285,9 +285,9 @@ class CompraB2B < ActiveRecord::Base
 
 	end
 
-	def self.test_whenever
-		Rails.logger.info("estoy funcionando whenever")
-	end
+	# def self.test_whenever
+	# 	Rails.logger.info("estoy funcionando whenever")
+	# end
 
 
 end
