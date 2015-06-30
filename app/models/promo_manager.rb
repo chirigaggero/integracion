@@ -20,18 +20,23 @@ class PromoManager < ActiveRecord::Base
   end
 
 
-  def self.obtener_promociones_instagram
+  def self.obtener_instagram
+    PromoManager.obtener_promocion_instagram_aux
+    PromoManager.obtener_promociones_instagram_aux
+  end
 
+  def self.obtener_promocion_instagram_aux
     client = Instagram.client(:access_token => $token)
 
-    tags = client.tag_search('promociones')
+    tags = client.tag_search('promocion')
 
     for media_item in client.tag_recent_media(tags[0].name)
 
-    texto= media_item.caption.text
+      texto= media_item.caption.text
 
 
       if texto.include? "sku"
+        puts 'ENCONTREEEEEEEEEEEEEEEEEEEEEEEE UNA'
         datos=[]
         texto
         result=texto.split("sku=")
@@ -48,7 +53,7 @@ class PromoManager < ActiveRecord::Base
         if promocion_codigo.nil?
           #ver que sea one of us
           if datos[0].eql? "25" or datos[0].eql? "43" or datos[0].eql? "45" or datos[0].eql? "46" or datos[0].eql? "48"
-          Promocion.create(sku: datos[0],precio: datos[1], codigo: datos[2],inicio: Date.today, fin: Date.tomorrow)
+            Promocion.create(sku: datos[0],precio: datos[1], codigo: datos[2],inicio: Date.today, fin: Date.tomorrow)
           end
         end
 
@@ -57,10 +62,14 @@ class PromoManager < ActiveRecord::Base
       end
 
     end
+  end
 
 
+  def self.obtener_promociones_instagram_aux
 
-    tags = client.tag_search('promocion')
+    client = Instagram.client(:access_token => $token)
+
+    tags = client.tag_search('promociones')
 
     for media_item in client.tag_recent_media(tags[0].name)
 
@@ -96,6 +105,7 @@ class PromoManager < ActiveRecord::Base
 
 
 
+
   end
 
 
@@ -116,6 +126,7 @@ class PromoManager < ActiveRecord::Base
       parsear_promocion body
 
       # cancel the consumer to exit
+      conn.close
     end
 
 
@@ -162,6 +173,24 @@ class PromoManager < ActiveRecord::Base
   end
 
 
+  #
+  def self.obtener_promo_dia sku
+
+    promos = Promocion.where("sku = '#{sku}' AND inicio <='#{Date.today}' AND fin >= '#{Date.today}' AND codigo != 'nil'")
+    #.and("fin >= '#{Date.today}'")
+
+    begin
+    promos.sort_by(&:precio)
+   x= promos.first.precio
+
+  rescue
+    return 0
+  end
+
+  return x
+
+
+end
 
 
 def self.publicar_twitter promocion
