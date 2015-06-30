@@ -193,6 +193,23 @@ class PromoManager < ActiveRecord::Base
 end
 
 
+  def self.obtener_precio_codigo codigo
+    promos=Promocion.where(:codigo=> codigo)
+
+    begin
+
+   sku=   promos.sku.to_i
+      precio=promos.precio.to_f
+
+    rescue
+      return [10000000,1000000]
+    end
+
+    return [sku,precio]
+
+  end
+
+
 def self.publicar_twitter promocion
 
   client = Twitter::REST::Client.new do |config|
