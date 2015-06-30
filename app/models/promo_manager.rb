@@ -206,26 +206,53 @@ def self.publicar_twitter promocion
   case promocion.sku.to_s
     when "25"
       texto="Aprovecha esta nueva promoción del mejor azucar del mercado por solo $#{promocion.precio}, solo hasta #{promocion.fin}!!"
-      client.update_with_media(texto, File.new("app/assets/images/azucar.png"))
+       url= client.update_with_media(texto, File.new("app/assets/images/azucar.png")).uri.to_s
+
     when "43"
       texto="Necesitas nuevos muebles? quizas una casa de perro? Apurate y llevate toda la madera que quieras
 por solo $#{promocion.precio}!!"
-      client.update_with_media(texto, File.new("app/assets/images/madera.jpg"))
+      url=client.update_with_media(texto, File.new("app/assets/images/madera.jpg")).uri.to_s
     when "45"
       texto="Celulosa a solo $#{promocion.precio}. Promoción válida hasta #{promocion.fin}."
-      client.update_with_media(texto, File.new("app/assets/images/celulosa.png"))
+      url=client.update_with_media(texto, File.new("app/assets/images/celulosa.png")).uri.to_s
     when "46"
       texto="Adicto al chocolate? Ven a disfrutar con nosotros.. Chocolate por sólo $#{promocion.precio}!!"
-      client.update_with_media(texto, File.new("app/assets/images/chocolate.jpg"))
+      url=client.update_with_media(texto, File.new("app/assets/images/chocolate.jpg")).uri.to_s
     when "48"
       texto="La mejor pasta de sémola del mercado rebajada a $#{promocion.precio}. Stock limitado, apúrate!"
-      client.update_with_media(texto, File.new("app/assets/images/pastadesemola.png"))
+     url= client.update_with_media(texto, File.new("app/assets/images/pastadesemola.png")).uri.to_s
 
   end
+
+  #guardar url de tweet en la base de datos del ESB
+  postear_esb url
+
 
 
 
 end
+
+
+  def self.postear_esb url
+
+
+
+    result = HTTParty.get("http://chiri.ing.puc.cl/integra8/?accion=ingresar&url=#{url}&grupo=8")
+
+    case result.code
+
+      when 200
+        return result.to_s
+      when 202
+        return result.to_s
+
+      else
+
+        Rails.logger.info("error en la conexion")
+        return result.to_s
+    end
+
+  end
 
 
 

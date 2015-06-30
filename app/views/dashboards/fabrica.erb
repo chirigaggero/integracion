@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Layouts &raquo; Hero-Thirds</title>
+  <link rel="stylesheet" type="text/css" href="../../assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../../assets/css/keen-dashboards.css" />
+</head>
+<body class="application">
+<script type="text/javascript" charset="utf-8">
+
+    $(function() {
+        new Highcharts.Chart({
+            chart: {
+                renderTo: "ejemplo"
+            },
+            title: {
+                text: "Envios a fábrica por día"
+            },
+            xAxis: {
+                type: "datetime"
+            },
+            yAxis: {
+                title: {
+                    text: "Cantidad"
+                }
+            },
+            series: [{
+                name: "Envios a fábrica por día",
+                pointInterval: <%= 1.day*1000%>,
+                pointStart: <%= 1.weeks.ago.to_i * 1000 %>,
+                data: <%= (1.weeks.ago.to_date..Date.today).map{|date| 4}.inspect %>
+            },
+            ]
+
+
+        });
+
+
+        new Highcharts.Chart({
+            chart:{
+                renderTo: "ejemplo3",
+
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+
+            },
+            title: {
+                text: "Cantidad semanal producida"},
+            series: [{
+                name: "Brands",
+                colorByPoint: true,
+                color: '#FF0000',
+                data: [ {
+                    name: "Azucar",
+                    y: 24.030000000000005,
+                    sliced: true,
+                    selected: true
+                }, {
+                    name: "Madera",
+                    y: 10.38
+                },
+                    {
+                        name: "Celulosa",
+                        y: 10.38
+                    }
+                ]
+            }]
+
+
+        });
+    });
+
+</script>
+
+<h1 style="margin-top: -30px">Reporte de fábrica</h1>
+<hr>
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="chart-wrapper">
+        <div id="ejemplo"></div>
+        <div class="chart-stage">
+          <div id="grid-1-1">
+            <img data-src="holder.js/100%x240/white/text:#grid-1-1">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="chart-wrapper">
+
+        <div class="chart-stage">
+          <div id="ejemplo3"></div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+
+  <!-- end of three -->
+
+
+
+</div>
+
+
+
+<hr>
+
+<p class="small text-muted">Built with &#9829; by <a href="https://keen.io">Keen IO</a></p>
+
+</div>
+
+<script type="text/javascript" src="../../assets/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../../assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="../../assets/lib/holderjs/holder.js"></script>
+<script>
+    Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
+</script>
+
+<script type="text/javascript" src="../../assets/lib/keen-js/dist/keen.min.js"></script>
+<script type="text/javascript" src="../../assets/js/meta.js"></script>
+
+</body>
+</html>
