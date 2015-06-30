@@ -73,30 +73,35 @@ class EcommerceController < ApplicationController
 
   def checkout
     # calculamos el total
-    total = 0
-    if session[:azucar]
-      total += session[:azucar]
-    end
-    if session[:madera]
-      total += session[:madera]
-    end
-    if session[:celulosa]
-      total += session[:celulosa]
-    end
-    if session[:chocolate]
-      total += session[:chocolate]
-    end
-    if session[:pastadesemola]
-      total += session[:pastadesemola]
-    end
+    # total = 0
+    # if session[:azucar]
+    #   total += session[:azucar]
+    # end
+    # if session[:madera]
+    #   total += session[:madera]
+    # end
+    # if session[:celulosa]
+    #   total += session[:celulosa]
+    # end
+    # if session[:chocolate]
+    #   total += session[:chocolate]
+    # end
+    # if session[:pastadesemola]
+    #   total += session[:pastadesemola]
+    # end
     # generamos boleta
-    url = "http://integra3.ing.puc.cl/b2b/get_token/"
-    headers = {"Content-Type"=> "application/json", "Accept" => "application/json"}
-    body = {"proveedor" => "grupo8", "cliente" => "CLIENTE", "total" => "TOTAL"}
-    result = HTTParty.put(url, :headers => headers, :body => body.to_json)
+    # url = "http://integra3.ing.puc.cl/b2b/get_token/"
+    # headers = {"Content-Type"=> "application/json", "Accept" => "application/json"}
+    # body = {"proveedor" => "grupo8", "cliente" => "CLIENTE", "total" => "TOTAL"}
+    # result = HTTParty.put(url, :headers => headers, :body => body.to_json)
 
+    url = "http://moyas.ing.puc.cl/banco/pagoenlinea?callbackUrl=http%3A%2F%2Fintegra8.ing.puc.cl%2Fecommerce%2Fok&cancelUrl=http%3A%2F%2Fintegra8.ing.puc.cl%2Fecommerce%2Ffail&boletaId=ID"
 
-    url = "http://chiri.ing.puc.cl/banco/pagoenlinea?callbackUrl=URL_OK&cancelUrl=URL_FAIL&boletaId=ID"
+  end
 
+  def ok
+  end
+
+  def fail
   end
 end

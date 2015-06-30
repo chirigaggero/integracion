@@ -53,7 +53,6 @@
               <%= image_tag(producto.img, width: 242, height: 200) %>
               <div class="caption">
                 <h3 id="thumbnail-label"><%= producto.nombre %><a class="anchorjs-link" href="#thumbnail-label"><span class="anchorjs-icon"></span></a></h3>
-                <code>Stock: <%= Bodega.cantidad_total_sku producto.sku %></code>
                 <p><%= producto.descripcion %></p>
                 <p>
                   <div class="input-group">
