@@ -111,7 +111,7 @@ class PromoManager < ActiveRecord::Base
 
   def self.leer_cola
 
-    url_desarrollo= 'amqp://rygvhvjb:eUeNkPiomIPMa-70_7PjMPRfbHZPN7K0@owl.rmq.cloudamqp.com/rygvhvjb'
+    url_desarrollo= 'amqp://oegxeowe:tGioVH7GaxxnufFc2AWq54FMetkPJcWk@owl.rmq.cloudamqp.com/oegxeowe'
 
 
     conn = Bunny.new(url_desarrollo)
