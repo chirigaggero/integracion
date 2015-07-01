@@ -28,7 +28,7 @@
                 name: "Envios a fábrica por día",
                 pointInterval: <%= 1.day*1000%>,
                 pointStart: <%= 1.weeks.ago.to_i * 1000 %>,
-                data: <%= (1.weeks.ago.to_date..Date.today).map{|date| 4}.inspect %>
+                data: <%= (1.weeks.ago.to_date..Date.today).map{|date| Fabricacion.envios_por_dia date}.inspect %>
             },
             ]
 
@@ -49,21 +49,28 @@
             title: {
                 text: "Cantidad semanal producida"},
             series: [{
-                name: "Brands",
+                name: "Cantidad",
                 colorByPoint: true,
                 color: '#FF0000',
                 data: [ {
                     name: "Azucar",
-                    y: 24.030000000000005,
+                    y: <%=@azucar%>,
                     sliced: true,
                     selected: true
                 }, {
                     name: "Madera",
-                    y: 10.38
+                    y:<%=@madera%>
                 },
                     {
                         name: "Celulosa",
-                        y: 10.38
+                        y:<%=@celulo%>
+                    },
+                    {
+                        name: "Chocoñate",
+                        y:<%=@choco%>
+                    }, {
+                        name: "Pasta semola",
+                        y:<%=@pastasemola%>
                     }
                 ]
             }]

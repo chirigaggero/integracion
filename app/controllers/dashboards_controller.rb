@@ -150,6 +150,13 @@ class DashboardsController < ApplicationController
 
   def fabrica
 
+    @azucar= Fabricacion.where("sku= '25'").sum('cantidad')
+    @madera= Fabricacion.where("sku= '43'").sum('cantidad')
+    @celulo= Fabricacion.where("sku= '45'").sum('cantidad')
+    @choco= Fabricacion.where("sku= '46'").sum('cantidad')
+    @pastasemola= Fabricacion.where("sku= '48'").sum('cantidad')
+
+
   end
 
   def ofertas
@@ -177,6 +184,8 @@ class DashboardsController < ApplicationController
   end
 
   def grupos
+
+
 
   end
 
