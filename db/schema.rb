@@ -11,7 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 20150701165652) do
+
 
   create_table "bancos", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -60,6 +62,7 @@ ActiveRecord::Schema.define(version: 20150701165652) do
     t.string   "fechaEntrega"
     t.string   "order_id"
     t.boolean  "ftp"
+    t.boolean  "ecommerce"
   end
 
   create_table "product_infos", force: :cascade do |t|
@@ -97,6 +100,7 @@ ActiveRecord::Schema.define(version: 20150701165652) do
     t.date     "fin"
   end
 
+<<<<<<< HEAD
   create_table "promos", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -109,6 +113,7 @@ ActiveRecord::Schema.define(version: 20150701165652) do
     t.datetime "updated_at", null: false
     t.date     "fecha"
   end
+
 
   create_table "transitos", force: :cascade do |t|
     t.boolean  "azucar",       default: false

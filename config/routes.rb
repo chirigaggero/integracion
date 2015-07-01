@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   get 'ecommerce/checkout'
 
   get 'ecommerce/ok'
+
+  get 'ecommerce/ok/:direccionDespacho/:fechaEntrega/:orderId' => 'ecommerce#ok'
   
   get 'ecommerce/fail'
 

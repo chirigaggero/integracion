@@ -182,7 +182,7 @@ class PromoManager < ActiveRecord::Base
 
     begin
     promos.sort_by(&:precio)
-   x= promos.first.precio
+   x= promos.first.precio.to_f
 
   rescue
     return 1000000
