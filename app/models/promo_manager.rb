@@ -126,6 +126,7 @@ class PromoManager < ActiveRecord::Base
       parsear_promocion body
 
       # cancel the consumer to exit
+
       conn.close
     end
 
@@ -176,7 +177,7 @@ class PromoManager < ActiveRecord::Base
   #
   def self.obtener_promo_dia sku
 
-    promos = Promocion.where("sku = '#{sku}' AND inicio <='#{Date.today}' AND fin >= '#{Date.today}' AND codigo != 'nil'")
+    promos = Promocion.where("sku = '#{sku}' AND inicio <='#{Date.today}' AND fin >= '#{Date.today}' AND codigo = 'nil'")
     #.and("fin >= '#{Date.today}'")
 
     begin
@@ -254,7 +255,7 @@ end
 
 
 
-    result = HTTParty.get("http://chiri.ing.puc.cl/integra8/?accion=ingresar&url=#{url}&grupo=8")
+    result = HTTParty.get("http://moyas.ing.puc.cl/integra8/?accion=ingresar&url=#{url}&grupo=8")
 
     case result.code
 
