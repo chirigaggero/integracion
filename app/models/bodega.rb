@@ -42,7 +42,7 @@ class Bodega < ActiveRecord::Base
             "ordenDeCompraId" =>oc_id
     }
 
-    result = HTTParty.post(url,:headers => header1,:body=>body.to_json)
+    result = HTTParty.delete(url,:headers => header1,:body=>body.to_json)
 
     case result.code
       when 200
@@ -100,6 +100,10 @@ class Bodega < ActiveRecord::Base
     }
 
     result = HTTParty.put(url,:headers => header1,:body => body.to_json )
+
+
+    Fabricacion.create(:sku=>sku,:cantidad=>cantidad,:fecha=>Date.today)
+
     return result.to_s
 
 
