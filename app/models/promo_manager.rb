@@ -195,7 +195,7 @@ end
 
 
   def self.obtener_precio_codigo codigo
-    promos=Promocion.where(:codigo=> codigo)
+    promos=Promocion.find_by(codigo: codigo)
 
     begin
 
@@ -203,10 +203,26 @@ end
    precio=promos.precio.to_f
 
     rescue
-      return [10000000,1000000]
+      return 1000000
     end
 
-    return [sku,precio]
+    return precio
+
+  end
+
+  def self.obtener_sku_codigo codigo
+    promos=Promocion.find_by(codigo: codigo)
+
+    begin
+
+   sku=   promos.sku.to_i
+   precio=promos.precio.to_f
+
+    rescue
+      return 1000000
+    end
+
+    return sku
 
   end
 

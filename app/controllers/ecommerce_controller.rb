@@ -98,7 +98,7 @@ class EcommerceController < ApplicationController
       if message != ""
         flash[:notice] = message
       else
-  		  flash[:notice] = "Se ha agragado exitosamente al carrito de compras. (producto: "+params[:product] + ", cantidad:"+params[:quantity]+")"
+  		  flash[:notice] = "Se ha agregado exitosamente al carrito de compras. (producto: "+params[:product] + ", cantidad:"+params[:quantity]+")"
   	  end
     end
   end
@@ -141,11 +141,46 @@ class EcommerceController < ApplicationController
       @promo_pastadesemola = false
     end
 
+    descuento = false
+    if params[:codigoDescuento]
+      codigo = params[:codigoDescuento]
+      precio_descuento = PromoManager.obtener_precio_codigo codigo.to_s
+      sku = PromoManager.obtener_sku_codigo codigo.to_s
+      if sku != 1000000 and precio_descuento != 1000000
+        if sku == 25
+          session[:precio_azucar] = precio_descuento
+          descuento_azucar = true
+          flash[:notice] = "Se ha aplicado correctamente el codigo de descuento: "+codigo+ "(producto: Azúcar, precio: "+precio_descuento.to_s+")"
+        elsif sku == 43
+          session[:precio_madera] = precio_descuento
+          descuento_madera = true
+          flash[:notice] = "Se ha aplicado correctamente el codigo de descuento: "+codigo+ "(producto: Madera, precio: "+precio_descuento.to_s+")"
+        elsif sku == 45
+          session[:precio_celulosa] = precio_descuento
+          descuento_celulosa = true
+          flash[:notice] = "Se ha aplicado correctamente el codigo de descuento: "+codigo+ "(producto: Celulosa, precio: "+precio_descuento.to_s+")"
+        elsif sku == 46
+          session[:precio_chocolate] = precio_descuento
+          descuento_chocolate = true
+          flash[:notice] = "Se ha aplicado correctamente el codigo de descuento: "+codigo+ "(producto: Chocolate, precio: "+precio_descuento.to_s+")"
+        elsif sku = 48
+          session[:precio_pastadesemola] = precio_descuento
+          descuento_pastadesemola = true
+          flash[:notice] = "Se ha aplicado correctamente el codigo de descuento: "+codigo+ "(producto: Pasta de Sémola, precio: "+precio_descuento.to_s+")"
+        end
+      end
+    end
+
     # calculamos el total
     total = 0
     if session[:azucar]
       precio = @promo_azucar ? @precio_promocion_azucar : @precio_azucar
-      session[:precio_azucar] = precio
+      if descuento_azucar
+        session[:precio_azucar] = precio_descuento
+      else
+        session[:precio_azucar] = precio
+      end
+      precio = session[:precio_azucar]
       cantidad = session[:azucar].to_i
       total_azucar = precio*cantidad
     else
@@ -153,7 +188,12 @@ class EcommerceController < ApplicationController
     end
     if session[:madera]
       precio = @promo_madera ? @precio_promocion_madera : @precio_madera
-      session[:precio_madera] = precio
+      if descuento_madera
+        session[:precio_madera] = precio_descuento
+      else
+        session[:precio_madera] = precio
+      end
+      precio = session[:precio_madera]
       cantidad = session[:madera].to_i
       total_madera = precio*cantidad
     else
@@ -161,7 +201,12 @@ class EcommerceController < ApplicationController
     end
     if session[:celulosa]
       precio = @promo_celulosa ? @precio_promocion_celulosa : @precio_celulosa
-      session[:precio_celulosa] = precio
+      if descuento_celulosa
+        session[:precio_celulosa] = precio_descuento
+      else
+        session[:precio_celulosa] = precio
+      end
+      precio = session[:precio_celulosa]
       cantidad = session[:celulosa].to_i
       total_celulosa = precio*cantidad
     else
@@ -169,7 +214,12 @@ class EcommerceController < ApplicationController
     end
     if session[:chocolate]
       precio = @promo_chocolate ? @precio_promocion_chocolate : @precio_chocolate
-      session[:precio_chocolate] = precio
+      if descuento_chocolate
+        session[:precio_chocolate] = precio_descuento
+      else
+        session[:precio_chocolate] = precio
+      end
+      precio = session[:precio_chocolate]
       cantidad = session[:chocolate].to_i
       total_chocolate = precio*cantidad
     else
@@ -177,7 +227,12 @@ class EcommerceController < ApplicationController
     end
     if session[:pastadesemola]
       precio = @promo_pastadesemola ? @precio_promocion_pastadesemola : @precio_pastadesemola
-      session[:precio_pastadesemola] = precio
+      if descuento_pastadesemola
+        session[:precio_pastadesemola] = precio_descuento
+      else
+        session[:precio_pastadesemola] = precio
+      end
+      precio = session[:precio_pastadesemola]
       cantidad = session[:pastadesemola].to_i
       total_pastadesemola = precio*cantidad
     else

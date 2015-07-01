@@ -29,6 +29,13 @@
     <h1>Grupo <%= image_tag("8BallSmall.png", width: 30, height: 30) %> E-Commerce</h1>
   </div>
 
+  <% if flash[:notice] %>
+    <div id="alert-message" class="alert alert-info alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <strong>Mensaje:</strong> <%= flash[:notice] %>
+    </div>
+  <% end %>
+
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title"><i class="fa fa-shopping-cart"></i> Carrito de Compras</h3>
@@ -38,35 +45,35 @@
 	<ul class="list-group">
   <% if session[:azucar]%>
       <li class="list-group-item">
-      <span class="badge">Precio: <%= @precio_azucar*session[:azucar].to_i %></span>
+      <span class="badge">Precio: <%= session[:precio_azucar]*session[:azucar].to_i %></span>
       <span class="badge">Cantidad: <%= session[:azucar] %></span>
       Ázucar
     </li>
   <% end %>
   <% if session[:madera]%>
       <li class="list-group-item">
-      <span class="badge">Precio: <%= @precio_madera*session[:madera].to_i %></span>
+      <span class="badge">Precio: <%= session[:precio_madera]*session[:madera].to_i %></span>
       <span class="badge">Cantidad: <%= session[:madera] %></span>
       Madera
     </li>
   <% end %>
   <% if session[:celulosa]%>
       <li class="list-group-item">
-      <span class="badge">Precio: <%= @precio_celulosa*session[:celulosa].to_i %></span>
+      <span class="badge">Precio: <%= session[:precio_celulosa]*session[:celulosa].to_i %></span>
       <span class="badge">Cantidad: <%= session[:celulosa] %></span>
       Celulosa
     </li>
   <% end %>
   <% if session[:chocolate]%>
       <li class="list-group-item">
-      <span class="badge">Precio: <%= @precio_chocolate*session[:chocolate].to_i %></span>
+      <span class="badge">Precio: <%= session[:precio_chocolate]*session[:chocolate].to_i %></span>
       <span class="badge">Cantidad: <%= session[:chocolate] %></span>
       Chocolate
     </li>
   <% end %>
   <% if session[:pastadesemola]%>
       <li class="list-group-item">
-      <span class="badge">Precio: <%= @precio_pastadesemola*session[:pastadesemola].to_i %></span>
+      <span class="badge">Precio: <%= session[:precio_pastadesemola]*session[:pastadesemola].to_i %></span>
       <span class="badge">Cantidad: <%= session[:pastadesemola] %></span>
       Pasta de Sémola
     </li>
