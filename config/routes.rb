@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   get 'dashboards/ofertas'
 
   get 'dashboards/grupos'
+  get 'dashboards/index'
 
   get '/ecommerce' => 'ecommerce#products'
 
