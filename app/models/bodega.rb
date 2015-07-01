@@ -36,14 +36,15 @@ class Bodega < ActiveRecord::Base
 
     url="http://integracion-2015-prod.herokuapp.com/bodega/stock"
     header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
-    body= { "productoId" => producto_id,
+    body= {
+            "productoId" => producto_id,
             "direccion" =>direccion,
             "precio" =>precio,
             "ordenDeCompraId" =>oc_id
     }
 
     result = HTTParty.delete(url,:headers => header1,:body=>body.to_json)
-
+    return result.to_s
     case result.code
       when 200
         true
