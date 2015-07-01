@@ -77,6 +77,14 @@
     </li>
   <% end %>
 	</ul>
+  <form action="/ecommerce/shoppingcart" method="get" class="form-inline">
+    <div class="form-group">
+      <label for="codigoDescuento">Codigo de Descuento</label>
+      <input type="text" class="form-control" id="codigoDescuento" name="codigoDescuento" placeholder="(Opcional) Ingresa un codigo de descuento">
+    <input type="submit" class="btn btn-default" value="Aplicar">
+  </form>
+  <br>
+  <br>
   <code><strong>TOTAL:</strong> <%= $total_compra %></code>
 	<hr>
 	<a href="/ecommerce/checkout"class="btn btn-success"><i class="fa fa-credit-card"></i> Pagar</a>
