@@ -110,12 +110,6 @@ class EcommerceController < ApplicationController
     @precio_chocolate = obtenerPrecio 46
     @precio_pastadesemola = obtenerPrecio 48
 
-    session[:precio_azucar] = @precio_azucar
-    session[:precio_madera] = @precio_madera
-    session[:precio_celulosa] = @precio_celulosa
-    session[:precio_chocolate] = @precio_chocolate
-    session[:precio_pastadesemola] = @precio_pastadesemola
-
     @precio_promocion_azucar = PromoManager.obtener_promo_dia 25
     if @precio_promocion_azucar < @precio_azucar
       @promo_azucar = true
@@ -151,6 +145,7 @@ class EcommerceController < ApplicationController
     total = 0
     if session[:azucar]
       precio = @promo_azucar ? @precio_promocion_azucar : @precio_azucar
+      session[:precio_azucar] = precio
       cantidad = session[:azucar].to_i
       total_azucar = precio*cantidad
     else
@@ -158,6 +153,7 @@ class EcommerceController < ApplicationController
     end
     if session[:madera]
       precio = @promo_madera ? @precio_promocion_madera : @precio_madera
+      session[:precio_madera] = precio
       cantidad = session[:madera].to_i
       total_madera = precio*cantidad
     else
@@ -165,6 +161,7 @@ class EcommerceController < ApplicationController
     end
     if session[:celulosa]
       precio = @promo_celulosa ? @precio_promocion_celulosa : @precio_celulosa
+      session[:precio_celulosa] = precio
       cantidad = session[:celulosa].to_i
       total_celulosa = precio*cantidad
     else
@@ -172,6 +169,7 @@ class EcommerceController < ApplicationController
     end
     if session[:chocolate]
       precio = @promo_chocolate ? @precio_promocion_chocolate : @precio_chocolate
+      session[:precio_chocolate] = precio
       cantidad = session[:chocolate].to_i
       total_chocolate = precio*cantidad
     else
@@ -179,6 +177,7 @@ class EcommerceController < ApplicationController
     end
     if session[:pastadesemola]
       precio = @promo_pastadesemola ? @precio_promocion_pastadesemola : @precio_pastadesemola
+      session[:precio_pastadesemola] = precio
       cantidad = session[:pastadesemola].to_i
       total_pastadesemola = precio*cantidad
     else
@@ -205,35 +204,38 @@ class EcommerceController < ApplicationController
     result = HTTParty.put(url, :headers => headers, :body => body.to_json)
     id = result["_id"]
     url = "http://moyas.ing.puc.cl/banco/pagoenlinea?callbackUrl=http%3A%2F%2Fintegra8.ing.puc.cl%2Fecommerce%2Fok&cancelUrl=http%3A%2F%2Fintegra8.ing.puc.cl%2Fecommerce%2Ffail&boletaId=#{id}"
+    session[:orderId] = id
     redirect_to url
   end
 
   def ok
-
-    if params[:direccion] and params[:fechaEntrega] and params[:orderId]
+    @procesoCompleto = false
+    if params[:direccionDespacho] and params[:fechaEntrega]
       direccion = params[:direccionDespacho]
       fechaEntrega = params[:fechaEntrega]
-      orderId = params[:orderId]
+      orderId = session[:orderId]
 
       if session[:azucar]
-        Pedido.new(sku: "25", cantidad: session[:azucar], precio_unitario: session[:precio_azucar], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
+        Pedido.create(sku: "25", cantidad: session[:azucar], precio_unitario: session[:precio_azucar], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
       end
 
       if session[:madera]
-        Pedido.new(sku: "43", cantidad: session[:madera], precio_unitario: session[:precio_madera], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
+        Pedido.create(sku: "43", cantidad: session[:madera], precio_unitario: session[:precio_madera], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
       end
 
       if session[:celulosa]
-        Pedido.new(sku: "45", cantidad: session[:celulosa], precio_unitario: session[:precio_celulosa], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
+        Pedido.create(sku: "45", cantidad: session[:celulosa], precio_unitario: session[:precio_celulosa], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
       end
 
       if session[:chocolate]
-        Pedido.new(sku: "46", cantidad: session[:chocolate], precio_unitario: session[:precio_chocolate], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
+        Pedido.create(sku: "46", cantidad: session[:chocolate], precio_unitario: session[:precio_chocolate], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
       end
 
       if session[:pastadesemola]
-        Pedido.new(sku: "48", cantidad: session[:pastadesemola], precio_unitario: session[:precio_pastadesemola], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
+        Pedido.create(sku: "48", cantidad: session[:pastadesemola], precio_unitario: session[:precio_pastadesemola], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
       end
+
+      @procesoCompleto = true
     end
     
   end

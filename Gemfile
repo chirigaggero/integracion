@@ -43,6 +43,7 @@ gem 'font-awesome-rails'
 gem 'nokogiri'
 gem 'net-sftp'
 gem 'jquery-turbolinks'
+gem 'jquery-ui-rails'
 
 gem 'whenever', :require => false
 

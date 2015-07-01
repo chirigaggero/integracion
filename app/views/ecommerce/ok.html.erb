@@ -34,23 +34,30 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title"><i class="fa fa-check-circle"></i> Compra Exitosa</h3>
+    <% if @procesoCompleto %>
+        <h3 class="panel-title"><i class="fa fa-check-circle"></i> Compra Exitosa</h3>
+      <% else %>
+        <h3 class="panel-title"><i class="fa fa-truck"></i> Datos Despacho</h3>
+      <% end %>
     </div>
     <div class="panel-body">
+    <% if @procesoCompleto %>
     	Compra realizada exitosamente, gracias por preferirnos <i class="fa fa-smile-o"></i>!
-      <br>
+      <% else %>
       <code><strong>Por favor, completa los siguientes datos para despacho de tu producto</strong></code>
-      <form>
+      <br>
+      <form action="/ecommerce/ok" method="get">
         <div class="form-group">
           <label for="direccionDespacho">Dirección de Despacho</label>
-          <input type="email" class="form-control" id="direccion" placeholder="Email">
+          <input type="text" class="form-control" id="direccionDespacho" name="direccionDespacho" placeholder="Ingresa la direccion de despacho">
         </div>
         <div class="form-group">
           <label for="fechaEntrega">Fecha de Entrega</label>
-          <input type="password" class="form-control" id="fechaEntrega" placeholder="Password">
+          <input type="text" class="form-control" id="fechaEntrega" name="fechaEntrega" placeholder="Ingresa la fecha de entrega deseada">
         </div>
-        <button type="submit" class="btn btn-default">Enviar</button>
+        <input type="submit" class="btn btn-default" value="Enviar">
       </form>
+      <% end %>
     </div>
   </div>
 

@@ -28,5 +28,6 @@ $(function(){
 	    });
 	}, 5000);
 
+    $( "#fechaEntrega" ).datepicker({dateFormat: "yy-mm-dd"});
 
 });
