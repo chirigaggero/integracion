@@ -1,5 +1,6 @@
 class DashboardsController < ApplicationController
   def ventas
+
   end
 
   def nivel_servicio
@@ -7,6 +8,21 @@ class DashboardsController < ApplicationController
   end
 
   def contable
+
+
+    @saldo= Banco.obtener_mi_saldo
+
+    @transacciones=Transaccion.last 10
+
+
+    @grupo_3= Transaccion.where(:destino => 'grupo3').count
+    @grupo_4= Transaccion.where(:destino => 'grupo4').count
+    @grupo_5= Transaccion.where(:destino => 'grupo5').count
+    @grupo_6= Transaccion.where(:destino => 'grupo6').count
+    @grupo_7= Transaccion.where(:destino => 'grupo7').count
+    @fabrica =Transaccion.where(:destino => 'fabrica').count
+
+
 
   end
 
@@ -43,6 +59,92 @@ class DashboardsController < ApplicationController
 
 
   def productos
+
+    #filtrar pedidos por sku
+    azucar= Pedido.where("sku= '25'")
+    madera= Pedido.where("sku= '43'")
+    celulo= Pedido.where("sku= '45'")
+    choco= Pedido.where("sku= '46'")
+    pastasemola= Pedido.where("sku= '48'")
+
+    @ganancia_azucar=0
+    @volumen_azucar=0
+    @ftp_azucar=0
+    @b2b_azucar=0
+    @ecommerce_azucar=0
+    azucar.each do |pedido|
+      @ganancia_azucar+=pedido.precio_unitario*pedido.cantidad
+      @volumen_azucar += pedido.cantidad
+
+      if pedido.ftp
+        @ftp_azucar+=1
+      elsif !pedido.ftp and !pedido.ecommerce
+        @b2b_azucar+=1
+      else
+        @ecommerce_azucar+=1
+      end
+
+    end
+
+    @ganancia_madera=0
+    @volumen_madera=0
+    @ftp_madera=0
+    @b2b_madera=0
+    @ecommerce_madera=0
+    madera.each do |pedido|
+      @ganancia_madera+=pedido.precio_unitario*pedido.cantidad
+      @volumen_madera += pedido.cantidad
+
+      if pedido.ftp
+        @ftp_madera+=1
+      elsif !pedido.ftp and !pedido.ecommerce
+        @b2b_madera+=1
+      else
+        @ecommerce_madera+=1
+      end
+    end
+
+    @ganancia_celulo=0
+    @volumen_celulo=0
+    celulo.each do |pedido|
+      @ganancia_celulo+=pedido.precio_unitario*pedido.cantidad
+      @volumen_celulo += pedido.cantidad
+    end
+
+    @ganancia_choco=0
+    @volumen_choco=0
+    @ftp_choco=0
+    @b2b_choco=0
+    @ecommerce_choco=0
+    choco.each do |pedido|
+      @ganancia_choco+=pedido.precio_unitario*pedido.cantidad
+      @volumen_choco += pedido.cantidad
+
+
+      if pedido.ftp
+        @ftp_choco+=1
+      elsif !pedido.ftp and !pedido.ecommerce
+        @b2b_choco+=1
+      else
+        @ecommerce_choco+=1
+      end
+
+    end
+
+    @ganancia_pastasemola=0
+    @volumen_pastasemola=0
+    pastasemola.each do |pedido|
+      @ganancia_pastasemola+=pedido.precio_unitario*pedido.cantidad
+      @volumen_pastasemola += pedido.cantidad
+    end
+
+
+    #mercados del chocolate
+
+
+
+
+
 
   end
 

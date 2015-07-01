@@ -13,28 +13,52 @@
     $(function(){
         new Highcharts.Chart({
             chart: {
-                renderTo: "ejemplo"
+                renderTo: "ejemplo",
+                type: 'column'
             },
             title: {
-                text: "Detalles de productos vendidos"},
+                text: "Ganancias productos vendidos"},
             xAxis: {
-                categories: ['Chocolate', 'Pasta Semola', 'Celusa', 'Madera', 'Azucar']
+                categories: ['Chocolate', 'Pasta Semola', 'Celulosa', 'Madera', 'Azucar']
             },
             yAxis: {
                 title:{
-                    text: "Dollars"
+                    text: "Pesos"
+                }
+            },   series: [
+                {
+                    name: "Ganancias",
+
+                    data: [<%=@ganancia_choco%>,<%=@ganancia_pastasemola%>,<%=@ganancia_celulo%>,<%=@ganancia_madera%>,<%=@ganancia_azucar%>]
+                }]
+
+
+
+
+
+        });
+
+        new Highcharts.Chart({
+            chart: {
+                renderTo: "ejemplo7",
+                type: 'column'
+            },
+            title: {
+                text: "Volumen de productos vendidos"},
+            xAxis: {
+                categories: ['Chocolate', 'Pasta Semola', 'Celulosa', 'Madera', 'Azucar']
+            },
+            yAxis: {
+                title:{
+                    text: "Cantidad"
                 }
             },
             series: [{
                 name: "Volumen",
+                color: 'darkblue',
 
-                data: [1,2,3,4,5]
-            },
-                {
-                    name: "Ganancias",
-
-                    data: [5,4,3,2,1]
-                }]
+                data: [<%=@volumen_choco%>,<%=@volumen_pastasemola%>,<%=@volumen_celulo%>,<%=@volumen_madera%>,<%=@volumen_azucar%>]
+            }]
 
 
 
@@ -52,30 +76,22 @@
 
             },
             title: {
-                text: "Mercados de Chocolate"},
+                text: "Mercados de chocolate"},
             series: [{
                 name: "Brands",
                 colorByPoint: true,
                 data: [{
-                    name: "Grupo5",
-                    y: 56.33
+                    name: "B2B",
+                    y: <%=@b2b_choco %>
                 }, {
-                    name: "Azucar",
-                    y: 24.030000000000005,
+                    name: "E-commerce",
+                    y:<%=@ecommerce_choco %>,
                     sliced: true,
                     selected: true
                 }, {
                     name: "Pedidos internacionales",
-                    y: 10.38
-                },
-                    {
-                        name: "Grupo 7",
-                        y: 10.38
-                    },
-                    {
-                        name: "E-commerce",
-                        y: 10.38
-                    },
+                    y:<%=@ftp_choco%>
+                }
                 ]
             }]
 
@@ -168,11 +184,21 @@
 <div class="container-fluid">
   <div class="row">
 
-    <div class="col-sm-12">
+    <div class="col-sm-6">
       <div class="chart-wrapper">
 
         <div class="chart-stage">
           <div id="ejemplo"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-sm-6">
+      <div class="chart-wrapper">
+
+        <div class="chart-stage">
+          <div id="ejemplo7"></div>
         </div>
       </div>
     </div>

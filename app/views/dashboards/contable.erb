@@ -14,21 +14,21 @@
                 renderTo: "ejemplo"
             },
             title: {
-                text: "Saldo de la empresa en el tiempo"
+                text: "Gastos de la empresa en el tiempo"
             },
             xAxis: {
                 type: "datetime"
             },
             yAxis: {
                 title: {
-                    text: "Saldo"
+                    text: "$"
                 }
             },
             series: [{
-                name: "Saldo en el tiempo",
+                name: "Gastos en el tiempo",
                 pointInterval: <%= 1.day*1000%>,
                 pointStart: <%= 1.weeks.ago.to_i * 1000 %>,
-                data: <%= (1.weeks.ago.to_date..Date.today).map{|date| 4 }.inspect %>
+                data: <%= (1.weeks.ago.to_date..Date.today).map{|date| Banco.obtener_transacciones_dia date }.inspect %>
             },
             ]
 
@@ -54,26 +54,26 @@
                 color: '#FF0000',
                 data: [{
                     name: "Producir en fábrica",
-                    y: 56.33
+                    y: <%=@fabrica %>
                 }, {
                     name: "Grupo 3",
-                    y: 24.030000000000005,
+                    y: <%=@grupo_3 %>,
                     sliced: true,
                     selected: true
                 }, {
                     name: "Grupo 4",
-                    y: 10.38
+                    y: <%=@grupo_4 %>
                 },
                     {
                         name: "Grupo 5",
-                        y: 10.38
+                        y: <%=@grupo_5 %>
                     },
                     {
                         name: "Grupo 6",
-                        y: 10.38
+                        y: <%=@grupo_6 %>
                     },{
                         name: "Grupo 7",
-                        y: 10.38
+                        y:<%=@grupo_7 %>
                     }]
             }]
 
@@ -106,6 +106,7 @@
          Mi saldo actual:
         </div>
         <div class="chart-stage">
+          <div style="text-align: center;font-size: 3em;color: red">$<%=@saldo%></div>
           <img data-src="holder.js/100%x240/white">
         </div>
 
@@ -129,9 +130,42 @@
       <div class="chart-wrapper">
         <div class="chart-title">
          Ultimas transacciones
+
         </div>
+
+
+
         <div class="chart-stage">
-          <img data-src="holder.js/100%x120/white">
+          <% if !@transacciones.nil?%>
+              <% if !@transacciones.empty?%>
+
+                  <table border="1">
+                    <col width="300px">
+                    <col width="300px">
+                    <col width="300px">
+                    <tr>
+                      <th>  Destino de la transaccion     </th>
+                      <th> Monto    </th>
+                      <th> Fecha </th>
+                    </tr>
+
+
+                    <%@transacciones.each do |pedido|%>
+                        <tr>
+                          <td><%=pedido.destino%></td>
+                          <td><%=pedido.monto%></td>
+                          <td ><%=pedido.created_at.strftime("%Y-%d-%m")%></td>
+
+                        </tr>
+
+                    <%end%>
+                  </table>
+
+              <%else%>
+                  <p>No hay pedidos pendientes</p>
+              <%end%>
+
+          <%end%>
         </div>
 
       </div>

@@ -23,8 +23,33 @@ class Banco < ActiveRecord::Base
      return "55648ad3f89fed0300524fff"
 
       when "grupo7"
-    return    "55648ad3f89fed0300525001"
+    return  "55648ad3f89fed0300525001"
     end
+
+  end
+
+
+  def self.obtener_cliente_cuenta cuenta_id
+
+    case cuenta_id
+      when "55648ad3f89fed0300525002"
+        return   "grupo3"
+
+      when "55648ad3f89fed0300525004"
+        return "grupo4"
+
+      when  "55648ad3f89fed0300524ffd2"
+        "grupo5"
+
+      when "55648ad3f89fed0300524fff"
+        return "grupo6"
+
+      when "55648ad3f89fed0300525001"
+        return  "grupo7"
+    end
+
+
+
 
   end
 
@@ -88,6 +113,7 @@ class Banco < ActiveRecord::Base
         return result.to_s
     end
 
+    Transaccion.create(:destino=>'fabrica',:monto=>total,:fecha=>Date.today)
 
   end
 
@@ -134,11 +160,30 @@ end
       headers = {"Content-Type"=> "application/json"}
       body = {"monto" => monto, "origen" => $micuenta, "destino" => cuenta_id}
       result = HTTParty.put(url, :headers => headers, :body => body.to_json)
+
+
+      destino= obtener_cliente_cuenta cuenta_id.to_s
+
+      Transaccion.create(:destino=>destino,:monto=>monto,:fecha=>Date.today)
+
+
   end
 
 
   def self.setear_cuenta cuenta
     $micuenta=cuenta
+  end
+
+
+
+  def self.obtener_transacciones_dia date
+
+    begin
+    total = Transaccion.where(" fecha ='#{date}'").sum('monto')
+    return total.to_i
+   rescue
+      return 0
+    end
   end
 
 end
