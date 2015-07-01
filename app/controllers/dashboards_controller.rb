@@ -171,19 +171,26 @@ class DashboardsController < ApplicationController
     @insta_pastasemola= Promocion.where("codigo!='nil' AND sku= '48'").count
 
 #promos twitter
-
     @twitter_azucar= Promocion.where("codigo ='nil' AND sku= '25'").count
     @twitter_madera= Promocion.where("codigo ='nil' AND sku= '43'").count
     @twitter_celulosa= Promocion.where("codigo ='nil' AND sku= '45'").count
     @twitter_choco= Promocion.where("codigo ='nil' AND sku= '46'").count
     @twitter_pastasemola= Promocion.where("codigo ='nil' AND sku= '48'").count
 
-
-
-
   end
 
   def grupos
+
+    @azucar= Bodega.cantidad_disponible_sku_reposicion 25
+    @madera= Bodega.cantidad_disponible_sku_reposicion 43
+    @celulosa=Bodega.cantidad_disponible_sku_reposicion 45
+    @chocolate=Bodega.cantidad_disponible_sku_reposicion 46
+    @pastasemola=Bodega.cantidad_disponible_sku_reposicion 48
+    @huevo= Bodega.cantidad_disponible_sku_reposicion 2
+    @sal= Bodega.cantidad_disponible_sku_reposicion 26
+    @cacao=Bodega.cantidad_disponible_sku_reposicion 20
+    @semola=Bodega.cantidad_disponible_sku_reposicion 19
+    @leche=Bodega.cantidad_disponible_sku_reposicion 5
 
 
 
