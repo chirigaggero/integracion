@@ -118,7 +118,7 @@ class PromoManager < ActiveRecord::Base
     conn.start
 
     ch   = conn.create_channel
-    q    = ch.queue("ofertas",:durable => false,:auto_durable => true)
+    q    = ch.queue("ofertas",:durable => false,:auto_delete => true)
 
 
     q.subscribe(:block => true) do |delivery_info, properties, body|
