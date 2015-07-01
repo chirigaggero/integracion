@@ -110,6 +110,11 @@ class EcommerceController < ApplicationController
     @precio_chocolate = obtenerPrecio 46
     @precio_pastadesemola = obtenerPrecio 48
 
+    session[:precio_azucar] = @precio_azucar
+    session[:precio_madera] = @precio_madera
+    session[:precio_celulosa] = @precio_celulosa
+    session[:precio_chocolate] = @precio_chocolate
+    session[:precio_pastadesemola] = @precio_pastadesemola
 
     @precio_promocion_azucar = PromoManager.obtener_promo_dia 25
     if @precio_promocion_azucar < @precio_azucar
@@ -194,23 +199,50 @@ class EcommerceController < ApplicationController
 
   def checkout
     # generamos boleta
-    url = "http://chiri.ing.puc.cl:8080/Jboss/integra8/Factura/boleta/"
+    url = "http://moyas.ing.puc.cl:8080/Jboss/integra8/Factura/boleta/"
     headers = {"Content-Type"=> "application/json", "Accept" => "application/json"}
-    body = {"proveedor" => "556489daefb3d7030091bab1", "cliente" => "CLIENTE", "total" => $total_compra}
+    body = {"proveedor" => "55648ad2f89fed0300524ffc", "cliente" => "CLIENTE", "total" => $total_compra}
     result = HTTParty.put(url, :headers => headers, :body => body.to_json)
     id = result["_id"]
-    url = "http://chiri.ing.puc.cl/banco/pagoenlinea?callbackUrl=http%3A%2F%2Fintegra8.ing.puc.cl%2Fecommerce%2Fok&cancelUrl=http%3A%2F%2Fintegra8.ing.puc.cl%2Fecommerce%2Ffail&boletaId=#{id}"
+    url = "http://moyas.ing.puc.cl/banco/pagoenlinea?callbackUrl=http%3A%2F%2Fintegra8.ing.puc.cl%2Fecommerce%2Fok&cancelUrl=http%3A%2F%2Fintegra8.ing.puc.cl%2Fecommerce%2Ffail&boletaId=#{id}"
     redirect_to url
   end
 
   def ok
+
+    if params[:direccion] and params[:fechaEntrega] and params[:orderId]
+      direccion = params[:direccionDespacho]
+      fechaEntrega = params[:fechaEntrega]
+      orderId = params[:orderId]
+
+      if session[:azucar]
+        Pedido.new(sku: "25", cantidad: session[:azucar], precio_unitario: session[:precio_azucar], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
+      end
+
+      if session[:madera]
+        Pedido.new(sku: "43", cantidad: session[:madera], precio_unitario: session[:precio_madera], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
+      end
+
+      if session[:celulosa]
+        Pedido.new(sku: "45", cantidad: session[:celulosa], precio_unitario: session[:precio_celulosa], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
+      end
+
+      if session[:chocolate]
+        Pedido.new(sku: "46", cantidad: session[:chocolate], precio_unitario: session[:precio_chocolate], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
+      end
+
+      if session[:pastadesemola]
+        Pedido.new(sku: "48", cantidad: session[:pastadesemola], precio_unitario: session[:precio_pastadesemola], direccion: direccion, fechaEntrega: fechaEntrega, order_id: orderId, ecommerce: true)
+      end
+    end
+    
   end
 
   def fail
   end
 
   def obtenerPrecio sku
-    url = "http://chiri.ing.puc.cl/integra8/?accion=leer&sku=#{sku}"
+    url = "http://moyas.ing.puc.cl/integra8/?accion=leer&sku=#{sku}"
     result = HTTParty.get(url)
 
     ultimo_precio = result[0]
