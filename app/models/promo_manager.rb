@@ -126,6 +126,7 @@ class PromoManager < ActiveRecord::Base
       parsear_promocion body
 
       # cancel the consumer to exit
+
       conn.close
     end
 
@@ -176,7 +177,7 @@ class PromoManager < ActiveRecord::Base
   #
   def self.obtener_promo_dia sku
 
-    promos = Promocion.where("sku = '#{sku}' AND inicio <='#{Date.today}' AND fin >= '#{Date.today}' AND codigo != 'nil'")
+    promos = Promocion.where("sku = '#{sku}' AND inicio <='#{Date.today}' AND fin >= '#{Date.today}' AND codigo = 'nil'")
     #.and("fin >= '#{Date.today}'")
 
     begin
@@ -191,6 +192,23 @@ class PromoManager < ActiveRecord::Base
 
 
 end
+
+
+  def self.obtener_precio_codigo codigo
+    promos=Promocion.where(:codigo=> codigo)
+
+    begin
+
+   sku=   promos.sku.to_i
+   precio=promos.precio.to_f
+
+    rescue
+      return [10000000,1000000]
+    end
+
+    return [sku,precio]
+
+  end
 
 
 def self.publicar_twitter promocion
@@ -237,7 +255,7 @@ end
 
 
 
-    result = HTTParty.get("http://chiri.ing.puc.cl/integra8/?accion=ingresar&url=#{url}&grupo=8")
+    result = HTTParty.get("http://moyas.ing.puc.cl/integra8/?accion=ingresar&url=#{url}&grupo=8")
 
     case result.code
 
@@ -254,6 +272,21 @@ end
 
   end
 
+
+  def self.obtener_cantidad_promociones_instagram date
+
+
+    promos_instagram = Promocion.where(" inicio <='#{date}' AND fin >= '#{date}' AND codigo != 'nil'").count
+
+  promos_instagram
+  end
+
+  def self.obtener_cantidad_promociones_cola date
+
+    promos_cola = Promocion.where(" inicio <='#{date}' AND fin >= '#{date}' AND codigo = 'nil'").count
+
+    promos_cola
+  end
 
 
 

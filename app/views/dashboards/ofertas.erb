@@ -29,13 +29,13 @@
                 name: "Instagram",
                 pointInterval: <%= 1.day*1000%>,
                 pointStart: <%= 1.weeks.ago.to_i * 1000 %>,
-                data: <%= (1.weeks.ago.to_date..Date.today).map{|date| 3 }.inspect %>
+                data: <%= (1.weeks.ago.to_date..Date.tomorrow).map{|date| PromoManager.obtener_cantidad_promociones_instagram date }.inspect %>
             },
                 {
                     name: "Cola AMPQ",
                     pointInterval: <%= 1.day*1000%>,
                     pointStart: <%= 1.weeks.ago.to_i * 1000 %>,
-                    data: <%= (1.weeks.ago.to_date..Date.today).map{|date| 2 }.inspect %>
+                    data: <%= (1.weeks.ago.to_date..Date.tomorrow).map{|date| PromoManager.obtener_cantidad_promociones_cola date }.inspect %>
                 }]
 
 
@@ -61,21 +61,21 @@
                 colorByPoint: true,
                 data: [{
                     name: "Chocolate",
-                    y: 56.33
+                    y: <%=@twitter_choco%>
                 }, {
                     name: "Madera",
-                    y: 24.030000000000005,
+                    y: <%=@twitter_madera%>,
                     sliced: true,
                     selected: true
                 }, {
                     name: "Pasta semola",
-                    y: 10.38
+                    y: <%=@twitter_pastasemola%>
                 }, {
                     name: "Celulosa",
-                    y: 10.38
+                    y: <%=@twitter_celulosa%>
                 }, {
                     name: "Azucar",
-                    y: 10.38
+                    y:<%=@twitter_azucar %>
                 }]
             }]
 
@@ -99,21 +99,21 @@
                 colorByPoint: true,
                 data: [{
                     name: "Chocolate",
-                    y: 56.33
+                    y: <%=@insta_choco%>
                 }, {
                     name: "Madera",
-                    y: 24.030000000000005,
+                    y: <%=@insta_madera%>,
                     sliced: true,
                     selected: true
                 }, {
                     name: "Pasta semola",
-                    y: 10.38
+                    y: <%=@insta_pastasemola%>
                 }, {
                     name: "Celulosa",
-                    y: 10.38
+                    y:<%=@insta_celulosa%>
                 }, {
                     name: "Azucar",
-                    y: 10.38
+                    y: <%=@insta_azucar%>
                 }]
             }]
 

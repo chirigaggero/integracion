@@ -28,10 +28,10 @@
                 colorByPoint: true,
                 data: [{
                     name: "Capacidad usada",
-                    y: 56.33
+                    y: <%=@usado%>,
                 }, {
                     name: "Capacidad libre",
-                    y: 24.030000000000005,
+                    y: <%=@disp%>,
                     sliced: true,
                     selected: true
                 }]
@@ -56,23 +56,23 @@
                 colorByPoint: true,
                 data: [{
                     name: "Chocolate",
-                    y: 56.33
+                    y: <%= @chocolate%>
                 }, {
                     name: "Azucar",
-                    y: 24.030000000000005,
+                    y: <%= @azucar%>,
                     sliced: true,
                     selected: true
                 }, {
                     name: "Pasta de semola",
-                    y: 10.38
+                    y: <%= @pastasemola%>
                 },
                     {
-                        name: "madera",
-                        y: 10.38
+                        name: "Madera",
+                        y: <%= @madera%>
                     },
                     {
-                        name: "celulosa",
-                        y: 10.38
+                        name: "Celulosa",
+                        y: <%= @celulosa%>
                     },
                 ]
             }]
@@ -97,10 +97,10 @@
                 colorByPoint: true,
                 data: [{
                     name: "Usado",
-                    y: 56.33
+                    y:<%= @usado_recepcion%>
                 }, {
                     name: "No usado",
-                    y: 24.030000000000005,
+                    y:<%= @disp_recepcion%>,
                     sliced: true,
                     selected: true
                 }]
