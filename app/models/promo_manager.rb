@@ -273,6 +273,21 @@ end
   end
 
 
+  def self.obtener_cantidad_promociones_instagram date
+
+
+    promos_instagram = Promocion.where(" inicio <='#{date}' AND fin >= '#{date}' AND codigo != 'nil'").count
+
+  promos_instagram
+  end
+
+  def self.obtener_cantidad_promociones_cola date
+
+    promos_cola = Promocion.where(" inicio <='#{date}' AND fin >= '#{date}' AND codigo = 'nil'").count
+
+    promos_cola
+  end
+
 
 
 end
