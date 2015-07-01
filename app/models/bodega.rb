@@ -55,6 +55,32 @@ class Bodega < ActiveRecord::Base
 
   end
 
+  def self.mover_ecommerce?(producto_id, direccion, precio, oc_id)
+
+    params=["DELETE",producto_id ,direccion, precio, oc_id]
+    security = Bodega.claveSha1(params)
+
+    url="http://integracion-2015-prod.herokuapp.com/bodega/stock"
+    header1 = {"Content-Type"=> "application/json","Authorization" => "INTEGRACION grupo8:#{security}"}
+    body= { "productoId" => producto_id,
+            "direccion" =>direccion,
+            "precio" =>precio,
+            "ordenDeCompraId" =>oc_id
+    }
+
+    result = HTTParty.delete(url,:headers => header1,:body=>body.to_json)
+
+    case result.code
+      when 200
+        true
+      when 202
+        true
+      else
+        false
+    end
+
+  end
+
   def self.id_bodegaDespacho
     return Bodega.fifth.almacen_id
   end
