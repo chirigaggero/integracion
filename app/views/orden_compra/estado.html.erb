@@ -35,6 +35,8 @@
   
   <br>
 
+
+  <h2> Información del sistema de ordenes de compra</h2>
   <% if $query.nil? %>
   <% elsif $query==$order_id %>
     <p><strong>ID: </strong><%= $order_id %></p>
@@ -48,9 +50,22 @@
     <p><strong>Canal: </strong><%= $canal %></p>
       <hr>
 
-      <p> En este momento, contamos con <%=@cantidad_total%> unidades del producto con sku: <%=$sku%>. De este total,
-       <%=$cantidad %> unidades estan asignadas a la orden nro. <%=$order_id %> y hay <%=@cantidad_disponible%> para responder
-      a nuevos pedidos</p>
+      <h2>Información de sistema interno</h2>
+
+      <% if @aceptado%>
+          <p>El pedido fue aceptado en la fecha <%@pedido_solicitado.created_at..strftime("%Y-%d-%m") %>
+           y se moverá al almacen de despacho el <%@pedido_solicitado.fechaEntrega%> para su posterior envío. </p>
+          <p> En este momento, contamos con <%=@cantidad_total%> unidades del producto con sku: <%=$sku%>. De este total,
+            <%=$cantidad %> unidades estan asignadas a la orden nro. <%=$order_id %> y hay <%=@cantidad_disponible%> para responder
+            a nuevos pedidos</p>
+
+      <% else %>
+
+      <p> La orden de compra no ha sido ingresada en el sistema. Probablemente el pedido fue rechazado por falta
+      de inventario.</p>
+          <%end%>
+
+
   <% else %>
     <p><strong>No hay información para el ID: <%= $query %></strong></p>
   <% end %>
@@ -82,6 +97,7 @@
         <td style="text-align: center"><%=pedido.sku%></td>
         <td style="text-align: center"><%=pedido.cantidad%></td>
         <td style="text-align: center"><%=pedido.fechaEntrega%></td>
+        <td style="text-align: center"><%=pedido.direccion%></td>
       </tr>
 
   <%end%>

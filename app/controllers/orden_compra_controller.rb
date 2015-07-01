@@ -19,22 +19,28 @@ class OrdenCompraController < ApplicationController
 
 
 
-
 		@cantidad_disponible= Bodega.cantidad_disponible_sku_reposicion $sku
 		@cantidad_total = Bodega.cantidad_total_sku $sku
+
+
 		else
 			$query = nil
 		end
 
 
-
 		@pedidos=Pedido.all
 
+
+		@pedido_solicitado = Pedido.find_by_order_id($order_id)
+
+		if pedidos.nil?
+			@aceptado=true
+		else
+			@aceptado=false
+		end
 	rescue
 		$query = nil
-
-
-
-
 	end
+
+
 end
