@@ -47,6 +47,9 @@ class Pedido < ActiveRecord::Base
           else
             Bodega.mover_b2b?(producto,self.direccion)
           end
+          if self.ecommerce
+            Bodega.mover_ecommerce?(producto,self.direccion, self.precio_unitario, self.order_id)
+          end
             prod_almacen-= 1
             cantidad_pedido-= 1
 

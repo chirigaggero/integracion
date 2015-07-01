@@ -106,11 +106,6 @@ ActiveRecord::Schema.define(version: 20150701191603) do
     t.date     "fin"
   end
 
-  create_table "promos", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "transaccions", force: :cascade do |t|
     t.string   "monto"
     t.string   "destino"
