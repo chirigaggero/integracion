@@ -53,8 +53,8 @@
       <h2>Información de sistema interno</h2>
 
       <% if @aceptado%>
-          <p>El pedido fue aceptado en la fecha <%@pedido_solicitado.created_at..strftime("%Y-%d-%m") %>
-           y se moverá al almacen de despacho el <%@pedido_solicitado.fechaEntrega%> para su posterior envío. </p>
+          <p>El pedido fue aceptado en la fecha <%=@pedido_solicitado.created_at.strftime("%Y-%d-%m") %>
+           y se moverá al almacen de despacho el <%=@pedido_solicitado.fechaEntrega%> para su posterior envío. </p>
           <p> En este momento, contamos con <%=@cantidad_total%> unidades del producto con sku: <%=$sku%>. De este total,
             <%=$cantidad %> unidades estan asignadas a la orden nro. <%=$order_id %> y hay <%=@cantidad_disponible%> para responder
             a nuevos pedidos</p>

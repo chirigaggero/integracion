@@ -5,6 +5,8 @@ class OrdenCompraController < ApplicationController
 
 		url = "http://moyas.ing.puc.cl:8080/Jboss/integra8/OrdenCompra/obtener/#{$query}"
 		result = HTTParty.get(url)
+
+
 		if result[0]["_id"]
 		$order_id = result[0]["_id"]
 		$cliente = result[0]["cliente"]
@@ -30,10 +32,9 @@ class OrdenCompraController < ApplicationController
 
 		@pedidos=Pedido.all
 
-
 		@pedido_solicitado = Pedido.find_by_order_id($order_id)
 
-		if pedidos.nil?
+		if !@pedido_solicitado.nil?
 			@aceptado=true
 		else
 			@aceptado=false
