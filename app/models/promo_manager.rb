@@ -177,7 +177,7 @@ class PromoManager < ActiveRecord::Base
   #
   def self.obtener_promo_dia sku
 
-    promos = Promocion.where("sku = '#{sku}' AND inicio <='#{Date.today}' AND fin >= '#{Date.today}' AND codigo = 'nil'")
+    promos = Promocion.where("sku = '#{sku}' AND inicio <='#{Date.today}' AND fin >= '#{Date.today}' AND codigo IS NULL")
     #.and("fin >= '#{Date.today}'")
 
     begin
@@ -299,7 +299,7 @@ end
 
   def self.obtener_cantidad_promociones_cola date
 
-    promos_cola = Promocion.where(" inicio <='#{date}' AND fin >= '#{date}' AND codigo = 'nil'").count
+    promos_cola = Promocion.where(" inicio <='#{date}' AND fin >= '#{date}' AND codigo IS NULL").count
 
     promos_cola
   end
